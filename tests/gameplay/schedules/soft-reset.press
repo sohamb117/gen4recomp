@@ -1,0 +1,12 @@
+# CONTINUE into the field, L+R+START+SELECT (held 4 frames; each frame the
+# combo is still down when the rebooted game reaches its main loop resets it
+# again), then the title and CONTINUE once more after the reboot.
+1250:start
+1400:a
+1500:a
+1600:a
+2200:l+r+start+select:4
+3450:start
+3600:a
+3700:a
+3800:a

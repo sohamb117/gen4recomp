@@ -1,0 +1,5 @@
+# Boost on 18's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Bite (slot 3) is super effective on TRAINER_LEADER_FANTINA (DUSKULL 24, HAUNTER 24, MISMAGIUS 26) and the
+# dark-room trainers; refilled with the lead's HP before the gym (res/trainers/data).
+party-level 0 44
+party-move 0 3 MOVE_BITE

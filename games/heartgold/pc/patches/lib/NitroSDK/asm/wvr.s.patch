@@ -1,0 +1,29 @@
+--- a/lib/NitroSDK/asm/wvr.s
++++ b/lib/NitroSDK/asm/wvr.s
+@@ -174,7 +174,7 @@
+ 	mov r0, #1
+ 	ldmia sp!, {r4, r5, r6, r7, r8, pc}
+ 	.align 2, 0
+-_0209E234: .word .bss
++_0209E234: .word wvrLockId
+ _0209E238: .word 0x04000242
+ _0209E23C: .word 0x04000243
+ _0209E240: .word WvrReceiveCallback
+@@ -241,7 +241,7 @@
+ 	mov r0, #1
+ 	ldmia sp!, {r4, r5, r6, pc}
+ 	.align 2, 0
+-_0209E31C: .word .bss
++_0209E31C: .word wvrLockId
+ _0209E320: .word WvrReceiveCallback
+ _0209E324: .word WvrDummyAsyncCallback
+ 	arm_func_end WVR_TerminateAsync
+@@ -306,7 +306,7 @@
+ 	blx r4
+ 	ldmia sp!, {r4, r5, r6, pc}
+ 	.align 2, 0
+-_0209E3FC: .word .bss
++_0209E3FC: .word wvrLockId
+ 	arm_func_end WvrReceiveCallback
+ 
+ 	arm_func_start WvrDummyAsyncCallback

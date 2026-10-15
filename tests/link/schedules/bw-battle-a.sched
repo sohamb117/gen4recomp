@@ -1,0 +1,49 @@
+# Black/White Union Room battle, station A (LINKA). Into the Union Room and to
+# B's avatar as in bw-trade-a.sched, then Battle > Battles for two > the
+# settings (Single Battle, No Restrictions) > Confirm.
+5000:start:4
+5150:a:4:100:8
+6000:up:4
+6100:a:4:80:30
+9620:right:2
+9650:right:16
+9700:up:2
+9730:up:50
+9850:a:4:100:3
+10300:a:4
+10700:down:4
+10760:a:4
+10900:a:4
+11020:down:4
+11060:down:4
+11100:down:4
+11160:a:4
+11300:a:4:120:3
+# The battle room (zone 150): walk from (5,9) to A's designated position (3,5),
+# facing B. The 1v1 positions are (3,5) and (9,5): the u16 table
+# {3,5, 9,5} (then the 2v2 {3,4, 9,6, 3,6, 9,4}) in overlay 19 at 0x02180794.
+12160:up:28
+12220:left:2
+12250:left:12
+12290:right:2
+12400:up:2
+12430:up:12
+12470:right:2
+12520:left:2
+12550:left:12
+12590:right:2
+12640:up:2
+12670:up:12
+12710:right:2
+# "Please choose the Pokemon that will participate": party slot 1 > ENTER >
+# CONFIRM.
+13400:tap:60:26:4
+13520:tap:200:133:4
+13600:tap:215:181:4
+# Turn 1: FIGHT > the move in the lower-left slot (Ember for the chain's
+# Tepig). Turn 2: RUN > "Would you like to forfeit the match and quit now?"
+# YES. B wins; both return to the battle room.
+15300:tap:128:88:4
+15420:tap:64:105:4
+16500:tap:128:178:4
+16800:tap:128:55:4

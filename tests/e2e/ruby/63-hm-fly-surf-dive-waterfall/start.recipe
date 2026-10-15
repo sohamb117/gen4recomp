@@ -1,0 +1,20 @@
+# Fly, Surf, Dive and Waterfall from Mossdeep, on the GBA new-game base save (Brendan in the house 1F).
+flag FLAG_SYS_POKEMON_GET                 # data/maps/Route101/scripts.inc:220 (Birch's bag): POKEMON in the start menu (src/start_menu.c:267-268)
+# the field-move badges: Surf 5 (src/field_control_avatar.c:506), Fly 6 (src/pokemon_menu.c:728, field move 5),
+# Dive 7 (src/field_control_avatar.c:521,531), Waterfall 8 (src/field_control_avatar.c:511)
+badge 5                                   # data/maps/PetalburgCity_Gym/scripts.inc:392
+badge 6                                   # data/maps/FortreeCity_Gym/scripts.inc:31
+badge 7                                   # data/maps/MossdeepCity_Gym/scripts.inc:60
+badge 8                                   # data/maps/SootopolisCity_Gym_1F/scripts.inc:102
+# the Fly map's towns (src/region_map.c:728-729: a town is a destination once visited)
+flag FLAG_VISITED_MOSSDEEP_CITY           # data/maps/MossdeepCity/scripts.inc:54
+flag FLAG_VISITED_EVER_GRANDE_CITY        # data/maps/EverGrandeCity/scripts.inc:22
+# the HM user (Surf, Dive, Waterfall taught from HM03/HM08/HM07) and the Fly carrier (HM02) behind it
+party SPECIES_SWAMPERT 60 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_DIVE
+party-move 0 2 MOVE_WATERFALL
+party SPECIES_SWELLOW 45 ITEM_NONE
+party-move 1 0 MOVE_FLY
+# outside the Mossdeep Pokemon Center (src/data/heal_locations.h:55-60 HEAL_LOCATION_MOSSDEEP_CITY (28,17))
+map MAP_MOSSDEEP_CITY 28 17

@@ -1,0 +1,48 @@
+# Proves Surf in the field from a standing start: Cherrygrove's beach (539,400), bumped into the bay to the west:
+# A asks to use Surf (std_field_surf), YES, and the walk goes on over the water to (530,400).
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_CHERRYGROVE (530,400), surfing.
+title = "HM03 Surf: Cherrygrove's bay"
+priority = "P0"
+version = "both"
+estimate = 3496
+refs = [
+  "games/heartgold/src/field_move.c:250-289 (FieldMove_CheckSurf: BADGE_FOG, FIELD_MOVE_CHECK_WATER)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:560-591 (scr_seq_0146_004 std_field_surf)",
+  "games/heartgold/src/script_manager.c:43 (std 10000+ = scr_seq_0146, the field moves)",
+  "tools/hg_map.py MAP_CHERRYGROVE: beach x 537-541, the shore (536) and the bay's water west of it",
+  "zone_event 057_T20 coords 2/3 (700,398) w1 h5 VAR_SCENE_NEW_BARK_EAST_EXIT 1/2 -> scr_seq_T20_011/012: after the Master Ball (scr_seq_0843_T20R0101.s:949 sets 2) Lyra turns the player back from New Bark's east shore until the legendary (scr_seq_0021_D17R0110.s:84 / scr_seq_0104_D40R0107.s:96 set 3), so this milestone surfs at Cherrygrove",
+  "chain 16 (ITEM_HM03, scr_seq_0928_T27R0501.s) and 18/20/28/32/33 surf with walk_to surf = true",
+]
+notes = "Pelipper (slot 4) knows Surf. walk_to surf = true bumps the shore and answers A + YES (bots.py _use_field_move). Scouted on HeartGold 29's end save: landed in Cherrygrove at 2780, the field move at 3110, (530,400) on the water at 3491. Measured: HeartGold 3496 frames, SoulSilver 3496 (wild battles fled on the way vary it)."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 5300
+
+[[step]]
+do = "fly"
+map = "MAP_CHERRYGROVE"
+
+[[step]]
+do = "walk_to"
+x = 539
+z = 400
+on_battle = "flee"
+shot = "beach"
+note = "Cherrygrove's beach"
+
+[[step]]
+do = "walk_to"
+x = 530
+z = 400
+surf = true
+on_battle = "flee"
+shot = "surfing"
+note = "west into the bay: bump, A, YES (Pelipper's Surf)"
+
+[expect]
+map = "MAP_CHERRYGROVE"
+position = [530, 400]
+log = ["walk_to: water ahead, using the field move"]

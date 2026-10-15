@@ -1,0 +1,8 @@
+# Boost on 29's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# HP and PP refilled (party-level, the four moves set again).
+# For TRAINER_LEADER_BYRON (MAGNETON 37, STEELIX 38, BASTIODON 41: Earthquake 4x/2x/4x) and the gym's trainers.
+party-level 0 64
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE

@@ -50,15 +50,19 @@ options.ini              settings and bindings
 
 ## Save slots
 
-Each game has any number of named save slots (raw 512 KiB flash images, the
-format melonDS and DeSmuME's "raw .sav" use). Picking a game on the launcher
-opens its slots: *Continue* (last used), *New save slot*, each slot (Play,
-Rename, Duplicate, Export .sav, Delete with confirmation) and *Import .sav*
-(also by dropping a `.sav`/`.dsv` on that page). Imports must be exactly
-512 KiB, or a DeSmuME `.dsv` (512 KiB + its 122-byte footer, which is
-stripped). Names: up to 32 letters, digits, spaces and `- _ ( ) . ! ' #`,
-compared case-insensitively; Windows device names are refused. Names are typed
-or picked on an on-screen keyboard (gamepad/mouse/touch).
+Each game has any number of named save slots (raw flash images: 512 KiB for
+the DS games, the format melonDS and DeSmuME's "raw .sav" use; 128 KiB for
+Ruby/Sapphire/Emerald, as mGBA and VBA write them). Picking a game on the
+launcher opens its slots: *Continue* (last used), *New save slot*, each slot
+(Play, Rename, Duplicate, Export .sav, Poke Transfer station for the Gen 4
+games, Delete with confirmation) and *Import
+.sav* (also by dropping a `.sav`/`.dsv` on that page). DS imports must be
+exactly 512 KiB, or a DeSmuME `.dsv` (512 KiB + its 122-byte footer, which is
+stripped); GBA imports 128 KiB, or mGBA's 128 KiB + 16-byte RTC record (the
+record is dropped: the core keeps time from the host clock). Names: up to 32
+letters, digits, spaces and `- _ ( ) . ! ' #`, compared case-insensitively;
+Windows device names are refused. Names are typed or picked on an on-screen
+keyboard (gamepad/mouse/touch).
 
 ## Launching
 
@@ -84,6 +88,20 @@ quits when the editor closes. Platinum saves identify themselves; Diamond and
 Pearl share a format, so `--game` (or whichever of the two is imported)
 decides whose ROM supplies the names. Saving keeps the previous file as
 `<file>.bak` next to it.
+
+```sh
+nativeplat --poke-transfer --game platinum [--slot "My run"]
+```
+
+runs this window as Poké Transfer's second DS, the child station (core
+`poketransfer`, docs/BW_PLAN.md "Poké Transfer"). The given Diamond, Pearl,
+Platinum, HeartGold or SoulSilver cartridge and save slot (default: the last
+used one) are the card in its slot 1. A Gen 4 slot's menu has the same as
+*Poke Transfer station*. The station waits for the lab in Black or White,
+running in another window or on another machine with local wireless on, so
+wireless must be on here too. It receives the child program from there and
+plays it. When the six are transferred, the child saves this slot without
+them.
 
 *Options > Real-time clock* feeds the device's local time to the game's RTC
 (default), or the port's fixed clock (2009-03-22 10:00, advancing with frames);

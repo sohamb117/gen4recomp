@@ -1,0 +1,17 @@
+# Boost on 29's end save (run.py hgss_boost: np_save4 set-level on members already in the party: stats from their
+# own IVs/EVs/nature, HP full; moves unchanged, no evolution).
+# The five Kimono Girls fight back to back (UMBREON, ESPEON, FLAREON, JOLTEON, VAPOREON, all 38; no heal between).
+# The first chained run after a heal lost to the fifth: the party's lower half (QUILAVA 35, Togepi 1, SCYTHER 29)
+# fell in one or two turns each and left Feraligatr alone. A second with QUILAVA 44, Togepi 40, SCYTHER 42 and
+# PELIPPER 44 lost to Vaporeon the same way. Levels for this and the rest of the story (the Elite Four and Lance at
+# 40-50): the fighters at 50, the rest at 46, Togepi (Growl/Charm/Extrasensory) at 40.
+party-level 0 46
+party-level 1 40
+party-level 2 46
+party-level 3 50
+party-level 4 48
+party-level 5 50
+# The third run (levels above) lost at the fourth: JOLTEON outran and beat the Water members (Pelipper 4x), and
+# Ampharos had only Electric moves into its Volt Absorb. AMPHAROS: Charge -> Focus Blast (TM52; AMPHAROS tms
+# include 52, files/poketool/personal/personal.json).
+party-move 3 3 MOVE_FOCUS_BLAST

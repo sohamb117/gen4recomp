@@ -1,0 +1,113 @@
+# Proves the PokeNav's TRAINER'S EYES: the player beats Youngster Calvin on Route 102 (a rematch-table trainer, his
+# trainer flag set by the win), then opens the PokeNav from the start menu and TRAINER'S EYES lists Calvin; A shows
+# his card. R/S have no Match Call (the PokeNav's MATCH CALL is Emerald's): the rematch list is Trainer's Eyes.
+# Start: MAP_ROUTE102 (35,14) beside Calvin -> end: MAP_ROUTE102 next to Calvin, PokeNav closed.
+title = "PokeNav: Trainer's Eyes lists a beaten rematch trainer"
+priority = "P1"
+version = "both"
+estimate = 3201
+refs = [
+  "data/maps/Route102/map.json object_events[1] (33,14) Youngster, sight 3, Route102_EventScript_14EAFE",
+  "data/maps/Route102/scripts.inc:20-26 (trainerbattle_single TRAINER_CALVIN_1)",
+  "src/data/trainer_parties.h:4265-4271 (Calvin: ZIGZAGOON lv5)",
+  "include/constants/opponents.h:322 (TRAINER_CALVIN_1 318); include/constants/flags.h:773 (TRAINER_FLAG_START 0x500: his flag 0x63E)",
+  "src/battle_setup.c:163-450 (gTrainerEyeTrainers: TRAINER_CALVIN_1 on MAP_ROUTE102)",
+  "src/battle_setup.c:1086-1089 (HasTrainerAlreadyBeenFought: FlagGet(TRAINER_FLAG_START + id))",
+  "src/trainers_eye.c:39-56 (the Trainer's Eyes list: every gTrainerEyeTrainers entry whose first trainer was fought)",
+  "src/start_menu.c:263-276 (BuildStartMenuActions_Normal: POKEMON (FLAG_SYS_POKEMON_GET), BAG, POKENAV (FLAG_SYS_POKENAV_GET), ...)",
+  "src/pokenav_before.c:1217-1229 (main menu: HOENN MAP, CONDITION, TRAINER'S EYES, RIBBONS only with FLAG_SYS_RIBBON_GET, OFF)",
+  "src/pokenav_before.c:3337-3357,1478-1512 (UP/DOWN skip absent entries; A on entry 2 -> Trainer's Eyes)",
+]
+notes = "Emerald's Match Call (match_call.c) does not exist in pokeruby; the PokeNav's rematch feature is Trainer's Eyes (src/trainers_eye.c). The list holds the gTrainerEyeTrainers entries whose first trainer's flag is set, so beating Calvin here registers him."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 4900
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "Calvin (object 2, (33,14)): trainerbattle_single TRAINER_CALVIN_1 (Route102/scripts.inc:20-21)"
+
+[[step]]
+do = "advance_text"
+note = "his challenge, until the battle starts"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Mudkip lv20 vs ZIGZAGOON lv5"
+
+[[step]]
+do = "advance_text"
+note = "Calvin's after-battle line; his trainer flag 0x63E is set by the win"
+
+[[step]]
+do = "press"
+keys = "START"
+gap = 30
+note = "start menu: POKEMON, BAG, POKENAV, ... (no Pokedex), cursor on 0 (start_menu.c:66)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 10
+times = 2
+shot = "start-menu-pokenav"
+note = "POKENAV (entry 2)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+shot = "pokenav-main"
+note = "the PokeNav main menu, cursor on HOENN MAP"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 15
+times = 2
+shot = "pokenav-trainers-eyes"
+note = "TRAINER'S EYES (entry 2; RIBBONS is absent without FLAG_SYS_RIBBON_GET)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "trainers-eyes-list"
+note = "the Trainer's Eyes list: Calvin (trainers_eye.c:39-56)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "trainers-eyes-calvin"
+note = "Calvin's card"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 90
+times = 3
+note = "back to the list, the main menu, then SWITCH OFF: the PokeNav returns to the start menu"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 30
+note = "close the start menu (start_menu.c:443-446)"
+
+[[step]]
+do = "wait_field"
+shot = "field"
+
+[expect]
+map = "MAP_ROUTE102"
+flags = ["FLAG_SYS_POKENAV_GET"]
+battles = 1
+save = [
+  '0x500 + 318 in s["flags"]',
+]

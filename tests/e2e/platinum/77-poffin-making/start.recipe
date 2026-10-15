@@ -1,0 +1,13 @@
+# Copy of pc/tests/corpus/poffin-cook.recipe.
+name GQ
+gender GENDER_MALE
+trainer-id 20481
+money 3000
+
+# kept verbatim from pc/tests/corpus/poffin-cook.recipe
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_ROSELIA 20 ITEM_NONE
+# PoffinCommon_CookAlone needs the case (scripts_poffin_common.s:62,79) and a berry (:69,82)
+item ITEM_POFFIN_CASE 1
+item ITEM_CHERI_BERRY 10
+map MAP_HEADER_POFFIN_HOUSE 5 11 FACE_UP

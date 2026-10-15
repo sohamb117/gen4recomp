@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """pc/tools/dp_adjacency_lint.py: assembly that reaches past a C-defined object.
 
-    dp_adjacency_lint.py MAP ASMDIR...
+    dp_adjacency_lint.py MAP ASM...
+
+ASM: directories searched for *.s, or .s files (HG/SS pass the exact list
+armrec translates, staged overlay copies included).
 
 Exits 1 on a hit. The ROM's assembly (arm9/asm, the overlays, and the mwcc
 `asm` bodies pc/tools/dp_extract_asm.py pulls out of C files) addresses data
@@ -24,7 +27,7 @@ import os
 import re
 import sys
 
-SYM = re.compile(r"^\s*([0-9a-f]+)\s+[0-9a-f]+\s+([0-9a-f]+)\s+\S*/obj/(?:game|pcgame|host)/\S+:"
+SYM = re.compile(r"^\s*([0-9a-f]+)\s+[0-9a-f]+\s+([0-9a-f]+)\s+\S*/obj/(?:game|pcgame|host|hgsrc)/\S+:"
                  r"\(\.(?:bss|data|rodata)\.(\w+)\)")
 LD = re.compile(r"^\s*ldr\s+(r\d+),\s*=?\s*(\w+)\s*$")
 LIT = re.compile(r"^\s*(\w+):\s*\.word\s+(\w+)")
@@ -45,7 +48,8 @@ def main(argv):
                 size[m.group(3)] = int(m.group(2), 16)
     hits = set()
     for d in argv[2:]:
-        for path in glob.glob(os.path.join(d, "**", "*.s"), recursive=True):
+        for path in (glob.glob(os.path.join(d, "**", "*.s"), recursive=True) if os.path.isdir(d)
+                     else [d] if d.endswith(".s") else []):
             lines = open(path, errors="replace").read().split("\n")
             lit = {m.group(1): m.group(2) for m in (LIT.match(l) for l in lines) if m}
             for i, raw in enumerate(lines):

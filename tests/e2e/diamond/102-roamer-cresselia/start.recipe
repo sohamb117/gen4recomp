@@ -1,0 +1,10 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31102
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+# Lunar Wing ball hidden at new game (scr_seq 0377 @0x013A SetFlag 0x436); kept as the base save has it
+# below Cresselia (16,15) (zone_event 0253 object 0); [INFERENCE] (16,16) walkable
+map MAP_FULLMOON_ISLAND_INTERIOR 16 16 FACE_UP

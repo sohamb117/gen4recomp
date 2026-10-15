@@ -1,0 +1,13 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31180
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# Backlot's daily mon needs the National Dex (NationalDex 2 at scr_seq 0421 @0x0087; else msg 441 #0 only):
+# Oak's upgrade (ScrCmd_NationalDex's two flags, 110-national-dex-upgrade), on top of the Sinnoh dex
+pokedex 1
+national-dex 1
+party SPECIES_INFERNAPE 50 ITEM_NONE
+# below Mr. Backlot (16,8) facing S (zone_event 0355 object 1); the room's door is warp 0 (16,10)
+map MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM 16 9 FACE_UP

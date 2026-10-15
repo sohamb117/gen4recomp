@@ -1,0 +1,7 @@
+# On 81's end save: 81 threw the Master Ball; the items pocket's first slot (set-item slots count from 1) becomes a
+# Master Ball (item 1) again, the first ball the battle bag lists.
+item 0 1 1 1
+# Pinwheel Forest (zone 155) on a rock's tile (zone_event 155 object 33 (107,28), hidden by 0x28D since 80), one below
+# the Rumination Field's mouth (warp 2 (107,27) 2x1); set-location keeps the saved zone's objects, so the field is
+# entered by its warp.
+location 155 107 0 28

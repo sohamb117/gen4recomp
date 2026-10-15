@@ -1,0 +1,105 @@
+# Proves Rock Smash: HM06 from the man on Route 36 (426,246), then the Dark Cave (Route 31 side) rock (17,17),
+# bumped from above: A asks to use Rock Smash (std_field_rock_smash), YES, the rock breaks and the walk goes on.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_DARK_CAVE_ROUTE_31_SIDE (17,19), south of the rocks.
+title = "HM06 Rock Smash: the Route 36 gift and a Dark Cave rock"
+priority = "P0"
+version = "both"
+estimate = 10860
+refs = [
+  "games/heartgold/src/field_move.c:326-356 (FieldMove_CheckRockSmash: BADGE_ZEPHYR, FIELD_MOVE_CHECK_BREAKROCK)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:178-263 (scr_seq_0146_001 std_field_rock_smash: prompt, the move, HidePerson; a wild battle may follow)",
+  "games/heartgold/src/script_manager.c:43 (std 10000+ = scr_seq_0146, the field moves)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0243_R36.s:412-425 (scr_seq_R36_008: GetItemQuantity ITEM_HM06, GiveItemNoCheck ITEM_HM06)",
+  "zone_event 037_R36 object 0 SPRITE_GSBIGMAN (426,246) -> scr_seq_R36_008, FLAG_NOTHING",
+  "zone_event 094_R31R0101 (MAP_ROUTE_31_VIOLET_GATEHOUSE) warps 0 (1,7) Violet, 1 (10,7) Route 31; zone_event 032_R31 warp 2 (565,269) -> MAP_DARK_CAVE_ROUTE_31_SIDE",
+  "zone_event 169_D42R0102 (MAP_DARK_CAVE_ROUTE_31_SIDE) objects 1 (17,17) and 9 (17,18) SPRITE_BREAKROCK (85 = bots.py GFX_ROCK_SMASH) -> std_field_rock_smash; tools/hg_map.py: west of them walls, east of (17,16) water: on foot the way south is through (17,17)",
+]
+notes = "29's bag has no HM06 and nobody knows Rock Smash: the man's gift is played, the move is the boost's (boost.recipe; teaching through the Bag is not botted, as 10's Cut). From Route 36 the way to the cave is Fly back to Violet and its east gate. Wild battles in the cave are fled (Typhlosion leads). Scouted on HeartGold 29's end save: HM06 in the bag after the talk; the field move at 6534, (17,19) at 7147 (three wild battles fled). Measured: HeartGold 8637 frames, SoulSilver 10860 (wild battles fled on the way vary it)."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+boost = "boost.recipe"
+
+[run]
+frames = 16300
+
+[[step]]
+do = "fly"
+map = "MAP_ECRUTEAK"
+note = "lands at (397,184); Route 37 south to Route 36"
+
+[[step]]
+do = "walk_to"
+x = 427
+z = 246
+on_battle = "flee"
+note = "east of the man (426,246)"
+
+[[step]]
+do = "talk_to"
+id = 0
+on_battle = "flee"
+note = "obj_R36_gsbigman: HM06 (scr_seq_0243_R36.s:412-425)"
+
+[[step]]
+do = "advance_text"
+shot = "hm06"
+
+[[step]]
+do = "fly"
+map = "MAP_VIOLET"
+
+[[step]]
+do = "walk_to"
+x = 511
+z = 269
+on_battle = "flee"
+note = "Violet's east gate (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_31_VIOLET_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "-> Route 31 (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_31"
+
+[[step]]
+do = "walk_to"
+x = 565
+z = 269
+on_battle = "flee"
+note = "the Dark Cave (warp 2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DARK_CAVE_ROUTE_31_SIDE"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 16
+on_battle = "flee"
+shot = "above-rocks"
+note = "above the rocks (17,17), (17,18)"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 19
+hm = true
+on_battle = "flee"
+shot = "past-rocks"
+note = "south through the rock: bump, A, YES (Typhlosion's Rock Smash)"
+
+[expect]
+map = "MAP_DARK_CAVE_ROUTE_31_SIDE"
+position = [17, 19]
+log = ["walk_to: object ahead, using the field move"]
+save = ['any(i["name"] == "HM06" for i in s["bag"]["tms_hms"])']

@@ -1,0 +1,33 @@
+# Black/White Union Room trade, station A (LINKA, linkpair.mint_bw: in front
+# of Striaton's Union Room counter). CONTINUE (YES to the C-Gear), talk to the
+# attendant and A through to the Union Room (the first-visit title, "DS
+# Wireless Communications will be launched", the save). Walk to B's avatar,
+# which stands at (13,10): right 2 to (13,15), up 4 to (13,11), A to talk.
+# Past "Hello!", pick Trade (2 downs).
+5000:start:4
+5150:a:4:100:8
+6000:up:4
+6100:a:4:80:30
+9620:right:2
+9650:right:16
+9700:up:2
+9730:up:50
+9850:a:4:100:3
+10300:a:4
+10700:down:4
+10740:down:4
+10800:a:4
+# The trade screen (all touch): close the message, pick party slot 1, SHOW,
+# the trade button once both have offered, YES to "Are you OK with your
+# selection?" and to "Is it OK to select one each...?", then B's offer
+# (closing the message first), TRADE, and TRADE again on "Is it OK to trade".
+12520:tap:108:58:4
+12640:tap:108:36:4
+12760:tap:200:157:4
+13000:tap:216:179:4
+13250:tap:200:61:4
+13600:tap:200:61:4
+13950:tap:60:55:4
+14100:tap:60:45:4
+14300:tap:200:133:4
+14700:tap:200:157:4

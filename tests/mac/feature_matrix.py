@@ -24,6 +24,7 @@ import os
 import re
 import shutil
 import subprocess
+import struct
 import sys
 import tempfile
 import time
@@ -41,14 +42,23 @@ ROMS = {
     'platinum': os.path.join(ROOT, 'games/platinum/build/rom/pokeplatinum.us.nds'),
 }
 GBA_ROM = os.path.join(ROOT, '.cache/gba/pokeemerald/pokeemerald.gba')
+# The GBA games (--game ruby|sapphire|emerald run the console='gba' cases):
+# the decomp ROMs, and the save tests/rse/first_battle.sh makes in the
+# house 1F (its quick save at frame 10000).
+GBA_ROMS = {
+    'ruby': os.path.join(ROOT, '.cache/gba/pokeruby/pokeruby.gba'),
+    'sapphire': os.path.join(ROOT, '.cache/gba/pokeruby/pokesapphire.gba'),
+    'emerald': GBA_ROM,
+}
+GBA_HOUSE = {g: os.path.join(ROOT, 'build/rse/first_battle', g, 'house.sav') for g in GBA_ROMS}
 SAVE4 = os.environ.get('NP_SAVE4', os.path.join(ROOT, 'build', 'shell-stub', 'features', 'np_save4'))
 
 CASES = []
 
 
-def case(name, feature):
+def case(name, feature, console='ds'):
     def reg(fn):
-        CASES.append((name, feature, fn))
+        CASES.append((name, feature, fn, console))
         return fn
     return reg
 
@@ -95,7 +105,8 @@ class Ctx:
         os.makedirs(os.path.join(self.ud, 'roms'))
         for g in roms:
             # APFS clone: a 64-128 MB ROM costs nothing
-            subprocess.run(['cp', '-c', ROMS[g], os.path.join(self.ud, 'roms', g + '.nds')], check=True)
+            src, ext = (GBA_ROMS[g], '.gba') if g in GBA_ROMS else (ROMS.get(g) or NEW_ROMS[g], '.nds')
+            subprocess.run(['cp', '-c', src, os.path.join(self.ud, 'roms', g + ext)], check=True)
 
     def put_save(self, game, slot, src):
         d = os.path.join(self.ud, 'saves', game)
@@ -176,8 +187,10 @@ def _(c):
 
 # Title screen -> CONTINUE -> the field, as tests/gameplay/schedules/continue.press.
 CONTINUE = '1250:start;1400:a;1500:a;1600:a'
-PLAT_CARD = (784, 270)
-CARDS = {'diamond': (176, 270), 'pearl': (480, 270), 'platinum': PLAT_CARD}
+# Card centres on the ten-card launcher (romdb.c np_launcher_games: Diamond,
+# Pearl, Platinum first; cards 75 wide, 91 apart from x=33 in the 960x720 window).
+PLAT_CARD = (252, 270)
+CARDS = {'diamond': (70, 270), 'pearl': (161, 270), 'platinum': PLAT_CARD}
 # The game in-game cases run (--game); evidence names get a <game>- prefix
 # for Diamond and Pearl.
 GAME = 'platinum'
@@ -281,7 +294,8 @@ def _(c):
 @case('games_boot', 'All three cores boot in the packaged app: card -> New save slot -> OK -> title (Start)')
 def _(c):
     c.need(*ROMS.values())
-    for g, card in (('diamond', (176, 270)), ('pearl', (480, 270)), ('platinum', PLAT_CARD)):
+    for g in ('diamond', 'pearl', 'platinum'):
+        card = CARDS[g]
         c.fresh(list(ROMS))
         # Slots page (New, Import): New -> the name page -> OK boots the game at ~iteration 8.
         c.run('boot=app,frames=1700,press=1400:start:10,script=%s;5:key:Return;7:key:Return' % click(2, card),
@@ -733,20 +747,594 @@ def _(c):
     assert 'userdata/ (portable)' in log
 
 
+# ---- GBA cases (--game ruby|sapphire|emerald) -------------------------------------
+
+# From the house save: title (Start twice), CONTINUE (A, A); the field from
+# ~1080 (tests/rse/rs-1-home.sched, shifted by the launcher's iterations).
+GBA_CONTINUE = '410:start:5;710:start:5;910:a:5;1010:a:5'
+GBA_SLOT = 'House'
+
+
+def gba_save(c, opts=''):
+    """User data with GAME's ROM and the slot House (the house 1F save)."""
+    c.need(GBA_ROMS[GAME], GBA_HOUSE[GAME])
+    c.fresh([GAME])
+    c.put_save(GAME, GBA_SLOT, GBA_HOUSE[GAME])
+    c.options('[session]\nlast_game = %s\nlast_slot_%s = %s\n%s' % (GAME, GAME, GBA_SLOT, opts))
+
+
+def gba_play(c, step='', frames=1200, script='', press=GBA_CONTINUE, **kw):
+    """`nativeplat --game <GAME> --slot House`, CONTINUE pressed."""
+    at = 'boot=app,frames=%d' % frames
+    if press:
+        at += ',press=' + press
+    at += ',script=' + (script or '0:move:1:1')
+    return c.run(at, step=step, args=['--game', GAME, '--slot', GBA_SLOT], **kw)
+
+
+def gba_card(after=None):
+    """Keys from the launcher (Diamond's card selected) to GAME's card and
+    its slots page; then `after` keys. Returns (script, next frame)."""
+    return keys(2, ['Right'] * GBA_CARD[GAME] + ['Return'] + ['@%d' % (2 * GBA_CARD[GAME] + 12)] + (after or []))
+
+
+# Launcher card index (shell/src/romdb.c np_launcher_games).
+GBA_CARD = {'ruby': 5, 'sapphire': 6, 'emerald': 7}
+
+
+def summary(log):
+    """iterations, guest_frame and audio_peak of a run's last summary line."""
+    m = re.findall(r'iterations=(\d+) guest_frame=(\d+) audio_frames=\d+ audio_peak=(\d+)', log)
+    assert m, 'no autotest summary'
+    return tuple(int(v) for v in m[-1])
+
+
+@case('gba_continue', 'GBA: --game/--slot, title CONTINUE to the house (single 240x160 screen)', 'gba')
+def _(c):
+    gba_save(c)
+    gba_play(c)
+
+
+@case('gba_quicksave', 'GBA: F1 quick save in the field (the game\'s own save), F2 F2 quick load', 'gba')
+def _(c):
+    gba_save(c)
+    sav = os.path.join(c.ud, 'saves', GAME, GBA_SLOT + '.sav')
+    before = open(sav, 'rb').read()
+    log = gba_play(c, step='f1', frames=1260, press=GBA_CONTINUE + ';1100:left:20', script='1160:key:F1')
+    assert 'toast: Saved' in log, 'F1: no "Saved" toast'
+    assert open(sav, 'rb').read() != before, 'F1 did not change the slot'
+    # F2 F2 reboots from the save: the guest's frame count starts again.
+    log = gba_play(c, step='f2', frames=1400, script='1150:key:F2;1160:key:F2')
+    it, gf, _ = summary(log)
+    assert gf < it - 1000, 'F2 F2 did not reboot (iterations %d, guest frame %d)' % (it, gf)
+
+
+@case('gba_snapshots', 'GBA: snapshot slots (F5 take, F6 next slot, F7 restore) and rewind (hold R)', 'gba')
+def _(c):
+    gba_save(c, opts='[game]\nrewind_seconds = 30')
+    gba_play(c, step='walked', frames=1270, press=GBA_CONTINUE + ';1155:left:80')
+    log = gba_play(c, step='restored', frames=1270, press=GBA_CONTINUE + ';1155:left:80',
+                   script='1150:key:F5;1250:key:F7')
+    assert 'toast: Snapshot 1 taken' in log and 'toast: Snapshot 1 loaded' in log, 'F5/F7'
+    log = gba_play(c, step='slot2', frames=1200, script='1150:key:F6;1152:key:F5')
+    assert 'toast: Snapshot 2 taken' in log, 'F6, F5'
+    log = c.run('boot=app,frames=1300,press=%s;1100:left:120,rewind=1260+30,script=0:move:1:1' % GBA_CONTINUE,
+                step='rewind', args=['--game', GAME, '--slot', GBA_SLOT])
+    assert 'rewind depth' in log
+
+
+@case('gba_speed', 'GBA: speed hotkey (1 cycles 1x..uncapped), fast-forward toggle (G)', 'gba')
+def _(c):
+    gba_save(c)
+    s, _ = keys(1100, ['1', '1', '1'], gap=1)
+    it, gf, _ = summary(gba_play(c, step='4x', frames=1200, script=s))
+    assert gf > it + 150, (it, gf)
+    s, _ = keys(1100, ['G'])
+    it, gf, _ = summary(gba_play(c, step='ff-toggle', frames=1200, script=s))
+    assert gf > it + 100, (it, gf)
+
+
+@case('gba_audio', 'GBA: music / sound-effect volume (the output\'s peak in the house)', 'gba')
+def _(c):
+    peaks = {}
+    for name, opts in (('default', ''), ('bgm0', '[game]\nbgm_volume = 0'), ('se0', '[game]\nse_volume = 0')):
+        gba_save(c, opts=opts)
+        peaks[name] = summary(gba_play(c, step=name))[2]
+    with open(os.path.join(EVID, '%s-peaks.txt' % c.name), 'w') as f:
+        f.write(json.dumps(peaks) + '\n')
+    assert peaks['default'] > 0 and peaks['bgm0'] < peaks['default'], peaks
+
+
+@case('gba_layouts', 'GBA: the single screen with rotation, integer scale + linear filter, an effect', 'gba')
+def _(c):
+    for name, video in (('fit', 'layout = vertical'), ('rotation90', 'rotation = 90'),
+                        ('integer-linear', 'scale = integer\nfilter = linear'),
+                        ('lcd', 'effect1 = lcd\neffect1_intensity = 80')):
+        gba_save(c, opts='[video]\n' + video)
+        gba_play(c, step=name)
+
+
+@case('gba_touch', 'GBA: touch controls without X/Y, and the layout editor (Tab skips X/Y)', 'gba')
+def _(c):
+    gba_save(c, opts='[input]\ntouch_controls = on')
+    gba_play(c, step='pad')
+    s, f = keys(1150, ['F10'] + opt_downs('Edit touch controls...', in_game=True) + ['Return'])
+    gba_play(c, step='editor', frames=f + 4, script=s)
+    # Tab x3 from the d-pad: A, B, then L (X and Y are skipped); move and grow it.
+    e, f2 = keys(f + 2, ['Tab', 'Tab', 'Tab', 'Down', 'Down', '=', '['])
+    gba_play(c, step='edited', frames=f2 + 4, script=s + ';' + e)
+    # Escape closes the editor, which saves the layout; the pad shows it.
+    e2, f3 = keys(f2 + 2, ['Escape'])
+    gba_play(c, step='saved', frames=f3 + 4, script=s + ';' + e + ';' + e2)
+    ini = open(os.path.join(c.ud, 'touch-controls.ini')).read()
+    assert re.search(r'^l = ', ini, re.M), ini
+
+
+@case('gba_skin', 'GBA: a hand-made GBA .deltaskin dropped on the window, landscape and portrait', 'gba')
+def _(c):
+    skin = fixtures.deltaskin(os.path.join(c.work, 'TestGBA.deltaskin'), name='nativeplat GBA Test Skin', gba=True)
+    gba_save(c)
+    c.run('boot=app,frames=1200,size=1280x592,press=%s,script=1100:drop:%s' % (GBA_CONTINUE, skin),
+          step='landscape', args=['--game', GAME, '--slot', GBA_SLOT])
+    ini = open(os.path.join(c.ud, 'options.ini')).read()
+    assert re.search(r'^skin_gba = \S', ini, re.M), ini
+    c.run('boot=app,frames=1200,size=390x844,press=%s,script=0:move:1:1' % GBA_CONTINUE, step='portrait',
+          args=['--game', GAME, '--slot', GBA_SLOT])
+
+
+GBA_MOD = os.path.join(ROOT, 'games/gba-common/mods/example_menu_text')
+
+
+@case('gba_mods', 'GBA: install the example data-patch package (.zip drop), boot: the main menu text is the patch\'s',
+      'gba')
+def _(c):
+    z = fixtures.mod_zip(GBA_MOD, os.path.join(c.work, 'example_menu_text.zip'))
+    gba_save(c)
+    s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='installed')
+    order = open(os.path.join(c.ud, 'mods', GAME, 'loadorder.txt')).read()
+    assert 'example_menu_text' in order, order
+    # The title, Start: the main menu (CONTINUE / NEW GAME / OPTION, patched).
+    log = c.run('boot=app,frames=860,press=410:start:5;710:start:5,script=0:move:1:1', step='menu',
+                args=['--game', GAME, '--slot', GBA_SLOT])
+    assert 'modfs: %s.ips from \'example_menu_text\' applied' % GAME in log, 'the patch was not applied'
+
+
+@case('gba_carts', 'GBA: seal the enabled package as a cart, bind it to the slot, boot it', 'gba')
+def _(c):
+    z = fixtures.mod_zip(GBA_MOD, os.path.join(c.work, 'example_menu_text.zip'))
+    gba_save(c)
+    s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='0-installed')
+    s3, f3 = keys(4, ['F10'] + opt_downs('Mods...') + ['Return', 'Down', 'Down', 'Return'])  # package, Install, Seal
+    c.run('boot=app,frames=%d,script=%s;%d:text:Menu Cart;%d:key:Return' % (f3 + 10, s3, f3 + 2, f3 + 4),
+          step='1-sealed')
+    assert glob.glob(os.path.join(c.ud, 'carts', GAME, '*.cart')), os.listdir(c.ud)
+    # Slots (Continue, New, House, Import) -> House -> Cart: none -> Menu Cart.
+    s, f = gba_card(['Down', 'Down', 'Return'] + ['Down'] * 5 + ['Return'])
+    c.run('boot=app,frames=%d,script=%s' % (f + 4, s), step='2-bound')
+    assert os.path.exists(os.path.join(c.ud, 'saves', GAME, GBA_SLOT + '.cart')), os.listdir(c.ud)
+    # Loose packages off: the cart alone brings the patch.
+    os.remove(os.path.join(c.ud, 'mods', GAME, 'loadorder.txt'))
+    log = c.run('boot=app,frames=860,press=410:start:5;710:start:5,script=0:move:1:1', step='3-boot',
+                args=['--game', GAME, '--slot', GBA_SLOT])
+    assert 'modfs: %s.ips from \'example_menu_text\' applied' % GAME in log, 'the cart did not apply the patch'
+
+
+@case('gba_slots', 'GBA: launcher card -> slots page, import a .sav (128 KiB), Continue', 'gba')
+def _(c):
+    c.need(GBA_ROMS[GAME], GBA_HOUSE[GAME])
+    c.fresh([GAME])
+    src = os.path.join(c.work, 'House.sav')
+    shutil.copyfile(GBA_HOUSE[GAME], src)
+    s, f = gba_card(['Down', 'Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:dialog:%s' % (f + 16, s, f + 4, src), step='1-import')
+    assert os.path.getsize(os.path.join(c.ud, 'saves', GAME, 'House.sav')) == 131072
+    # Continue (the first row) boots the slot; CONTINUE on the title.
+    s, _ = gba_card(['Return'])
+    c.run('boot=app,frames=1200,press=%s,script=%s' % (GBA_CONTINUE, s), step='2-continue')
+
+
+@case('gba_launch', 'GBA: nativeplat:// URL to a GBA slot', 'gba')
+def _(c):
+    gba_save(c)
+    log = c.run('boot=app,frames=300,script=4:drop:nativeplat://launch?game=%s&slot=%s' % (GAME, GBA_SLOT),
+                step='url', args=['--launcher'])
+    assert 'game=%s' % GAME in log and 'view=game' in log, log[-1500:]
+
+
+# ---- Black / White, HeartGold / SoulSilver (--game black|white|heartgold|soulsilver) -------
+#
+# B/W CONTINUE into the bedroom, HG/SS into New Bark Town, from the game's own
+# save (tests/bwhgss/parity.sh: build/evidence/bwhgss/<game>/game.sav for B/W,
+# save.sav for HG/SS). The other in-game cases look at B/W's bedroom and HG/SS's
+# title screen. ROMs from NP_BLACK_ROM, NP_WHITE_ROM, NP_HG_ROM, NP_SS_ROM.
+
+NEW_ROMS = {'black': os.environ.get('NP_BLACK_ROM', ''), 'white': os.environ.get('NP_WHITE_ROM', ''),
+            'heartgold': os.environ.get('NP_HG_ROM', ''), 'soulsilver': os.environ.get('NP_SS_ROM', '')}
+NEW_CARD = {'black': 3, 'white': 4, 'heartgold': 5, 'soulsilver': 6}  # romdb.c np_launcher_games
+NEW_SAVE = {g: os.path.join(EVID, 'bwhgss', g, 'game.sav' if g in ('black', 'white') else 'save.sav')
+            for g in NEW_ROMS}
+# B/W: title START at ~5000, CONTINUE: the bedroom from ~6500 (tests/bwhgss/bw-continue.sched).
+BW_CONTINUE = '5000:start:4:60:2;5300:a:4:40:20'
+# HG/SS: CONTINUE into New Bark, the player free at ~2176 (tests/bwhgss/hgss-field.sched).
+HGSS_CONTINUE = '1300:start;1700:start;2100:a:4:60:2'
+NEW_SLOT = 'Start'
+
+
+def is_bw():
+    return GAME in ('black', 'white')
+
+
+def new_save(c, opts='', field=False):
+    """User data with GAME's ROM and the slot Start: B/W's bedroom save, for
+    HG/SS the New Bark save with `field`, otherwise an empty slot (a new game)."""
+    c.need(NEW_ROMS[GAME])
+    c.fresh([GAME])
+    if is_bw() or field:
+        c.need(NEW_SAVE[GAME])
+        c.put_save(GAME, NEW_SLOT, NEW_SAVE[GAME])
+    else:
+        d = os.path.join(c.ud, 'saves', GAME)
+        os.makedirs(d, exist_ok=True)
+        open(os.path.join(d, NEW_SLOT + '.sav'), 'wb').close()
+    c.options('[session]\nlast_game = %s\nlast_slot_%s = %s\n%s' % (GAME, GAME, NEW_SLOT, opts))
+
+
+def new_at():
+    """(frames, press): where the in-game cases look: B/W's bedroom after
+    CONTINUE, HG/SS's title screen."""
+    return (7000, BW_CONTINUE) if is_bw() else (1600, '')
+
+
+def continue_at():
+    """(frames, press): CONTINUE from the slot's save into the field."""
+    return (7000, BW_CONTINUE) if is_bw() else (2400, HGSS_CONTINUE)
+
+
+def new_play(c, step='', frames=None, script='', press=None, **kw):
+    """`nativeplat --game <GAME> --slot Start`; `frames` counts from new_at()'s
+    point when given as +N."""
+    base, p = new_at()
+    frames = base if frames is None else base + frames
+    press = p if press is None else press
+    at = 'boot=app,frames=%d' % frames
+    if press:
+        at += ',press=' + press
+    at += ',script=' + (script or '0:move:1:1')
+    return c.run(at, step=step, args=['--game', GAME, '--slot', NEW_SLOT], **kw)
+
+
+def new_card(after=None):
+    """Keys from the launcher to GAME's card and its slots page, then `after`."""
+    return keys(2, ['Right'] * NEW_CARD[GAME] + ['Return'] + ['@%d' % (2 * NEW_CARD[GAME] + 12)] + (after or []))
+
+
+@case('n2_import', 'ROM import: the dump dropped on the launcher, SHA-1 verified, card Ready', 'nds2')
+def _(c):
+    c.need(NEW_ROMS[GAME])
+    c.fresh()
+    log = c.run('boot=app,frames=30,script=4:drop:' + NEW_ROMS[GAME])
+    assert os.path.exists(os.path.join(c.ud, 'roms', GAME + '.nds')), os.listdir(c.ud)
+    assert 'Imported' in log, log[-1500:]
+
+
+@case('n2_boot', 'Launcher card -> New save slot -> OK boots the core to its title screen', 'nds2')
+def _(c):
+    c.need(NEW_ROMS[GAME])
+    c.fresh([GAME])
+    s, f = new_card(['Return', 'Return'])  # slots page (New, Import): New, the name page's OK
+    c.run('boot=app,frames=%d,script=%s' % (5200 if is_bw() else 1700, s))
+    assert os.path.isdir(os.path.join(c.ud, 'saves', GAME))
+
+
+@case('n2_continue', '--game/--slot, title CONTINUE into the field from the game\'s own save (B/W\'s bedroom, '
+      'HG/SS\'s New Bark)', 'nds2')
+def _(c):
+    new_save(c, field=True)
+    frames, press = continue_at()
+    c.run('boot=app,frames=%d,press=%s,script=0:move:1:1' % (frames, press), args=['--game', GAME, '--slot', NEW_SLOT])
+
+
+@case('n2_slots', 'Save slots: import the .sav from the card\'s slots page, Continue boots it', 'nds2')
+def _(c):
+    c.need(NEW_ROMS[GAME], NEW_SAVE[GAME])
+    c.fresh([GAME])
+    name = 'Bedroom' if is_bw() else 'NewBark'
+    src = os.path.join(c.work, name + '.sav')
+    shutil.copyfile(NEW_SAVE[GAME], src)
+    s, f = new_card(['Down', 'Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:dialog:%s' % (f + 16, s, f + 4, src), step='1-import')
+    assert os.path.getsize(os.path.join(c.ud, 'saves', GAME, name + '.sav')) == 524288
+    # Slots page: New, the imported slot, Import (no Continue row: no slot
+    # played yet) -> the slot's menu -> Play.
+    s, _ = new_card(['Down', 'Return', 'Return'])
+    frames, press = continue_at()
+    c.run('boot=app,frames=%d,press=%s,script=%s' % (frames, press, s), step='2-continue')
+
+
+@case('n2_editor', 'Save editor on the slot (Slot menu -> Edit save...): trainer and party tabs', 'nds2')
+def _(c):
+    new_save(c, field=True)
+    # Slots page: Continue: Start, New, Start, Import -> Start -> its menu -> Edit save...
+    for step, extra in (('trainer', []), ('party', ['PageDown'])):
+        s, f = new_card(['Down', 'Down', 'Return', 'Down', 'Return'])
+        e, f = keys(f + 6, extra, gap=3)
+        c.run('boot=app,frames=%d,script=%s%s' % (f + 6, s, ';' + e if e else ''), step=step)
+
+
+@case('n2_layouts', 'Display layouts, swap, rotation, integer scale/linear filter', 'nds2')
+def _(c):
+    for name, video in LAYOUTS:
+        new_save(c, opts='[video]\n' + video)
+        new_play(c, step=name)
+
+
+@case('n2_battle_layout', 'B/W: battle layout hybrid (large top) during Bianca\'s battle, the field layout '
+      'before and after it (NP_STAT_IN_BATTLE)', 'nds2')
+def _(c):
+    if not is_bw():
+        raise FileNotFoundError('no HG/SS save: the field does not load yet')
+    new_save(c, opts='[video]\nlayout = vertical\nbattle_layout = hybrid')
+    # tests/bwhgss/bw-battle.sched from the bedroom save: the gift box, Tepig,
+    # Bianca's battle from ~9900 to ~14000.
+    box = BW_CONTINUE + ';7000:down:4;7040:down:12;7100:down:4;7150:a:4:40:300'
+    for step, frames in (('field', 9000), ('battle', 11500), ('after', 15500)):
+        c.run('boot=app,frames=%d,press=%s,script=0:move:1:1' % (frames, box), step=step,
+              args=['--game', GAME, '--slot', NEW_SLOT])
+
+
+def bw_mod_zip(c):
+    """B/W's example package (tests/bwhgss/bw_mod_example.py: the main menu's
+    CONTINUE from a package, made from GAME's ROM) as a zip."""
+    out = os.path.join(c.work, 'pkg')
+    subprocess.run([sys.executable, os.path.join(ROOT, 'tests/bwhgss/bw_mod_example.py'), NEW_ROMS[GAME], out],
+                   check=True, stdout=subprocess.DEVNULL)
+    return fixtures.mod_zip(os.path.join(out, 'example_bw_menu'), os.path.join(c.work, 'example_bw_menu.zip'))
+
+
+@case('n2_mods', 'B/W: Mod manager installs the example package (ROM view, pc_bw_romview.c); the main menu '
+      'reads CONTINUE (MOD)', 'nds2')
+def _(c):
+    if not is_bw():
+        raise FileNotFoundError('the B/W example package only')
+    new_save(c)
+    z = bw_mod_zip(c)
+    s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='installed')
+    order = open(os.path.join(c.ud, 'mods', GAME, 'loadorder.txt')).read()
+    assert 'example_bw_menu' in order, order
+    # The title's START at ~5000, the main menu from ~5450.
+    log = c.run('boot=app,frames=5550,press=5000:start:4:60:2,script=0:move:1:1', step='menu',
+                args=['--game', GAME, '--slot', NEW_SLOT])
+    assert 'pc_bw_romview: a/0/0/2' in log, log[-1500:]
+
+
+@case('n2_carts', 'B/W: seal the enabled package as a cart, bind it to the slot, boot it', 'nds2')
+def _(c):
+    if not is_bw():
+        raise FileNotFoundError('the B/W example package only')
+    new_save(c)
+    z = bw_mod_zip(c)
+    s, f = keys(4, ['F10'] + opt_downs('Mods...') + ['Return'])
+    c.run('boot=app,frames=%d,script=%s;%d:drop:%s' % (f + 10, s, f + 2, z), step='0-installed')
+    s3, f3 = keys(4, ['F10'] + opt_downs('Mods...') + ['Return', 'Down', 'Down', 'Return'])  # package, Install, Seal
+    c.run('boot=app,frames=%d,script=%s;%d:text:Menu Cart;%d:key:Return' % (f3 + 10, s3, f3 + 2, f3 + 4),
+          step='1-sealed')
+    assert glob.glob(os.path.join(c.ud, 'carts', GAME, '*.cart')), os.listdir(c.ud)
+    # The slots page (Continue: Start, New, Start, Import) -> Start -> Cart: none -> Menu Cart.
+    s, f = new_card(['Down', 'Down', 'Return'] + ['Down'] * 5 + ['Return'])
+    c.run('boot=app,frames=%d,script=%s' % (f + 4, s), step='2-bound')
+    log = c.run('boot=app,frames=5550,press=5000:start:4:60:2,script=0:move:1:1', step='3-boot',
+                args=['--game', GAME, '--slot', NEW_SLOT])
+    assert 'pc_bw_romview: a/0/0/2' in log, log[-1500:]
+
+
+@case('n2_effects', 'Effects chain (LCD grid + scanlines, CRT + curvature) and a performance preset', 'nds2')
+def _(c):
+    for name, video in (('lcd-scanlines', 'effect1 = lcd\neffect1_intensity = 80\neffect2 = scanlines\n'
+                                          'effect2_intensity = 60'),
+                        ('crt-curved', 'effect1 = crt\neffect1_intensity = 90\ncrt_curvature = 1'),
+                        ('preset-low', 'effect1 = crt\nperformance = low')):
+        new_save(c, opts='[video]\nlayout = horizontal\n' + video)
+        new_play(c, step=name)
+
+
+@case('n2_speed', 'Speed hotkey (1 cycles 1x..uncapped) and fast-forward toggle (G)', 'nds2')
+def _(c):
+    new_save(c)
+    base, _ = new_at()
+    s, _ = keys(base - 100, ['1', '1', '1'], gap=1)
+    it, gf, _ = summary(new_play(c, step='4x', script=s))
+    assert gf > it + 150, (it, gf)
+    s, _ = keys(base - 100, ['G'])
+    it, gf, _ = summary(new_play(c, step='ff-toggle', script=s))
+    assert gf > it + 50, (it, gf)
+
+
+@case('n2_snapshots', 'Snapshot slots (F5 take, F6 next slot, F7 restore) and rewind (hold R)', 'nds2')
+def _(c):
+    new_save(c, opts='[game]\nrewind_seconds = 30')
+    base, press = new_at()
+    walk = (press + ';%d:left:80' % (base - 95)) if is_bw() else ''
+    new_play(c, step='walked', frames=-20, press=walk)
+    log = new_play(c, step='restored', frames=-20, press=walk, script='%d:key:F5;%d:key:F7' % (base - 100, base - 30))
+    assert 'toast: Snapshot 1 taken' in log and 'toast: Snapshot 1 loaded' in log, 'F5/F7'
+    log = new_play(c, step='slot2', script='%d:key:F6;%d:key:F5' % (base - 100, base - 98))
+    assert 'toast: Snapshot 2 taken' in log, 'F6, F5'
+    at = 'boot=app,frames=%d,%srewind=%d+30,script=0:move:1:1' % (base + 20, ('press=%s,' % walk) if walk else '',
+                                                                   base - 20)
+    log = c.run(at, step='rewind', args=['--game', GAME, '--slot', NEW_SLOT])
+    assert 'rewind depth' in log
+
+
+@case('n2_audio', 'Audio output (the ROM\'s own music), the music low-pass filter, music / SFX volume',
+      'nds2')
+def _(c):
+    # The shell's low-pass filter lowers the output's treble; bgm_volume 0
+    # silences the music the cores class as music (B/W pc/src/pc_bw_snd.c,
+    # HG/SS Platinum's player table), measured on B/W's bedroom and HG/SS's
+    # title (tests/bwhgss/parity.sh measures the same headless). se_volume 0
+    # is recorded: these screens play no sound effects to lower.
+    out = {}
+    for name, opts in (('default', ''), ('filter3', '[audio]\nmusic_filter = 3'), ('bgm0', '[game]\nbgm_volume = 0'),
+                       ('se0', '[game]\nse_volume = 0')):
+        new_save(c, opts=opts)
+        log = new_play(c, step=name)
+        m = re.findall(r'audio_peak=(\d+) audio_treble=(\d+)', log)
+        assert m, 'no audio summary'
+        out[name] = {'peak': int(m[-1][0]), 'treble': int(m[-1][1])}
+    with open(os.path.join(EVID, '%s-peaks.txt' % c.name), 'w') as f:
+        f.write(json.dumps(out) + '\n')
+    assert out['default']['peak'] > 0 and out['filter3']['treble'] < out['default']['treble'], out
+    assert out['bgm0']['peak'] < out['default']['peak'], out
+
+
+@case('n2_instant_text', 'Instant text (Options): a text box half printed without it, whole with it', 'nds2')
+def _(c):
+    # B/W: the X menu's SAVE from the bedroom; "Would you like to save the
+    # game?" prints from ~6890 and reads "Wo" at 6905, whole with YES/NO at
+    # once with instant text. HG/SS: a new game's intro (hgss-intro.sched);
+    # Oak's first page prints from ~7283 (tests/bwhgss/parity.sh `instant text`).
+    if is_bw():
+        frames, press = 6905, BW_CONTINUE + ';6800:x:4;6860:tap:64:94:4'
+    else:
+        sched = os.path.join(ROOT, 'tests', 'bwhgss', 'hgss-intro.sched')
+        frames = 7290
+        press = ';'.join(l.split('#')[0].strip() for l in open(sched) if l.split('#')[0].strip())
+    shots = {}
+    for name, on in (('off', 0), ('on', 1)):
+        new_save(c, opts='[game]\ninstant_text = %d' % on)
+        new_play(c, step=name, frames=frames - new_at()[0], press=press)
+        shots[name] = os.path.join(EVID, '%s-%s-small.png' % (c.name, name))
+    assert open(shots['off'], 'rb').read() != open(shots['on'], 'rb').read(), 'the same picture with and without'
+
+
+# Poké Transfer (tests/poketransfer/run_tests.py's inputs): Black at the lab
+# counter (bw-chain's milestone 34 save), the Platinum card with six Pokémon
+# added to box 1.
+PT_PARENT_SAVE = os.environ.get('NP_PT_PARENT_SAVE', os.path.join(ROOT, 'build', 'e2e', 'black',
+                                                                  '34-postgame-poke-transfer-lab', 'end.sav'))
+PT_CARD_SAVE = os.environ.get('NP_PT_CARD_SAVE', os.path.join(ROOT, 'build', 'e2e', 'platinum',
+                                                              '25-pastoria-explosion', 'end.sav'))
+
+
+@case('n2_poke_transfer', 'Poke Transfer: Black\'s lab in one window, a second install as the child station '
+      '(--poke-transfer with the Platinum card) receives the child over local wireless', 'nds2')
+def _(c):
+    if GAME != 'black':
+        raise FileNotFoundError('the lab case runs with --game black')
+    c.need(NEW_ROMS['black'], ROMS['platinum'], PT_PARENT_SAVE, PT_CARD_SAVE, SAVE4)
+    card = os.path.join(c.work, 'Six.sav')
+    shutil.copyfile(PT_CARD_SAVE, card)
+    for species in (399, 396, 403, 401, 406, 54):  # run_tests.py CARDS['platinum']
+        subprocess.run([SAVE4, 'add-box-mon', card, ROMS['platinum'], str(species), '10', '33', '-o', card],
+                       check=True, capture_output=True)
+    b = c.second()
+    sched = os.path.join(ROOT, 'tests', 'poketransfer', 'pt-parent-black.sched')
+    press = ';'.join(l.split('#')[0].strip() for l in open(sched) if l.split('#')[0].strip())
+    for st, game, slot, src, port, peer, sid in ((c, 'black', 'Lab', PT_PARENT_SAVE, 41011, 41012, '111111'),
+                                                 (b, 'platinum', 'Six', card, 41012, 41011, '222222')):
+        st.fresh([game])
+        st.put_save(game, slot, src)
+        st.options('[wireless]\nenabled = 1\nport = %d\npeer = 127.0.0.1:%d\nstation_id = %s' % (port, peer, sid))
+    frames = 12500
+    pa = c.start('boot=app,realtime=1,frames=%d,shots=1000,press=%s' % (frames, press), step='lab',
+                 args=['--game', 'black', '--slot', 'Lab'])
+    pb = b.start('boot=app,realtime=1,frames=%d,shots=1000' % frames, step='child',
+                 args=['--poke-transfer', '--game', 'platinum', '--slot', 'Six'])
+    log_b = b.finish(pb, timeout=1800)
+    c.finish(pa, timeout=1800)
+    assert 'image verified; booting the child' in log_b, 'the child station did not boot the child'
+    assert 'pc_card_rom: save: loaded' in log_b, 'the child did not read the card\'s save'
+
+
+@case('n2_screenshot', 'F12 screenshot: both screens to userdata/screenshots/<game>-*.png', 'nds2')
+def _(c):
+    new_save(c)
+    base, _ = new_at()
+    new_play(c, script='%d:key:F12' % (base - 20))
+    shots = glob.glob(os.path.join(c.ud, 'screenshots', GAME + '-*.png'))
+    assert shots, os.listdir(c.ud)
+
+
+@case('n2_render', '3D render scale and widescreen 3D: the core frame F12 saves grows (renderer-side, no game hook)',
+      'nds2')
+def _(c):
+    # F12 writes the core's frame as it is (shell/src/main.c take_screenshot),
+    # both screens stacked, so its size is the frame the options produced.
+    sizes = {}
+    for name, game, want in (('1x', 'render_scale = 1', (256, 384)), ('2x', 'render_scale = 2', (512, 768)),
+                             ('2x-widescreen', 'render_scale = 2\nwidescreen = 1', (684, 768))):
+        new_save(c, opts='[video]\nlayout = top\n[game]\n' + game)
+        base, _ = new_at()
+        new_play(c, step=name, script='%d:key:F12' % (base - 20))
+        shots = glob.glob(os.path.join(c.ud, 'screenshots', GAME + '-*.png'))
+        assert len(shots) == 1, shots
+        with open(shots[0], 'rb') as f:
+            head = f.read(24)
+        sizes[name] = struct.unpack('>II', head[16:24])
+        shutil.copy(shots[0], os.path.join(EVID, '%s-%s-frame.png' % (c.name, name)))
+        assert sizes[name] == want, (name, sizes[name], want)
+
+
+@case('n2_touch', 'Touch controls on, and the touch layout editor', 'nds2')
+def _(c):
+    new_save(c, opts='[input]\ntouch_controls = on')
+    new_play(c, step='pad')
+    base, _ = new_at()
+    s, f = keys(base, ['F10'] + opt_downs('Edit touch controls...', in_game=True) + ['Return'])
+    new_play(c, step='editor', frames=f + 4 - base, script=s)
+
+
+@case('n2_skin', 'Delta skin: a hand-made .deltaskin dropped on the window', 'nds2')
+def _(c):
+    skin = fixtures.deltaskin(os.path.join(c.work, 'Test.deltaskin'))
+    new_save(c)
+    base, press = new_at()
+    c.run('boot=app,frames=%d,size=1280x592,%sscript=%d:drop:%s' % (base, ('press=%s,' % press) if press else '',
+                                                                 base - 100, skin),
+          step='landscape', args=['--game', GAME, '--slot', NEW_SLOT])
+    assert os.path.isdir(os.path.join(c.ud, 'skins'))
+
+
+@case('n2_launch', 'nativeplat:// URL and --game/--slot launch', 'nds2')
+def _(c):
+    new_save(c)
+    log = c.run('boot=app,frames=300,script=4:drop:nativeplat://launch?game=%s&slot=%s' % (GAME, NEW_SLOT),
+                step='url', args=['--launcher'])
+    assert 'game=%s' % GAME in log and 'view=game' in log, log[-1500:]
+
+
+@case('n2_quicksave', 'F1 quick save (NP_OPT_QUICKSAVE_SEQ) in the field: records the toasts; asserted headless '
+      'by tests/bwhgss/parity.sh', 'nds2')
+def _(c):
+    # B/W's bedroom, HG/SS's New Bark (the player free at ~2176).
+    new_save(c, field=True)
+    frames, press = continue_at()
+    log = c.run('boot=app,frames=%d,press=%s,script=%d:key:F1' % (frames, press, frames - (200 if is_bw() else 150)),
+                args=['--game', GAME, '--slot', NEW_SLOT])
+    toasts = [l for l in log.splitlines() if 'toast' in l]
+    with open(os.path.join(EVID, '%s-toasts.txt' % c.name), 'w') as f:
+        f.write('\n'.join(toasts) + '\n')
+    assert any('toast: Saved' in l for l in toasts), toasts
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--zip', default=os.path.join(ROOT, 'build/dist/nativeplat-macos-arm64.zip'))
     ap.add_argument('--app', help='use this nativeplat.app instead of unzipping --zip')
     ap.add_argument('--list', action='store_true')
-    ap.add_argument('--game', default='platinum', choices=sorted(ROMS),
-                    help='the game in-game cases run; evidence names get a <game>- prefix unless platinum')
+    ap.add_argument('--game', default='platinum', choices=sorted(ROMS) + sorted(GBA_ROMS) + sorted(NEW_ROMS),
+                    help='the game in-game cases run; evidence names get a <game>- prefix unless platinum; '
+                    'a GBA game runs the GBA cases')
     ap.add_argument('cases', nargs='*')
     a = ap.parse_args()
     global GAME
     GAME = a.game
     if a.list:
-        for n, f, _ in CASES:
-            print('%-24s %s' % (n, f))
+        for n, f, _, con in CASES:
+            print('%-24s %-3s %s' % (n, con, f))
         return 0
     os.makedirs(EVID, exist_ok=True)
     tmp = tempfile.mkdtemp(prefix='np-macmatrix.')
@@ -763,8 +1351,10 @@ def main():
     table_path = os.path.join(EVID, 'matrix.json')
     table = json.load(open(table_path)) if os.path.exists(table_path) else {}
     rc = 0
-    for name, feature, fn in CASES:
+    for name, feature, fn, console in CASES:
         if a.cases and name not in a.cases:
+            continue
+        if console != ('gba' if GAME in GBA_ROMS else 'nds2' if GAME in NEW_ROMS else 'ds'):
             continue
         if GAME != 'platinum':
             name = GAME + '-' + name

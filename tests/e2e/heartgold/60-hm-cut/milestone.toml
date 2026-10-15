@@ -1,0 +1,43 @@
+# Proves Cut in the field: Route 29's tree (629,401) west of New Bark, bumped from below: A asks to use Cut
+# (std_field_cut), YES, the tree goes, and the walk goes on north through where it stood.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_ROUTE_29 (629,399), north of the tree.
+title = "HM01 Cut: a Route 29 tree"
+priority = "P0"
+version = "both"
+estimate = 4173
+refs = [
+  "games/heartgold/src/field_move.c:185-215 (FieldMove_CheckCut: BADGE_HIVE, FIELD_MOVE_CHECK_TREE)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:29-109 (scr_seq_0146_000 std_field_cut: the prompt, the move, HidePerson the tree)",
+  "games/heartgold/src/script_manager.c:43 (std 10000+ = scr_seq_0146, the field moves; include/constants/std_script.h:632 std_field_cut 10000)",
+  "zone_event 030_R29 object 4 (629,401) SPRITE_TREE (86 = bots.py GFX_CUT_TREE) -> std_field_cut, FLAG_MAPTEMP_010",
+  "tools/hg_map.py MAP_ROUTE_29: row 401 is walls from x 616 to 628 and 630 to 633; the tree's column is the way north",
+]
+notes = "Scyther (slot 2) knows Cut in the chain's party (10's boost). walk_to hm = true plans through a Cut tree and answers A + YES on the bump (bots.py _use_field_move; HG/SS-proven by 10's Ilex tree). The tree's flag is a map-temp flag (cleared on the next map load), so [expect] reads the tile past it and the walk's log line. Scouted on HeartGold 29's end save: the field move at frame 2388, (629,399) at 2755. Measured: HeartGold 2760 frames, SoulSilver 4173 (wild battles fled on the way vary it)."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 6300
+
+[[step]]
+do = "walk_to"
+x = 629
+z = 402
+on_battle = "flee"
+shot = "below-tree"
+note = "New Bark west into Route 29, below the tree (629,401)"
+
+[[step]]
+do = "walk_to"
+x = 629
+z = 399
+hm = true
+on_battle = "flee"
+shot = "past-tree"
+note = "north through the tree: bump, A, YES (Scyther's Cut)"
+
+[expect]
+map = "MAP_ROUTE_29"
+position = [629, 399]
+log = ["walk_to: object ahead, using the field move"]

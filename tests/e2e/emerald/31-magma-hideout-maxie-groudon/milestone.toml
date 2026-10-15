@@ -1,0 +1,159 @@
+# Proves Fly to Lavaridge, Jagged Pass' OpenMagmaHideout trigger (VAR_JAGGED_PASS_STATE 1 -> 2, Magma Emblem in the bag),
+# the hideout 1F -> 2F_3R -> 3F_3R -> 4F and Maxie (TRAINER_MAXIE_MAGMA_HIDEOUT): FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT.
+# Start: Mt. Pyre summit -> end: MAP_MAGMA_HIDEOUT_4F by the empty Groudon pool.
+title = "Magma Hideout: Groudon wakes, Maxie's second battle"
+priority = "P0"
+estimate = 72802
+refs = [
+  "data/maps/JaggedPass/scripts.inc:9-18",
+  "data/maps/JaggedPass/map.json coord_events (13..14,15)/(21,15)/(21..22,20) VAR_JAGGED_PASS_STATE=1",
+  "data/maps/JaggedPass/scripts.inc:39-61",
+  "data/maps/JaggedPass/map.json warp_events[4] (16,18) -> MAGMA_HIDEOUT_1F",
+  "data/maps/MagmaHideout_1F/map.json warp_events[3] (20,22) -> 2F_3R",
+  "data/maps/MagmaHideout_2F_3R/map.json warp_events[1] (16,13) -> 3F_3R",
+  "data/maps/MagmaHideout_3F_3R/map.json warp_events[1] (16,21) -> 4F",
+  "data/maps/MagmaHideout_4F/map.json object_events 5 TABITHA (22,4), 6 MAXIE (16,21)",
+  "data/maps/MagmaHideout_4F/scripts.inc:4-64",
+  "TRAINER_MAXIE_MAGMA_HIDEOUT (601), src/data/trainers.h:7216",
+  "TRAINER_TABITHA_MAGMA_HIDEOUT (732), src/data/trainers.h:8788",
+  "src/party_menu.c:125 (Fly)",
+]
+notes = "Maxie: TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAMERUPT 39; Tabitha (4F (22,4) sight 4, off the 3F_3R -> 4F path [INFERENCE]): TRAINER_TABITHA_MAGMA_HIDEOUT (732): NUMEL 26, MIGHTYENA 28, ZUBAT 30, CAMERUPT 33; ~12 grunts lv 28-30 (sight trainers). Fly to Lavaridge (visited in 22), Route 112 east, Jagged Pass up from the bottom (14,40). The hideout's 1F boulders (5..7,22..23) are Strength puzzles off the short route [INFERENCE]."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+# lab = "lab.recipe"  # GBA lab recipes: not written yet (owner tooling)
+
+[run]
+frames = 109300
+
+# PHASE2: prove the short route 1F (20,22) -> 2F_3R (16,13) -> 3F_3R (16,21) -> 4F (20,21) is walkable (probe_map each floor) and whether a Strength boulder blocks it.
+
+[[step]]
+do = "heal"
+x = 22
+z = 5
+map = "MAP_MAUVILLE_CITY"
+surf = true
+hm = true
+max = 30000
+note = "down Mt. Pyre, Surf Route 122 -> 123 -> 118 to Mauville's Pokemon Center (22,5): HP and PP back for the hideout"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 7
+map = "MAP_ROUTE112_CABLE_CAR_STATION"
+surf = true
+hm = true
+on_battle = "flee"
+max = 30000
+note = "down Mt. Pyre, Surf Route 122 -> 123 -> 118, Mauville, Route 111 north, Route 112's cable car station (Route 112 warp (28,27)); below the attendant (object 1 (6,6)). No party member can Fly; the cable car is the walker's way up"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Route112_CableCarStation_EventScript_Attendant: 'ready, get on?' YES/NO (Route112_CableCarStation/scripts.inc:31-37)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "YES -> RideCableCar: the ride to MT_CHIMNEY_CABLE_CAR_STATION (:39-)"
+
+[[step]]
+do = "advance_text"
+note = "'Please step this way.', then special CableCarWarp / CableCar (:40-50): the ride plays by itself"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MT_CHIMNEY_CABLE_CAR_STATION"
+max = 6000
+
+[[step]]
+do = "walk_to"
+x = 21
+z = 20
+map = "MAP_JAGGED_PASS"
+on_text = "stop"
+note = "out to Mt. Chimney, south (21,41) into Jagged Pass and down it: OnTransition gives VAR_JAGGED_PASS_STATE 1 with the Magma Emblem (JaggedPass/scripts.inc:9-18); the coord triggers (13..14,15)/(21,15)/(21..22,20) run OpenMagmaHideout -> 2 (:39-61)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 18
+note = "hideout door (Jagged Pass warp 4) -> MAGMA_HIDEOUT_1F (10,34)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAGMA_HIDEOUT_1F"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 23
+face = "left"
+interact = true
+note = "1F: the way north (5,21) is shut by three Strength boulders (objects 4-6 at (5,22), (7,22), (6,23)); A on (6,23)"
+
+[[step]]
+do = "advance_text"
+note = "EventScript_StrengthBoulder: 'use Strength?' YES, FLAG_SYS_USE_STRENGTH (data/scripts/field_move_scripts.inc:122-150)"
+
+[[step]]
+do = "steps"
+route = [[6, 23], [6, 22], [5, 22], [5, 21]]
+note = "push (6,23) west to (5,23), step up to (6,22), push (5,22) west to (4,22), then north up the corridor"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 12
+map = "MAP_MAGMA_HIDEOUT_4F"
+on_battle = "flee"
+max = 20000
+note = "1F (25,34) -> 2F_1R -> 3F_1R (7,21) -> 4F (46,8), west past the grunts (the static route; trainers on the way are fought)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 21
+via = [[24, 6], [12, 6], [6, 12], [6, 20]]
+on_battle = "flee"
+max = 12000
+note = "north and round the west side to beside Maxie (16,21), who stands in the corridor (gba_world static path)"
+
+
+[[step]]
+do = "talk_to"
+id = 6
+note = "Maxie (object 6 (16,21)) -> orb, Groudon wakes and leaves (MagmaHideout_4F/scripts.inc:4-48)"
+
+[[step]]
+do = "advance_text"
+shot = "groudon-awakes"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MAXIE_MAGMA_HIDEOUT (601): MIGHTYENA 37, CROBAT 38, CAMERUPT 39 (:50)"
+
+[[step]]
+do = "advance_text"
+note = "VAR_SLATEPORT_CITY_STATE 1, FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT, VAR_SLATEPORT_HARBOR_STATE 1, Magma leaves, FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS (:51-64)"
+
+[expect]
+map = "MAP_MAGMA_HIDEOUT_4F"
+badges = 6
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_GROUDON_AWAKENED_MAGMA_HIDEOUT", "FLAG_HIDE_MAGMA_HIDEOUT_GRUNTS"]
+flags_clear = ["FLAG_HIDE_SLATEPORT_CITY_CAPTAIN_STERN", "FLAG_HIDE_SLATEPORT_CITY_GABBY_AND_TY"]
+battles = 1
+
+[expect.vars]
+VAR_JAGGED_PASS_STATE = 2
+VAR_SLATEPORT_CITY_STATE = 1
+VAR_SLATEPORT_HARBOR_STATE = 1

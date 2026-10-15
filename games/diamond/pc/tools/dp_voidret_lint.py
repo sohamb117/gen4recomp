@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """pc/tools/dp_voidret_lint.py: assembly reading r0 after calling C that returns void.
 
-    dp_voidret_lint.py [--allow FILE] [-v] OBJDIR ASMDIR...
+    dp_voidret_lint.py [--allow FILE] [-v] OBJDIR ASM...
+
+ASM: directories searched for *.s, or .s files (HG/SS pass the exact list
+armrec translates, staged overlay copies included).
 
 Exits 1 on a call site not named in the allow file (`<callee> <caller>` or
 `<callee> *` per line, `#` comments: each entry says why the read cannot
@@ -168,18 +171,26 @@ def main(argv):
             verbose, argv = True, argv[1:]
         else:
             break
-    objdir, asmdirs = argv[0], [d for d in argv[1:] if os.path.isdir(d)]
+    objdir, asmdirs = argv[0], argv[1:]
     paths = []
     for d in asmdirs:
-        paths.extend(sorted(glob.glob(os.path.join(d, "**", "*.s"), recursive=True)))
+        if os.path.isdir(d):
+            paths.extend(sorted(glob.glob(os.path.join(d, "**", "*.s"), recursive=True)))
+        elif d.endswith(".s") and os.path.isfile(d):
+            paths.append(d)
     funcs = parse(paths)
     c_ret, c_params = {}, {}
     for p in glob.glob(os.path.join(objdir, "**", "*.sigs"), recursive=True):
         for ln in open(p):
             r = ln.split()
             if len(r) >= 3 and r[0] == "D":
-                c_ret[r[1]] = r[2].partition("_")[0]
-                c_params[r[1]] = len(re.findall(r"[yr]\d+|[a-z]", r[2].partition("_")[2]))
+                ret, _, params = r[2].partition("_")
+                toks = re.findall(r"[yr]\d+|[a-z]", params)
+                # An aggregate return (sret, `r<N>`) is void in the wasm
+                # prototype, but the bridge's c2u$ adapter hands the assembly
+                # the aggregate (<= 4 bytes) or its address in r0, as mwcc did.
+                c_ret[r[1]] = "r" if ret == "v" and any(t[0] == "r" for t in toks) else ret
+                c_params[r[1]] = len(toks)
     asm_reads = {f: entry_reads_r0(b) for f, b in funcs.items() if f not in c_ret}
     labels = {f: {mn: i for i, (k, mn, _) in enumerate(b) if k == "lab"} for f, b in funcs.items()}
     # void: C functions returning void, then assembly functions with a path

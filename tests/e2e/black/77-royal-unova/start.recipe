@@ -1,0 +1,3 @@
+# The Castelia pier (zone 39), two tiles below its north warp (zone_event 39 warp 1 (16..18,3) -> the waterfront,
+# zone 28); 34's end is in the Poke Transfer Lab. The pier's own objects (the clerk) load once the run re-enters it.
+location 39 17 0 5

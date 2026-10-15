@@ -1,0 +1,71 @@
+# Proves the lab OnFrame that lifts the Valor Lakefront Sunyshore block and frees the lake guardians.
+# Start: Sendoff Spring after Cynthia (44's end) -> out by Spring Path (matrix 0, so Fly opens the town map there),
+# Fly to Sandgem, into the lab: VAR_SANDGEM_TOWN_LAB_STATE 2 -> end: the lab, lab state 3.
+
+title = "Sandgem lab: Rowan after the Distortion World"
+priority = "P0"
+estimate = 7837
+refs = [
+  "scripts_init_sandgem_town_pokemon_research_lab.s",
+  "scripts_sandgem_town_pokemon_research_lab.s:79-117",
+  "scripts_sandgem_town_pokemon_research_lab.s:23-37",
+  "scripts_sandgem_town_pokemon_research_lab.s:49",
+  "scripts_sandgem_town_pokemon_research_lab.s:81",
+  "scripts_sandgem_town_pokemon_research_lab.s:110",
+  "scripts_sandgem_town_pokemon_research_lab.s:111",
+  "scripts_sandgem_town_pokemon_research_lab.s:112",
+  "scripts_sandgem_town_pokemon_research_lab.s:113",
+  "scripts_sandgem_town_pokemon_research_lab.s:114",
+  "scripts_sandgem_town_pokemon_research_lab.s:115",
+  "scripts_valor_lakefront.s:516-533",
+  "scripts_sandgem_town_pokemon_research_lab.s:28",
+  "scripts_sandgem_town_pokemon_research_lab.s:32",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 11800
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 56
+max = 6000
+hm = true
+via = [[33, 17], [33, 12], [42, 12], [42, 14], [44, 14], [44, 16], [45, 16], [45, 34], [43, 34], [43, 36], [41, 36], [41, 38],
+       [32, 38], [32, 49], [16, 49], [16, 51], [12, 51], [12, 55]]
+on_battle = "flee"
+note = "Sendoff Spring: round the spring, Rock Climb (32,41..45) down, exit warp 0 (12,56) -> Spring Path (762,713), on the overworld matrix (tools/pt_cave.py SENDOFF_SPRING 32,17 SENDOFF_SPRING 12,55 --climb)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SPRING_PATH"
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_SANDGEM_TOWN"
+note = "lands at the Pokemon Center (177,843) (src/spawn_locations.c:30)"
+
+[[step]]
+do = "walk_to"
+x = 168
+z = 842
+note = "lab door, events_sandgem_town warp 2 -> lab (7,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "rowan_after_dw"
+note = "SandgemTownLab_OnFrame_ReturnedFromDistortionWorld (scripts_sandgem_town_pokemon_research_lab.s:79-117)"
+
+[expect]
+map = "MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB"
+vars = { VAR_VALOR_LAKEFRONT_BLOCK_SUNYSHORE_STATE = 1, VAR_SANDGEM_TOWN_LAB_STATE = 3, VAR_EXITED_DISTORTION_WORLD_STATE = 3 }
+flags = ["FLAG_HIDE_VALOR_LAKEFRONT_COLLECTOR"]

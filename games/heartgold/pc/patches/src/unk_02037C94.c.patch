@@ -1,0 +1,13 @@
+--- a/src/unk_02037C94.c
++++ b/src/unk_02037C94.c
+@@ -167,7 +167,9 @@
+ }
+ 
+ s32 sub_02037EC8(void) {
+-    void (*const sp0[3])(void);
++    /* nativeplat: mwcc lets ARRAY_ASSIGN store through the const array;
++     * clang refuses, and the elements are never written again. */
++    void (*sp0[3])(void);
+     ARRAY_ASSIGN(sp0, _020F6A90);
+     void (*func)(void) = _021D4150->unk24;
+     if (!_021D4150) {

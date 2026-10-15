@@ -1,0 +1,16 @@
+NP_RULE_FIX_BUGS (pc/src/pc_bw_rules.c): the damage routine's last fx
+multiply, damage x the other modifier (ov93_021D7B30), goes to
+PcBw_DamageOther, which with the bit on keeps a 1 that the modifier
+lowers from becoming 0 damage (the 0 damage glitch).
+
+--- a/arm9/overlays/93/asm/ndsrec_ov093_002.s
++++ b/arm9/overlays/93/asm/ndsrec_ov093_002.s
+@@ -2836,7 +2836,7 @@
+ 	mov r0, #0x32
+ 	bl ov93_021D777C
+ 	add r1, r4, #0x0
+-	bl ov93_021D7B30
++	bl PcBw_DamageOther
+ 	str r0, [sp, #0x8]
+ _ov093_021C2046: ; 0x021C2046
+ 	add r0, r5, #0x0

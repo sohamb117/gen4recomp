@@ -1,0 +1,4 @@
+# HM06 Rock Smash (FLAG_RECEIVED_HM06, milestone 16) taught to the lead in place of Mud-Slap (slot 3, boosted in 05),
+# as a player teaches it from the TM case: the tunnel's two rocks (RusturfTunnel map.json, OBJ_EVENT_GFX_BREAKABLE_ROCK)
+# need it.
+party-move 0 3 MOVE_ROCK_SMASH

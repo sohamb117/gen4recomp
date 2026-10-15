@@ -1,0 +1,171 @@
+# Proves the three-stage grunt chase (Pastoria -> Route 213 -> Valor Lakefront) and Cynthia's SecretPotion.
+# Start: Pastoria (25's end near (610,810); the lab at the east gate door (639,812)), grunt at (637,812)
+# -> end: Valor Lakefront (336), SecretPotion.
+
+title = "Pastoria to Valor Lakefront: grunt chase and the SecretPotion"
+priority = "P0"
+estimate = 15145
+refs = [
+  "scripts_pastoria_city.s:37-44",
+  "scripts_pastoria_city.s:133-190",
+  "scripts_route_213.s:16-38",
+  "scripts_route_213.s:40-86",
+  "scripts_route_213.s:88-145",
+  "scripts_valor_lakefront.s:45-81",
+  "scripts_valor_lakefront.s:83-91",
+  "scripts_valor_lakefront.s:180-366",
+  "events_route_213.json",
+  "scripts_pastoria_city.s:188",
+  "scripts_pastoria_city.s:187",
+  "scripts_route_213.s:31",
+  "scripts_route_213.s:83",
+  "scripts_route_213.s:78",
+  "scripts_route_213.s:118",
+  "scripts_route_213.s:119",
+  "scripts_route_213.s:142",
+  "scripts_route_213.s:143",
+  "scripts_route_213.s:138",
+  "scripts_valor_lakefront.s:79",
+  "scripts_valor_lakefront.s:117",
+  "scripts_valor_lakefront.s:118",
+  "scripts_valor_lakefront.s:185",
+  "scripts_valor_lakefront.s:197",
+  "scripts_valor_lakefront.s:344-346",
+  "scripts_valor_lakefront.s:360",
+  "scripts_valor_lakefront.s:361",
+  "scripts_valor_lakefront.s:362",
+  "scripts_valor_lakefront.s:363",
+  "scripts_valor_lakefront.s:364",
+  "scripts_pastoria_city.s:941-972",
+  "scripts_route_213.s:117",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+boost = "boost.recipe"
+
+[run]
+frames = 22800
+
+[[step]]
+do = "walk_to"
+x = 638
+z = 812
+face = "left"
+interact = true
+note = "grunt obj21 at (637,812) facing east (scripts_pastoria_city.s:37-44, talk :133-190)"
+
+[[step]]
+do = "advance_text"
+note = "he leaves through the gate (FLAG_TALKED_TO_PASTORIA_CITY_GRUNT_M, :183)"
+
+[[step]]
+do = "walk_to"
+x = 639
+z = 812
+note = "east gate door (events_pastoria_city warp 10) -> Route 213 gate (1,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_213_GATE_TO_PASTORIA_CITY"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "gate east exit (warp 0) -> Route 213 (646,812); the grunt now waits at (654,812) facing east (scripts_route_213.s:16-38)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_213"
+
+[[step]]
+do = "walk_to"
+x = 653
+z = 812
+face = "right"
+interact = true
+note = "Route 213 grunt (654,812), talked to from the west"
+
+[[step]]
+do = "advance_text"
+note = "he moves to (683,833) (:40-86)"
+
+[[step]]
+do = "walk_to"
+via = [[671, 812], [671, 828], [669, 828], [669, 835], [682, 835]]
+x = 682
+z = 833
+face = "right"
+interact = true
+note = "the grunt at (683,833), talked to from the west (route: tools/pt_route.py)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+note = "he leaves; Looker scene (:88-145)"
+
+[[step]]
+do = "walk_to"
+via = [[682, 832], [706, 832]]
+x = 706
+z = 818
+note = "the hotel lobby's south door (events_route_213 warp 3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_GRAND_LAKE_ROUTE_213_LOBBY"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 2
+note = "lobby north door (warp 0) -> Valor Lakefront side (706,813)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_213"
+
+[[step]]
+do = "walk_to"
+via = [[706, 791]]
+x = 719
+z = 791
+face = "up"
+interact = true
+note = "Valor Lakefront grunt obj5 (719,790) LOOK_NORTH, talked to from the south"
+
+[[step]]
+do = "advance_text"
+note = "he moves to (723,769) (scripts_valor_lakefront.s:25, 45-81)"
+
+[[step]]
+do = "walk_to"
+via = [[719, 779], [723, 779]]
+x = 723
+z = 770
+face = "up"
+interact = true
+note = "the grunt at (723,769), talked to from the south"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "valor_grunt"
+note = "TRAINER_GALACTIC_GRUNT_VALOR_LAKEFRONT (847): CROAGUNK 31 (:83-91)"
+
+[[step]]
+do = "advance_text"
+max = 8000
+shot = "secretpotion"
+note = "Cynthia + rival, Yes/No (either) -> SecretPotion (:180-366)"
+
+[expect]
+map = "MAP_HEADER_VALOR_LAKEFRONT"
+vars = { VAR_PASTORIA_CITY_STATE = 6 }
+flags = ["FLAG_TALKED_TO_PASTORIA_CITY_GRUNT_M", "FLAG_ROUTE_213_GRUNT_M_LEFT", "FLAG_TALKED_TO_VALOR_LAKEFRONT_GRUNT_M"]
+flags_clear = ["FLAG_BLOCK_PASTORIA_CITY_CROAGUNK_EVENT"]
+battles = 1

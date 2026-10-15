@@ -1,0 +1,44 @@
+# Platinum story 04-parcel-catching-tutorial: standalone start (--lab, or no end save from 03).
+# Standard header + lab party + the cumulative state after 03 (pt_story_early.md table),
+# then the milestone's start. Names resolve through pc/tests/pc_lab.py; flag/var lines cite the script that sets them.
+name GQ
+gender GENDER_MALE
+trainer-id 31415
+money 20000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG  # rival teams use the *_TURTWIG variants (scripts_route_203.s:71-74, scripts_jubilife_city.s:907-914; src/system_vars.c:67-72)
+# Early party (pt_story_early.md): no mandatory battles before Jubilife; Tackle beats wild Starly/Bidoof.
+party SPECIES_TURTWIG 10 ITEM_NONE
+party-move 0 0 MOVE_TACKLE
+# -- 01 new game, starter --
+var VAR_PLAYER_HOUSE_SPECIAL_PROGRAM_STATE 1  # scripts_twinleaf_town_player_house_2f.s:28
+var VAR_PLAYER_HOUSE_RIVAL_STATE 1  # scripts_twinleaf_town_player_house_2f.s:128
+flag FLAG_HIDE_TWINLEAF_TOWN_PLAYER_HOUSE_2F_RIVAL  # scripts_twinleaf_town_player_house_2f.s:127
+flag FLAG_TALKED_TO_MOM  # scripts_twinleaf_town_player_house_1f.s:39
+var VAR_TWINLEAF_TOWN_RIVAL_TRIGGER_STATE 1  # scripts_twinleaf_town.s:424
+flag FLAG_RIVAL_LEFT_HOME  # scripts_twinleaf_town_rival_house_2f.s:28
+var VAR_RIVAL_HOUSE_STATE 1  # scripts_twinleaf_town_rival_house_2f.s:29
+var VAR_TWINLEAF_TOWN_GUITARIST_TRIGGER_STATE 2  # scripts_twinleaf_town_rival_house_2f.s:30
+flag FLAG_HIDE_ROUTE_201_BRIEFCASE  # scripts_route_201.s:278
+flag FLAG_HIDE_ROUTE_201_PROF_ROWAN  # scripts_route_201.s:301
+flag FLAG_HIDE_ROUTE_201_COUNTERPART  # scripts_route_201.s:334
+var VAR_PLAYER_HOUSE_STATE 5  # Twinleaf OnTransition, scripts_twinleaf_town.s:32
+# -- 02 Lake Verity --
+var VAR_FOLLOWER_RIVAL_STATE 4  # scripts_lake_verity_low_water.s:113
+flag FLAG_HIDE_ROUTE_201_RIVAL  # scripts_route_201.s:1241
+var VAR_VERITY_LAKEFRONT_STATE 1  # scripts_verity_lakefront.s:50
+flag FLAG_HIDE_LAKE_VERITY_LOW_WATER_CYRUS  # implicit, RemoveObject scripts_lake_verity_low_water.s:69
+flag FLAG_HIDE_LAKE_VERITY_LOW_WATER_RIVAL  # scripts_lake_verity_low_water.s:106
+var VAR_VISITED_LAKE_VERITY_WITH_RIVAL 1  # scripts_lake_verity_low_water.s:114
+# -- 03 Sandgem, Pokedex --
+flag FLAG_HIDE_SANDGEM_TOWN_RIVAL  # implicit, RemoveObject scripts_sandgem_town.s:188
+flag FLAG_ALT_MUSIC_ROWANS_LAB  # scripts_sandgem_town_pokemon_research_lab.s:230
+pokedex 1  # GivePokedex, scripts_sandgem_town_pokemon_research_lab.s:249
+flag FLAG_HAS_POKEDEX  # scripts_sandgem_town_pokemon_research_lab.s:250
+flag FLAG_HIDE_SANDGEM_TOWN_LAB_COUNTERPART  # implicit, RemoveObject scripts_sandgem_town_pokemon_research_lab.s:310
+flag FLAG_HIDE_SANDGEM_TOWN_COUNTERPART  # implicit, RemoveObject scripts_sandgem_town.s:573
+var VAR_SANDGEM_TOWN_LAB_STATE 1  # scripts_sandgem_town_pokemon_research_lab.s:312
+flag FLAG_HIDE_SANDGEM_TOWN_PROF_ROWAN  # implicit, RemoveObject scripts_sandgem_town.s:462
+var VAR_SANDGEM_TOWN_STATE 2  # scripts_sandgem_town.s:574
+item ITEM_TM27 1  # scripts_sandgem_town.s:452-454
+# -- start --
+warp MAP_HEADER_TWINLEAF_TOWN_PLAYER_HOUSE_1F 0  # door (6,10), events_twinleaf_town_player_house_1f

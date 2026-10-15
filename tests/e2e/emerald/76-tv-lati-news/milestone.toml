@@ -1,0 +1,107 @@
+# Proves Emerald's house TV news after the Hall of Fame: on the house 1F, Dad hands over the SS Ticket, Mom turns the
+# TV on, the emergency news flash about a flying Pokemon (FLAG_SYS_TV_LATIAS_LATIOS on, then off), FLAG_LATIOS_OR_
+# LATIAS_ROAMING, Mom's "what color was it?" RED/BLUE (BLUE: LATIOS roams, VAR_ROAMER_POKEMON 1), then the player
+# watches the TV itself (EventScript_TV: GAME_STAT_WATCHED_TV, the movie).
+# Start: MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F (8,2), the stairs -> end: below the TV (4,5).
+title = "TV: the Lati emergency news and the roamer"
+priority = "P1"
+estimate = 2507
+refs = [
+  "data/scripts/hall_of_fame.inc:20,43-47 (ReadyReceiveSSTicketEvent: VAR_LITTLEROOT_HOUSES_STATE_MAY/BRENDAN 3, FLAG_HIDE_PLAYERS_HOUSE_DAD cleared)",
+  "data/maps/LittlerootTown_BrendansHouse_1F/scripts.inc:49-55 (OnFrame VAR_LITTLEROOT_HOUSES_STATE_MAY 3 -> PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV)",
+  "data/scripts/players_house.inc:392-419 (Dad: giveitem ITEM_SS_TICKET, FLAG_RECEIVED_SS_TICKET, he leaves for the gym)",
+  "data/scripts/players_house.inc:424-439 (FLAG_SYS_TV_LATIAS_LATIOS, TurnOnTVScreen, 'Is that a breaking news story?', the player to the TV, the news flash; FLAG_SYS_TV_LATIAS_LATIOS cleared, FLAG_LATIOS_OR_LATIAS_ROAMING, TurnOffTVScreen)",
+  "data/scripts/players_house.inc:442-452 ('What color did they say?' multichoice MULTI_TV_LATI, InitRoamer, VAR_ROAMER_POKEMON = the choice; both house states 4)",
+  "src/data/script_menu.h:723-727,895 (MULTI_TV_LATI: RED, BLUE); src/roamer.c:84-112 (0 -> LATIAS, 1 -> LATIOS); include/constants/vars.h:233 (VAR_ROAMER_POKEMON 0x40D5: 0 Latias, 1 Latios)",
+  "src/field_control_avatar.c:371-372, src/metatile_behavior.c:481-487 (facing up at MB_TELEVISION -> EventScript_TV)",
+  "data/scripts/tv.inc:1-7,32-34 (EventScript_TV: GAME_STAT_WATCHED_TV, CheckForPlayersHouseNews; FLAG_SYS_TV_HOME -> 'There's a movie on TV'); src/tv.c:3359-3383",
+  "include/constants/game_stat.h:48 (GAME_STAT_WATCHED_TV 44); include/constants/items.h (ITEM_SS_TICKET 265)",
+]
+notes = "Ruby's dir (ruby/73) cannot run on Emerald: R/S's Hall of Fame sets FLAG_SYS_TV_LATI and the TV airs the news on a press; Emerald's news is the house scene the Hall of Fame readies, with Mom asking the color, and its TV's own Lati path calls InitRoamer with VAR_0x8004 unset (data/scripts/tv.inc:36-45 'a junk call'). The scene runs from CONTINUE (an OnFrame script), so the boot is by hand (boot = none): run.py's CONTINUE loop presses A until the player is free and would answer the color. BLUE is chosen so VAR_ROAMER_POKEMON (1, LATIOS) shows in the save dump, which lists nonzero vars."
+
+[start]
+recipe = "start.recipe"
+boot = "none"
+
+[run]
+frames = 3800
+
+[[step]]
+do = "wait_frames"
+n = 400
+note = "the copyright screen and the intro"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 295
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 195
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 5
+gap = 150
+shot = "main-menu"
+note = "the main menu: CONTINUE"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 5
+gap = 300
+shot = "continue"
+note = "CONTINUE: the house 1F, the OnFrame scene starts (the player walks down from the stairs)"
+
+[[step]]
+do = "menu"
+choose = 1
+count = 2
+max = 8000
+note = "A through Dad's SS Ticket, Mom and the TV news to 'What color did they say?' RED / BLUE: BLUE"
+
+[[step]]
+do = "advance_text"
+shot = "scene-over"
+note = "'still unknown POKeMON': InitRoamer (LATIOS), VAR_ROAMER_POKEMON 1, house states 4 (players_house.inc:443-452)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 5
+face = "up"
+interact = true
+note = "below the TV (4,4): EventScript_TV"
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "tv-movie"
+note = "'There's a movie on TV...' (FLAG_SYS_TV_HOME, tv.inc:32-34)"
+
+[[step]]
+do = "advance_text"
+
+[[shots]]
+frames = [1440, 2100, 2220, 2330]  # 'Obtained the S.S. TICKET!', 'Is that a breaking news story?', the news flash, the RED/BLUE question (measured)
+
+[expect]
+map = "MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F"
+position = [4, 5]
+flags = ["FLAG_RECEIVED_SS_TICKET", "FLAG_LATIOS_OR_LATIAS_ROAMING"]
+flags_clear = ["FLAG_SYS_TV_LATIAS_LATIOS"]
+save = [
+  's["game_stats"][44] >= 1',
+  'any(i["item"] == 265 for i in s["bag"]["key_items"])',
+]
+
+[expect.vars]
+VAR_LITTLEROOT_HOUSES_STATE_MAY = 4
+VAR_LITTLEROOT_HOUSES_STATE_BRENDAN = 4
+VAR_ROAMER_POKEMON = 1

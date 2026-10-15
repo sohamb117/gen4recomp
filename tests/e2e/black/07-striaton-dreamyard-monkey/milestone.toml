@@ -1,0 +1,137 @@
+# Proves the Striaton gym's precondition: the Trainers' School (Cheren), the Dreamyard girl's elemental monkey (var
+# 0x4083 2), back to the gym door.
+# Start: Striaton City (zone 6) -> end: Striaton City at the gym door, a second Pokémon, 0x4083 = 2.
+title = "Striaton City: the Trainers' School and the Dreamyard's monkey"
+priority = "P0"
+version = "both"
+estimate = 85733
+refs = [
+  "scr 0012 script 13 (gym door, Cilan): unless 0x4083 == 2 the gym waits (msg 11 #1/#2)",
+  "zone 15 (Trainers' School) scr 0030 @0x0534/@0x0576/@0x05A5 TrainerBattle trdata #289/#287/#288 (Cheren, lv 8) [INFERENCE: optional]; @0x05F3 CallStd 2805 Oran Berry x3",
+  "zone_event 6 warp 6 (805,580) -> zone 152 (Dreamyard)",
+  "scr 0304 script 1 (the girl): @0x013F SetVar 0x4083 1; @0x0264/@0x0295/@0x02B3 GivePokemon Panpour/Pansage/Pansear lv 10 by 0x4030 (the one strong against the starter's weakness); @0x0319 SetVar 0x4083 2",
+]
+notes = "Measured from the previous end save (CONTINUE included): Black 82545, White 85733 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). The Dreamyard girl gives the monkey at the first talk (party_size 2 at the end). The starter is ground to 13 on Route 2 first: at 10 it lost to Cheren's Oshawott in the school, which whites out to the Pokemon Center."
+
+[start]
+from = "prev"
+
+[run]
+frames = 129000
+
+[[step]]
+do = "heal"
+x = 781
+z = 587
+note = "Striaton's Pokemon Center (zone_event 6 warp 0 (781,587) -> zone 8): Route 2's battles left the starter hurt"
+
+[[step]]
+do = "grind"
+x = 781
+z = 621
+level = 13
+heal = [781, 587]
+max = 80000
+note = "Route 2's tall grass (781..782,621) below Striaton: Cheren's Oshawott beat a level 10 Tepig in this run's first tries"
+
+[[step]]
+do = "heal"
+x = 781
+z = 587
+
+[[step]]
+do = "walk_to"
+x = 774
+z = 586
+shot = "school-door"
+note = "zone_event 6 warp 4 (774,586) -> zone 15 (the Trainers' School)"
+
+[[step]]
+do = "wait_map"
+map = 15
+
+[[step]]
+do = "talk_to"
+id = 5
+shot = "cheren"
+note = "Cheren (zone_event 15 object 5, (9,2)) -> scr 0030 script 7: A answers YES to 'will you battle?' (@0x047B)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = "cheren-battle"
+note = "Cheren (trdata #288 against Tepig: Oshawott 8, Purrloin 8; mode 0, scr 0030 @0x05A5)"
+
+[[step]]
+do = "advance_text"
+shot = "after-cheren"
+note = "Oran Berry x3 (@0x05F3); @0x0617 SetFlag 0x21A (the gym's greeter gone), @0x061B ClearFlag 0x21B (the leader at the door)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 14
+note = "zone_event 15 warp 0 (7..9,15) -> zone 6"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 6
+
+[[step]]
+do = "walk_to"
+x = 805
+z = 581
+shot = "dreamyard-gate"
+note = "zone_event 6 warp 6 (805,580) 1x4 -> zone 152 (the Dreamyard)"
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 152
+
+[[step]]
+do = "talk_to"
+id = 0
+on_battle = "flee"
+max = 12000
+shot = "girl"
+note = "the girl (zone_event 152 object 0, (32,27)) -> scr 0304 script 1: A answers YES (@0x01F7) -> Pansage lv 10 for Tepig (@0x0295)"
+
+[[step]]
+do = "advance_text"
+shot = "monkey"
+note = "0x4083 2 (@0x0319); A answers the nickname prompt YES and types the name"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 27
+note = "zone_event 152 warp 2 (8,26) 1x4 -> zone 6"
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 20
+
+[[step]]
+do = "wait_map"
+map = 6
+
+[expect]
+map = 6
+party_size = 2
+flags = ["0x21A"]
+
+[expect.vars]
+"0x4083" = 2

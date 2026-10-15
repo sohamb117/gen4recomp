@@ -1,0 +1,364 @@
+# Proves the Sealed Chamber and a Regi: Dive on Route 134 to the underwater chamber and its Braille, surface inside,
+# Dig at the "DIG HERE" Braille (FLAG_SYS_BRAILLE_DIG), and with RELICANTH first and WAILORD last the inner room's
+# Braille opens the Regi doors (FLAG_REGI_DOORS_OPENED); then Dig out, surface, Fly to Petalburg, surf Route 105 to
+# Island Cave, wait out its Braille (FLAG_SYS_BRAILLE_WAIT) and battle REGICE lv40 (FLAG_HIDE_REGICE).
+# Start: MAP_ROUTE134 (60,31) surfing on the deep-water patch -> end: MAP_ISLAND_CAVE (8,8), below Regice's spot (8,7).
+title = "Sealed Chamber: Braille, Dig, Relicanth and Wailord open the Regi doors; Regice"
+priority = "P2"
+version = "both"
+estimate = 19161
+refs = [
+  "data/maps/Route134/scripts.inc:5-7 (setdivewarp MAP_UNDERWATER_ROUTE134 8,6); data/field_move_scripts.inc:220-262 (UseDiveScript, S_UseDiveUnderwater)",
+  "src/field_control_avatar.c:233,259,519-535 (A dives on deep water, B surfaces; FLAG_BADGE07_GET)",
+  "data/maps/Underwater_Route134/map.json warp_events[0] (8,8) <-> Underwater_SealedChamber/map.json warp_events[0] (7,1)",
+  "data/maps/Underwater_SealedChamber/scripts.inc (ON_DIVE_WARP at (12,44) -> MAP_SEALED_CHAMBER_OUTER_ROOM 10,19; Braille GO UP HERE at (12,43))",
+  "data/maps/SealedChamber_OuterRoom/scripts.inc:1-40 (setdivewarp/setescapewarp UNDERWATER_SEALED_CHAMBER 12,44; ON_LOAD covers (9..11,1..2) until FLAG_SYS_BRAILLE_DIG)",
+  "src/braille_puzzles.c:27-69 (ShouldDoBrailleDigEffect at (9..11,3), DoBrailleDigEffect, CheckRelicanthWailord)",
+  "src/rom6.c:175-215 (SetUpFieldMove_Dig: underground only; braille dig or the escape warp)",
+  "src/pokemon_menu.c:192-230 (field moves first, in move-slot order), src/start_menu.c:263-276 (start menu order)",
+  "data/maps/SealedChamber_InnerRoom/scripts.inc:5-34 (CheckRelicanthWailord -> shaking, FLAG_REGI_DOORS_OPENED)",
+  "src/pokemon_menu.c:728,770-780 (Fly: FLAG_BADGE06_GET, CB2_InitFlyRegionMap); src/region_map.c:208-277,589-638,713,1575-1640 (cursor start/steps, visited town, heal-location warp)",
+  "src/data/region_map/region_map_entries.h:97,139 (MAPSEC_PETALBURG_CITY {1,9}, MAPSEC_ROUTE_134 {9,10,3,1})",
+  "data/maps/PetalburgCity/scripts.inc:7,44 and map.json coord_events (8,10..13) (VAR_PETALBURG_STATE 0 -> walked to the Gym)",
+  "data/maps/Route105/scripts.inc:5-12 (FLAG_REGI_DOORS_OPENED removes the rock wall at (9,19..20)); Route105/map.json warp_events[0] (9,20) -> ISLAND_CAVE",
+  "data/maps/IslandCave/scripts.inc:15-86 (Braille wait, S_OpenRegiceChamber FLAG_SYS_BRAILLE_WAIT, REGICE lv40 FLAG_HIDE_REGICE); src/braille_puzzles.c:153-205 (Task_BrailleWait 7200 frames)",
+  "src/battle_setup.c:612-620 (ScrSpecial_StartRegiBattle)",
+]
+notes = "Regice is the Regi this milestone battles: its Braille needs no field move (a 7200-frame wait), where Desert Ruins needs Rock Smash + Strength at the Braille spot and the Ancient Tomb Flash. The start is on Route 134's dive patch because the currents around it are not plannable by walk_to (gba_world.py FORBIDDEN). Fly is driven by presses (no GBA fly bot): the fly-map shot shows the cursor on PETALBURG CITY. Regice is knocked out by auto_battle. Sapphire measured the same 19161 frames."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 28800
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "on Route 134's deep water: TrySetupDiveDownScript (field_control_avatar.c:259,519-526) -> UseDiveScript YES/NO (data/field_move_scripts.inc:220-234)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "YES: FLDEFF_USE_DIVE -> the setdivewarp MAP_UNDERWATER_ROUTE134 (8,6) (Route134/scripts.inc:5-7)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_UNDERWATER_ROUTE134"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERWATER_ROUTE134"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 60
+gap = 10
+note = "from (8,6) south onto the arrow (8,8) and on: Underwater_Route134/map.json warp_events[0] (8,8) -> MAP_UNDERWATER_SEALED_CHAMBER warp 0 (7,1) (the probe's step flood does not cover underwater tiles, so a held key)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERWATER_SEALED_CHAMBER"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 44
+face = "up"
+interact = true
+on_battle = "flee"
+note = "the Braille at (12,43): 'GO UP HERE' (Underwater_SealedChamber/scripts.inc braillemessage)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "braille-go-up-here"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 30
+note = "B underwater: TrySetupDiveEmergeScript (field_control_avatar.c:233,528-535) -> S_UseDiveUnderwater YES/NO; at (12,44) ON_DIVE_WARP sets the dive warp to MAP_SEALED_CHAMBER_OUTER_ROOM (10,19) (Underwater_SealedChamber/scripts.inc)"
+
+[[step]]
+do = "menu"
+choose = 0
+
+[[step]]
+do = "advance_text"
+map = "MAP_SEALED_CHAMBER_OUTER_ROOM"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEALED_CHAMBER_OUTER_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 3
+surf = true
+face = "up"
+interact = true
+note = "out of the pool to the far wall: the Braille (10,2) 'DIG HERE' (SealedChamber_OuterRoom/scripts.inc bg_events, EventScript_15F1B8)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "braille-dig-here"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "START"
+gap = 40
+note = "start menu: POKEMON is the first entry without the Pokedex (start_menu.c:263-276)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "POKEMON: the party menu, cursor on slot 0 (RELICANTH)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "RELICANTH's menu: DIG, DIVE, SURF, SUMMARY, SWITCH, ITEM, CANCEL (pokemon_menu.c:192-230)"
+shot = "dig-menu"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 200
+note = "DIG: SetUpFieldMove_Dig (underground map: rom6.c:175-187) -> at (9..11,3) ShouldDoBrailleDigEffect -> DoBrailleDigEffect opens (9..11,1..2), FLAG_SYS_BRAILLE_DIG (braille_puzzles.c:27-56)"
+
+[[step]]
+do = "wait_field"
+shot = "dig-opened"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 2
+note = "the opened wall: warp (10,2) -> MAP_SEALED_CHAMBER_INNER_ROOM (SealedChamber_OuterRoom/map.json warp_events[0])"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEALED_CHAMBER_INNER_ROOM"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 5
+face = "up"
+interact = true
+note = "the Braille (10,4) 'FIRST COMES RELICANTH, LAST COMES WAILORD' -> CheckRelicanthWailord -> the shaking, FLAG_REGI_DOORS_OPENED (SealedChamber_InnerRoom/scripts.inc:5-34)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "braille-relicanth-wailord"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 600
+note = "closes the Braille: CheckRelicanthWailord TRUE -> DoSealedChamberShakingEffect1/2 and the doors' sounds, then the message (SealedChamber_InnerRoom/scripts.inc:12-31)"
+shot = "chamber-shakes"
+
+[[step]]
+do = "advance_text"
+note = "msgbox SealedChamber_InnerRoom_Text_1A138B, setflag FLAG_REGI_DOORS_OPENED"
+shot = "doors-opened"
+
+[[step]]
+do = "press"
+keys = "START"
+gap = 40
+note = "the way out: the start menu (cursor still on POKEMON)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "RELICANTH (party cursor still on slot 0)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "DIG away from the Braille: the Escape Rope warp, which SealedChamber_OuterRoom's ON_RESUME set to MAP_UNDERWATER_SEALED_CHAMBER (12,44) (SealedChamber_OuterRoom/scripts.inc:7-10; rom6.c:189-215)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERWATER_SEALED_CHAMBER"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 2
+face = "up"
+on_battle = "flee"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 30
+gap = 10
+note = "the arrow (7,1): Underwater_SealedChamber/map.json warp_events[0] -> MAP_UNDERWATER_ROUTE134 warp 0 (8,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERWATER_ROUTE134"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 30
+note = "surface: S_UseDiveUnderwater; Underwater_Route134's ON_RESUME setdivewarp MAP_ROUTE134 (60,31) (Underwater_Route134/scripts.inc:5-7)"
+
+[[step]]
+do = "menu"
+choose = 0
+
+[[step]]
+do = "advance_text"
+map = "MAP_ROUTE134"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE134"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "press"
+keys = "START"
+gap = 40
+note = "Fly (Route 134 is MAP_TYPE_OCEAN_ROUTE: Overworld_MapTypeAllowsTeleportAndFly)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "SWELLOW, slot 1"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "SWELLOW's menu: FLY, SUMMARY, SWITCH, ITEM, CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "FLY -> CB2_InitFlyRegionMap (pokemon_menu.c:770-780); the cursor starts on Route 134's third cell (60 / (80 / 3) = 2: region_map.c:589-638, MAPSEC_ROUTE_134 {9, 10, 3, 1}: region_map_entries.h:139)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 2
+gap = 10
+times = 10
+note = "one cell per press (region_map.c:208-277): x 11 -> 1"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 2
+gap = 20
+note = "y 10 -> 9: MAPSEC_PETALBURG_CITY {1, 9} (region_map_entries.h:97), visited (region_map.c:713)"
+shot = "fly-map"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "sub_80FC600: A on a visited town -> the Petalburg heal location"
+
+[[step]]
+do = "wait_map"
+map = "MAP_PETALBURG_CITY"
+max = 1500
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 21
+map = "MAP_ISLAND_CAVE"
+surf = true
+face = "up"
+interact = true
+on_battle = "flee"
+note = "Petalburg -> Route 104 -> Route 105 (surf) -> Island Cave (Route105/map.json warp_events[0] (9,20), its rock wall gone with FLAG_REGI_DOORS_OPENED: Route105/scripts.inc:5-12) -> the Braille (8,20) 'STOP AND WAIT, WAIT FOR TIME TO PASS' (IslandCave/scripts.inc:46-53 DoBrailleWait)"
+
+[[step]]
+do = "wait_frames"
+n = 7400
+note = "Task_BrailleWait (braille_puzzles.c:153-205): 7200 frames with no key -> S_OpenRegiceChamber opens (7..9,19..20), FLAG_SYS_BRAILLE_WAIT (IslandCave/scripts.inc:30-40)"
+shot = "regice-chamber-open"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 20
+note = "the opened wall: IslandCave/map.json warp_events[1] (8,20) -> warp 2 (8,11)"
+
+[[step]]
+do = "talk_to"
+id = 1
+on_battle = "flee"
+note = "REGICE (IslandCave/map.json object_events[0] (8,7)): setwildbattle SPECIES_REGICE 40, FLAG_HIDE_REGICE, ScrSpecial_StartRegiBattle (IslandCave/scripts.inc:72-86; battle_setup.c:612-620)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "regice"
+
+[[step]]
+do = "auto_battle"
+note = "RELICANTH's Rock Slide (Rock vs Ice)"
+
+[[step]]
+do = "advance_text"
+shot = "after"
+
+[expect]
+map = "MAP_ISLAND_CAVE"
+flags = ["FLAG_SYS_BRAILLE_DIG", "FLAG_REGI_DOORS_OPENED", "FLAG_LANDMARK_SEALED_CHAMBER", "FLAG_SYS_BRAILLE_WAIT", "FLAG_HIDE_REGICE"]
+battles = 1

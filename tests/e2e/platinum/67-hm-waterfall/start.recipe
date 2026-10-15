@@ -1,0 +1,14 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26067
+money 3000
+
+# Waterfall needs BADGE_ID_BEACON (src/field_move_tasks.c:590, scripts_field_moves.s:422);
+# surfing there needs BADGE_ID_FEN (field_control.c:686-694). Copy of pc/tests/corpus/hm-waterfall.recipe.
+badge BADGE_ID_FEN
+badge BADGE_ID_BEACON
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_SURF
+party-move 0 1 MOVE_WATERFALL
+# WATERFALL tiles at (505..507,525) (corpus/hm-waterfall.recipe land-data scan)
+map MAP_HEADER_ROUTE_210_NORTH 504 527 FACE_RIGHT

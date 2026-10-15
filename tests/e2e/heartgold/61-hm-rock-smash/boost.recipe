@@ -1,0 +1,6 @@
+# Boost on 29's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# Party: 0 TYPHLOSION (Flame Wheel, Quick Attack, SmokeScreen, Ember), 1 TOGEPI, 2 SCYTHER (Cut), 3 AMPHAROS,
+# 4 PELIPPER (Surf, Fly, Whirlpool), 5 FERALIGATR (Strength, Waterfall). HM06 is the milestone's own gift
+# (scr_seq_0243_R36.s:412-425); teaching through the Bag is not botted, so the boost gives the move: TYPHLOSION learns
+# HM06 (files/poketool/personal/personal.json), in SmokeScreen's place.
+party-move 0 2 MOVE_ROCK_SMASH

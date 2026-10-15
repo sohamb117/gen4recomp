@@ -1,0 +1,104 @@
+# Proves ClearGame: HoF screen, the game's own save (FLAG_GAME_COMPLETED, isMainStoryCleared, the Hall of Fame entry),
+# the credits, and the reset that ends them (src/clear_game.c:163 OS_ResetSystem: the port reboots the guest, the game ends there).
+# Start: HoF hallway (5,23) after Cynthia -> end: OS_ResetSystem after the credits; [expect] reads the game's own save.
+
+title = "Hall of Fame, save, credits"
+priority = "P0"
+estimate = 28007
+refs = [
+  "scripts_pokemon_league_hallway_to_hall_of_fame.s:10-67",
+  "src/clear_game.c:202-203",
+  "scripts_pokemon_league_hall_of_fame.s:10-62",
+  "src/clear_game.c:92-160",
+  "scripts_pokemon_league_hallway_to_hall_of_fame.s:15",
+  "scripts_pokemon_league_hallway_to_hall_of_fame.s:24",
+  "scripts_pokemon_league_hall_of_fame.s:47",
+  "scripts_pokemon_league_hall_of_fame.s:48-49",
+  "scripts_pokemon_league_hall_of_fame.s:68-70",
+  "scripts_pokemon_league_hall_of_fame.s:65",
+  "scripts_pokemon_league_hall_of_fame.s:123-143",
+  "scripts_pokemon_league_hall_of_fame.s:124",
+  "scripts_pokemon_league_hall_of_fame.s:125",
+  "scripts_pokemon_league_hall_of_fame.s:150-155",
+  "scripts_pokemon_league_hall_of_fame.s:158-169",
+  "scripts_pokemon_league_hall_of_fame.s:173",
+  "scripts_pokemon_league_hall_of_fame.s:177",
+  "scripts_pokemon_league_hall_of_fame.s:181",
+  "scripts_pokemon_league_hall_of_fame.s:184-203",
+  "scripts_pokemon_league_hall_of_fame.s:147",
+  "scripts_pokemon_league_hall_of_fame.s:139",
+  "scripts_pokemon_league_hall_of_fame.s:207",
+  "scripts_pokemon_league_hall_of_fame.s:141",
+  "scripts_pokemon_league_hall_of_fame.s:142",
+  "scripts_pokemon_league_hall_of_fame.s:143",
+  "src/clear_game.c:195-210",
+  "src/system_flags.c:64-67",
+  "src/clear_game.c:110-114",
+  "scripts_pokemon_league_hall_of_fame.s:110-114",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 42100
+save = "none"  # ClearGame state 4 writes the save itself (src/clear_game.c:92-160); the game ends in OS_ResetSystem
+
+[[step]]
+do = "advance_text"
+max = 8000
+map = "MAP_HEADER_POKEMON_LEAGUE_HALL_OF_FAME"
+note = "hallway OnFrame (Cynthia, Rowan), auto-warp to the HoF (8,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_POKEMON_LEAGUE_HALL_OF_FAME"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 4
+gap = 26
+times = 60
+note = "HoF OnFrame text (scripts_pokemon_league_hall_of_fame.s:10-62) -> PlayHallOfFameHealingAnimation -> ClearGame"
+
+[[step]]
+do = "wait_frames"
+n = 3000
+shot = "hall_of_fame"
+note = "the HoF screen: each party member, then the trainer card with confetti (src/cutscenes/hall_of_fame.c)"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "the HoF screen waits for A/B on the confetti (src/cutscenes/hall_of_fame.c:550)"
+
+[[step]]
+do = "wait_frames"
+n = 2400
+shot = "credits"
+note = "ClearGame saves (state 4: FLAG_GAME_COMPLETED, the Hall of Fame entry; np_gp stores the image as it settles), then the credits (state 8)"
+
+[[step]]
+do = "wait_frames"
+n = 8000
+shot = "credits_late"
+
+[[step]]
+do = "wait_frames"
+n = 7200
+shot = "fin"
+
+[[step]]
+do = "wait_reset"
+max = 10000
+note = "after the credits ClearGame calls OS_ResetSystem (src/clear_game.c:163): the port reboots the guest (np_host_reset, the chip kept) and the game ends"
+
+[expect]
+flags = ["FLAG_GAME_COMPLETED", "FLAG_COMMUNICATION_CLUB_ACCESSIBLE", "FLAG_UNLOCKED_VS_SEEKER_LVL_4", "FLAG_DEFEATED_CYNTHIA"]
+flags_clear = ["FLAG_ALT_MUSIC_CHAMPION_ROOM", "FLAG_HIDE_DAY_CARE_GYM_GUIDE"]
+vars = { VAR_PLAYER_HOUSE_POSTGAME_STATE = 1 }
+badges = 8
+# the Hall of Fame block ClearGame_AddHallOfFameEntry wrote (np_save4 dump: hall_of_fame), with the whole party
+save = ["s['hall_of_fame']['total'] >= 1", "len(s['hall_of_fame']['latest']['party']) == len(s['party'])"]

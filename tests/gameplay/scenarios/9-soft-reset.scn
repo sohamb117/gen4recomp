@@ -1,0 +1,13 @@
+# Scenario 9: soft reset from the field. L+R+START+SELECT makes the game call
+# OS_ResetSystem (src/main.c SoftReset); the port reboots the guest
+# (pc/src/pc_os_lite.c, np_host_reset: a fresh instance, the backup chip kept,
+# the RTC carried), the boot screens and the title follow, and CONTINUE loads
+# the game's save again: Sandgem Town, the Poketch clock still running.
+# Regression for the reset that stopped the core ("soft reset has no host
+# meaning yet").
+RECIPE=recipes/sandgem.recipe
+SCHEDULE=schedules/soft-reset.press
+FRAMES=4600
+SHOTS=2150,2300,2800,3500,3750,3900,4599
+EXPECT_MAP=418
+EXPECT_LOG='resets 0 -> 1'

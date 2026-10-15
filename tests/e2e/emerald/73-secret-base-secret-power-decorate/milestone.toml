@@ -1,0 +1,380 @@
+# Proves Emerald's secret base: TM43 from Route 111's Secret Power man, taught to Mudkip from the bag, Fly to Fortree
+# (the party menu's SUMMARY, then FLY), a Small Desk bought at the decoration shop, Secret Power on Route 120's shrub
+# (26,10), the base made, its PC's DECORATION menu placing the desk: the end save's own base record (secretBases[0])
+# holds the desk.
+# Start: Route 111 (13,21) -> end: the Route 120 shrub base (MAP_SECRET_BASE_SHRUB3 (7,8), at its PC) with the desk placed.
+title = "Secret Base: Secret Power, a new base and a decoration"
+priority = "P1"
+estimate = 7221
+refs = [
+  "data/scripts/secret_power_tm.inc:36-64 (Route111_EventScript_SecretPowerMan: YES -> giveitem ITEM_TM_SECRET_POWER, FLAG_RECEIVED_SECRET_POWER, the man walks off)",
+  "data/maps/Route111/map.json object 33 (13,20) Route111_EventScript_SecretPowerMan",
+  "src/start_menu.c:315-337 (no Pokedex: POKEMON, BAG, ...); include/constants/item.h:5-9 (pockets ITEMS, POKE BALLS, TMs & HMs: RIGHT x2); src/item_menu.c:301-304 (TM popup: USE, GIVE, -, CANCEL)",
+  "src/party_menu.c:2607-2630 (the field popup: SUMMARY first, then the field moves: FLY is DOWN once)",
+  "src/data/region_map/region_map_entries.h:285-291,390-395 (FORTREE (12,0), ROUTE_111 (8,0) 1x6: from (13,21) the cursor is on (8,0), RIGHT x4); src/region_map.c:1951-1970 (A on a visited city flies, no confirmation)",
+  "data/maps/FortreeCity/map.json warp 8 (37,13) -> DECORATION_SHOP; data/maps/FortreeCity_DecorationShop/map.json object 3 (1,2), scripts.inc:8-27 (pokemartdecoration, DECOR_SMALL_DESK first); src/data/decoration/header.h:15-22 (SMALL DESK 3000)",
+  "src/shop.c:172 (sShopMenuActions_BuyQuit: BUY / QUIT for decorations)",
+  "include/constants/decorations.h:5 (DECOR_SMALL_DESK 1)",
+  "data/maps/Route120/map.json bg_events (26,10) SECRET_BASE_SHRUB3_2 (include/constants/secret_bases.h:158: 222); connections: left MAP_FORTREE_CITY",
+  "data/scripts/secret_base.inc:27-40 (CheckEntrance: checkpartymove MOVE_SECRET_POWER, VAR_0x8007 = SECRET_BASE_SHRUB)",
+  "data/scripts/secret_base.inc:102-130 (Shrub: 'Use the SECRET POWER?' YES -> Text_MonUsedFieldMove, FLDEFF_USE_SECRET_POWER_SHRUB, 'Discovered a small entrance!')",
+  "data/scripts/secret_base.inc:132-144 (InitSecretBase: VAR_INIT_SECRET_BASE 0, SetPlayerSecretBase, EnterSecretBase, VAR_SECRET_BASE_INITIALIZED 1)",
+  "src/secret_base.c:365-378 (SetPlayerSecretBase: secretBases[0] = the player's, VAR_CURRENT_SECRET_BASE 0, VAR_SECRET_BASE_MAP = gMapHeader.regionMapSectionId: MAPSEC_ROUTE_120 = 35, include/constants/region_map_sections.h:44)",
+  "data/scripts/shared_secret_base.inc:12-20 (OnTransition: SetDecorationFlags (secret_base.inc:232-247, FLAG_DECORATION_1..14); OnFrame VAR_INIT_SECRET_BASE 0 -> FirstEntrance)",
+  "data/scripts/secret_base.inc:146-160 (FirstEntrance: walk up x2, VAR_INIT_SECRET_BASE 1, 'make your SECRET BASE here?' YES -> FLAG_RECEIVED_SECRET_POWER, EnterNewlyCreatedSecretBase)",
+  "src/secret_base.c:504 (EnterNewlyCreatedSecretBase: warp back into the base in front of the new PC)",
+  "include/constants/vars.h:56,104,157,171 (VAR_SECRET_BASE_MAP 0x4026, VAR_CURRENT_SECRET_BASE 0x4054, VAR_SECRET_BASE_INITIALIZED 0x4089, VAR_INIT_SECRET_BASE 0x4097); include/constants/flags.h:114,196 (FLAG_RECEIVED_SECRET_POWER 0x60, FLAG_DECORATION_1 0xAE)",
+  "data/scripts/shared_secret_base.inc:26-67 (SecretBase_EventScript_PC: boot-up text, without FLAG_SECRET_BASE_REGISTRY_ENABLED the multichoice DECORATION / PACK UP / CANCEL; CANCEL turns it off)",
+  "src/decoration.c:223-240 (DECORATE / PUT AWAY / TOSS / CANCEL), 631 (DecorationMenuAction_Decorate), 706 (the categories: DESK first), 982 (the category's items: SMALL DESK, CANCEL), 1361,1401 (placing mode)",
+  "src/decoration.c:1646-1663 ('Place it here?' YES/NO, PlaceDecoration: the desk into secretBases[0].decorations)",
+  "include/global.h:1024-1034 (SaveBlock1 secretBases[20] at 0x1A9C, decorationDesks at 0x2734: tools/gba/gen3.py dumps both for Emerald)",
+]
+notes = "Ruby's dir (ruby/65) fails on Emerald at Fly: R/S's party popup lists FLY first, Emerald's SUMMARY first (src/party_menu.c:2607-2630), so its A opened Swellow's summary. Here DOWN, then A picks FLY. Secret Power: the shrub prompt is the script's YES/NO (bot menu); the base's first-entrance YES/NO too; the PC's main menu is a script multichoice of 3 (no FLAG_SECRET_BASE_REGISTRY_ENABLED). The decoration menus are decoration.c's own (not the probe's field menu): raw presses. In placing mode LEFT x3 from the PC (7,8) puts the desk on open floor left of the PC; A -> 'Place it here?' YES (A). Do not use advance_text in the shop's buy list: its A presses buy more desks."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 10900
+
+[[step]]
+do = "talk_to"
+id = 33
+note = "the Secret Power man (13,20) (secret_power_tm.inc)"
+
+[[step]]
+do = "advance_text"
+note = "YES -> TM43; he walks off (FLAG_RECEIVED_SECRET_POWER)"
+
+[[step]]
+do = "press"
+keys = "START"
+gap = 40
+note = "start menu, cursor on POKeMON (no POKeDEX flag)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "BAG"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "the bag, ITEMS pocket"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 30
+times = 2
+shot = "tm43-in-bag"
+note = "TMs & HMs: No43 SECRET POWER x1"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "USE / GIVE / CANCEL (item_menu.c:301-304)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+times = 4
+note = "USE; 'Booted up a TM'; 'It contained SECRET POWER'; YES 'Teach?' -> the party, cursor on SWELLOW"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "MUDKIP"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "MUDKIP has a free slot (Tackle, Growl): learns it"
+
+[[step]]
+do = "wait_frames"
+n = 200
+shot = "mudkip-learned"
+note = "'MUDKIP learned SECRET POWER!' and its fanfare (an earlier A is swallowed)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "back to the bag"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+note = "the start menu (cursor on BAG)"
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+note = "POKeMON"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "the party, cursor on SWELLOW"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "SUMMARY / FLY / SWITCH / ITEM / CANCEL, the cursor on SUMMARY (src/party_menu.c:2607-2630)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "FLY (badge 6: src/party_menu.c:3725)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "FLY: the region map on Route 111"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+times = 4
+shot = "fly-fortree"
+note = "FORTREE CITY (region_map_entries.h:285-291)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "wait_map"
+map = "MAP_FORTREE_CITY"
+
+[[step]]
+do = "wait_field"
+note = "lands at Fortree (5,7)"
+
+[[step]]
+do = "walk_to"
+x = 37
+z = 13
+note = "the decoration shop door (FortreeCity map.json warp 8)"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 4
+face = "up"
+interact = true
+note = "ClerkDesks (1,2) across the counter: 'Welcome!'"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "'How may I serve you?' BUY / QUIT"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "BUY: the desk list, SMALL DESK 3000 first"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "'That'll be 3000' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "desk-bought"
+note = "YES: 'Thank you! I'll send it to your home PC', money 10000 -> 7000"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "back to the list (no advance_text here: its A would buy more)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+times = 2
+note = "out of the list, then QUIT from BUY/QUIT"
+
+[[step]]
+do = "advance_text"
+note = "'Please come again!'"
+
+[[step]]
+do = "walk_to"
+map = "MAP_ROUTE120"
+x = 26
+z = 11
+note = "out of the shop, east across the Fortree/Route 120 connection, below the shrub (26,10) (bg_events[4])"
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+note = "face the shrub"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "'If this clump of grass can be moved...' (secret_base.inc:102-106)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "'use SECRET POWER?' YES"
+
+[[step]]
+do = "wait_frames"
+n = 20
+shot = "secret-power-used"
+note = "'MUDKIP used SECRET POWER.'"
+
+[[step]]
+do = "advance_text"
+map = "MAP_SECRET_BASE_SHRUB3"
+note = "the shrub opens (FLDEFF_USE_SECRET_POWER_SHRUB), 'Discovered a small entrance!', warp in (secret_base.inc:108-144)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "FirstEntrance: walks up, 'Want to make your SECRET BASE here?' YES"
+
+[[step]]
+do = "wait_field"
+max = 600
+note = "EnterNewlyCreatedSecretBase warps back in front of the new PC (secret_base.c:504)"
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "base-made"
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+note = "face the PC (7,7)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "SecretBase_EventScript_PC: 'booted up the PC'"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "DECORATION / PACK UP / CANCEL: DECORATION"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "decoration-menu"
+note = "DECORATE / PUT AWAY / TOSS / CANCEL (decoration.c:223-240)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "DECORATE: the categories, DESK 1/10"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "desk-list"
+note = "DESK: SMALL DESK, EXIT"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "SMALL DESK: placing mode (decoration.c:1361 Task_PlaceDecoration)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+gap = 30
+times = 3
+note = "the desk ghost onto open floor left of the PC"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "place-it-here"
+note = "'Place it here?' YES/NO (decoration.c:1646)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "desk-in-use"
+note = "YES: placed (decoration.c:1663 PlaceDecoration); the desk list marks SMALL DESK in use"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+times = 3
+note = "out of the list, the categories and DECORATE: the PC's main menu"
+
+[[step]]
+do = "wait_frames"
+n = 10
+shot = "desk-placed"
+note = "the desk on the floor beside the PC"
+
+[[step]]
+do = "menu"
+choose = 2
+count = 3
+note = "CANCEL: the PC turns off"
+
+[[step]]
+do = "wait_field"
+shot = "base-end"
+
+[expect]
+map = "MAP_SECRET_BASE_SHRUB3"
+position = [7, 8]
+flags = ["FLAG_RECEIVED_SECRET_POWER", "FLAG_DECORATION_1"]
+save = [
+  'any(m["id"] == 290 for p in s["party"] if p["species"] == 283 for m in p["moves"])',
+  's["trainer"]["money"] == 7000',
+  's["location"]["map"] == 25 << 8 | 17',
+  's["secret_bases"][0]["index"] == 0 and s["secret_bases"][0]["id"] == 222',  # the player's base (secretBases[0]) is SECRET_BASE_SHRUB3_2
+  's["secret_bases"][0]["decorations"][0] == 1',  # it holds DECOR_SMALL_DESK (include/constants/decorations.h:5)
+  's["decorations"]["desk"][0] == 1',  # the desk in the decorationDesks inventory (include/global.h:1027)
+]
+
+[expect.vars]
+VAR_SECRET_BASE_MAP = 35
+VAR_SECRET_BASE_INITIALIZED = 1
+VAR_INIT_SECRET_BASE = 1

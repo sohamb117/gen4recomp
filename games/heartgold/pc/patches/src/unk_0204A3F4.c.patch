@@ -1,0 +1,13 @@
+--- a/src/unk_0204A3F4.c
++++ b/src/unk_0204A3F4.c
+@@ -159,7 +159,9 @@
+ }
+ 
+ u32 sub_0204A6A0(u32 unused_0) {
+-    return sub_0202D3DC();
++    /* nativeplat: sub_0202D3DC reads its argument (r0, still unused_0 on
++     * ARM); passed explicitly for the bridge. */
++    return ((u32 (*)(u32))sub_0202D3DC)(unused_0);
+ }
+ 
+ void sub_0204A6A8(FieldSystem *fieldSystem) {

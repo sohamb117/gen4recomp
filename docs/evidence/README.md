@@ -1,30 +1,38 @@
 # macOS app evidence
 
-Every row was run on the packaged app (`tools/package_macos.sh --test` →
-`build/dist/nativeplat-macos-arm64.zip`, all three cores, main 904498583),
+The Platinum rows (and the Diamond and Pearl section below) were re-run on
+2026-10-11 on the ten-core macOS package built from main c8948448c
+(`~/Downloads/nativeplat/nativeplat-macos-arm64-c8948448c.zip`, 76138524 bytes,
+sha256 `58fa10e2ea39e12bfd3fef146e05ad3e5fdc4c8b43c8295090510f1258d94c12`),
 unzipped into a temporary folder with `portable.txt` beside the bundle, by
-`tests/mac/feature_matrix.py`: one `NP_AUTOTEST` run per step in a real window
-(Metal renderer), each on its own portable user data. The screenshots were
-inspected one by one (2026-10-04).
+`tests/mac/feature_matrix.py --zip <that zip>`: one `NP_AUTOTEST` run per step
+in a real window (Metal renderer), each on its own portable user data. All 33
+`ds` cases passed on each game. The screenshots were inspected one by one. The
+first pass (2026-10-04) was on the three-core package from main 80dc9d8c7.
 
 ```sh
 tests/mac/feature_matrix.py --list          # cases
 tests/mac/feature_matrix.py [CASE...]       # on build/dist/nativeplat-macos-arm64.zip
+tests/mac/feature_matrix.py --zip Z --game diamond   # another package / game
 NP_KEEP_FULL=1 tests/mac/feature_matrix.py  # also keep the 2x window captures
 ```
 
 Screenshots (`<case>-<step>-small.png`, 960 wide) and logs (`<case>-<step>.log`,
-first line = the exact `NP_AUTOTEST` and arguments) are in `build/evidence/`,
-outside git: they show game imagery. `build/evidence/matrix.json` holds every
-run's autotest line and summary. Inputs (saves minted from pc_lab recipes:
-`tests/gameplay/recipes/sandgem.recipe`, `tests/link/recipes/union-*.recipe`)
+first line = the exact `NP_AUTOTEST` and arguments) are written to
+`build/evidence/`, outside git: they show game imagery. `build/evidence/matrix.json`
+holds every run's autotest line and summary. The c8948448c pass is kept in
+`build/evidence/dppt-app-c8948448c/` (the files a pass writes under one name for
+every game, `editor-save4.txt`, `rules-check.txt`, `trainer_card-*-export.png`
+and `url_open.*`, are there with a `platinum-` / `diamond-` / `pearl-` prefix).
+Inputs (saves minted from pc_lab recipes with `tests/gameplay/mint.sh` on the
+gate cores: `tests/gameplay/recipes/sandgem.recipe`, `tests/link/recipes/union-*.recipe`)
 are in `build/evidence/inputs/`. "Sandgem" below is that save; `CONTINUE` is
 `press=1250:start;1400:a;1500:a;1600:a` (title → CONTINUE → field at ~1700),
 and in-game runs start as `nativeplat --game platinum --slot Sandgem`.
 
 | Feature | How (autotest, abridged) | Screenshots | What they show |
 |---|---|---|---|
-| Launcher: import 3 ROMs | `boot=app`, `drop:` Diamond and Pearl, click Import ROM, `dialog:` Platinum | launcher_import | Three cards "Ready" |
+| Launcher: import 3 ROMs | `boot=app`, `drop:` Diamond and Pearl, click Import ROM, `dialog:` Platinum | launcher_import | Diamond, Pearl and Platinum "Ready" among the ten cards |
 | All three games run | card click → New save slot → OK; `press=1400:start` | games_boot-diamond/pearl/platinum | Diamond, Pearl and Platinum title screens |
 | Save slots | Import .sav (dialog), Duplicate, Rename (typed), Export (dialog), Delete (confirm, Yes), New | slots-1 … slots-7 | Toasts per action; exported file byte-identical; new slot boots Platinum |
 | Continue | card → "Continue: Sandgem" → `CONTINUE` | continue | Sandgem Town field, Pokétch |
@@ -48,27 +56,31 @@ and in-game runs start as `nativeplat --game platinum --slot Sandgem`.
 | Mods | Options → Mods… → `drop:` example zip; boot | mods-installed/menu | "[on] Example: main menu labels ready"; main menu "RESUME ADVENTURE", "START FRESH (MODDED)" |
 | Custom carts | Seal enabled packages as a cart… "Menu Cart"; slot Cart: → Menu Cart; boot | carts-* | "Sealed cart Menu Cart (1 package, 0a33980d)"; "Sandgem now plays cart Menu Cart"; modded menu |
 | GBA cart, Pal Park | Options → GBA cartridge `dialog:` pokeemerald.gba, GBA save `dialog:` generated Emerald save; National Dex save | palpark-options/menu | "GBA: pokeemerald.gba, save emerald.sav"; main menu "MIGRATE FROM EMERALD" |
-| LAN, two installs | Two copies of the app, `[wireless] enabled, port, peer`, `realtime=1`, tests/link `trade-a/b.sched` | lan-station-a/b-008000/010000/011000 | Both in the Union Room, chat log "UNIONA/UNIONB: I've entered the Union Room"; A talks to B (GREET/DRAW/BATTLE/TRADE menu), B "Awaiting a response from UNIONA" |
+| LAN, two installs | Two copies of the app, `[wireless] enabled, port, peer`, `realtime=1`, tests/link `trade-a/b.sched` | lan-station-a/b-008000/009000/013000 | Both in the Union Room, chat log "UNIONA/UNIONB: I've entered the Union Room"; A walks up to B's avatar (9000) but the talk opens no menu; no trade (see Defects) |
 | Relay | Relay host:port and PIN typed in Options, LAN on; 2nd install with the same relay+PIN (local `server/relay`) | relay-options, relay-station-b | Both "1 in range" |
 | Folder sync | sync folder; both copies changed; chooser; "Use the other copy" | sync-1/2/3 | Chooser shows this device (GQ) vs other copy (UNIONA); "Kept one copy" |
 | Updater | `[updates] api =` local release server (fixtures.ReleaseServer); Check, Download and verify; bad digest | updater-* | "v9.9.9 is available", "Verified (SHA-256 …)", wrong digest refused and deleted |
 | Launch flags | `--game platinum --slot Sandgem`, `--launcher`, unknown slot | launch-* | Game starts; launcher; "Platinum has no save slot Nope" |
 | URL | `open -n -a nativeplat.app 'nativeplat://launch?game=platinum&slot=Sandgem'` (LaunchServices) | url_open | Log "link: nativeplat://…", Platinum running in slot Sandgem |
-| Windows package | `tools/package_windows.sh --test`: zig cross-build with all three cores, the exe run under wine (OrbStack amd64), `game=<g>,rom=…,press=1200:start:10` | windows/wine-diamond/pearl/platinum-small.png | Diamond, Pearl and Platinum title screens from nativeplat.exe (wine, dummy video: no real window) |
+| Windows package, ten cores | `tools/package_windows.sh --test` on main 0bb574077: Diamond, Pearl, Platinum, Black, White, HeartGold, SoulSilver, Ruby, Sapphire, Emerald (guests built from main; HG/SS from their decomp ROMs, B/W from the dumps in roms/), the exe run under wine; B/W `frames=4950` (no input), HG/SS `frames=4800` (the intro runs to the title); `NP_WIN_SHOTS=build/evidence/pkg-win10`. `~/Downloads/nativeplat/nativeplat-windows-x64-0bb574077.zip`, 76078552 bytes, sha256 `14b640be85b0813b85ed7e806b62e6055ab3b09308f0947d51575ef92c28336a` | pkg-win10/shot-<game>.png | The ten title screens from nativeplat.exe, looked at: Dialga, Palkia, Giratina, Reshiram (Black), Zekrom (White), Ho-Oh (HeartGold), Lugia (SoulSilver), Groudon, Kyogre, Rayquaza |
+| macOS package, ten cores | `tools/package_macos.sh --test` on main c8948448c: Diamond, Pearl, Platinum, Black, White, HeartGold, SoulSilver, Ruby, Sapphire, Emerald (all ten autotests passed; B/W `frames=4950`, HG/SS `frames=4800`, GBA `frames=900`); `~/Downloads/nativeplat/nativeplat-macos-arm64-c8948448c.zip`, 76138524 bytes, sha256 `58fa10e2ea39e12bfd3fef146e05ad3e5fdc4c8b43c8295090510f1258d94c12` | pkg-mac10/<game>-arm64.png | The ten title screens: Dialga, Palkia, Giratina, Reshiram (Black), Zekrom (White), Ho-Oh (HeartGold), Lugia (SoulSilver), Groudon, Kyogre, Rayquaza |
+| Windows package | `tools/package_windows.sh --test`: zig cross-build with all six cores, the exe run under wine (OrbStack amd64, image `nativeplat-wine`), DS `frames=1500,press=1200:start:10`, GBA `frames=900,press=400:start:10`; `NP_WIN_SHOTS=build/evidence/pkg-win` | pkg-win/shot-diamond/pearl/platinum/ruby/sapphire/emerald.png | The six title screens from nativeplat.exe (wine, dummy video; main 80dc9d8c7) |
 | Portable mode | `portable.txt` beside the bundle (every case) | portable | Launcher footer "Portable data: …/userdata/" |
 | UI scale, reduced motion | `ui_scale = 2/6`; `reduce_motion = 1` on the name page | ui_scale-* | 2x small text; "6x (5x fits)"; steady caret |
 | About | About button | about | License and credits |
 
 ## Diamond and Pearl
 
-The same in-game cases, run as `tests/mac/feature_matrix.py --game diamond`
-and `--game pearl` on the package built from main 33e316444 (evidence names
-`diamond-<case>` / `pearl-<case>`). Saves: `tests/gameplay/dp/recipes/sandgem.recipe`
+The same cases, run as `tests/mac/feature_matrix.py --game diamond` and
+`--game pearl` on the c8948448c package (evidence names `diamond-<case>` /
+`pearl-<case>`; 33/33 ok on each game). Saves: `tests/gameplay/dp/recipes/sandgem.recipe`
 and `tests/link/recipes/dp-union-a.recipe` minted with `tests/gameplay/mint.sh`
 (`NP_GAME=diamond|pearl`, base = the new-game save from
-`tests/dp/<game>_first_save.sched`). Contact sheets: `build/evidence/sheets/`
-`d-continue-editor.jpg`, `d-display.jpg`, `d-session.jpg`, `d-misc.jpg`,
-`d-lan.jpg`, `pearl.jpg`.
+`tests/dp/<game>_first_save.sched`). The mods and carts cases need the example
+package cooked first (`cd games/diamond && python3 pc/modcook.py --mods example_text`);
+uncooked, the Mods page refuses it ("the package is not cooked"). Contact sheets
+of the 80dc9d8c7 pass: `build/evidence/sheets/` `d-continue-editor.jpg`,
+`d-display.jpg`, `d-session.jpg`, `d-misc.jpg`, `d-lan.jpg`, `pearl.jpg`.
 
 | Feature | Diamond / Pearl evidence | What they show |
 |---|---|---|
@@ -88,15 +100,95 @@ and `tests/link/recipes/dp-union-a.recipe` minted with `tests/gameplay/mint.sh`
 | Mods | *-mods-installed/menu | "Mods (Diamond)" / Pearl, `example_text` (cooked with `pc/modcook.py`) installed from a zip, enabled; main menu "CONTINUE FROM THE PACKAGE", "NEW GAME (CONTENT PACKAGE)" |
 | Custom carts | *-carts-* | Sealed "Menu Cart" (1 package), bound to Sandgem, boots the modded menu |
 | Pal Park | *-palpark-options/menu | Emerald cart and save inserted; main menu "MIGRATE FROM EMERALD" |
-| LAN, Diamond ↔ Platinum | diamond-lan-station-a/b (`-008000/-009000/-012000.png`), diamond-lan-parties.txt | A Diamond app and a Platinum app on this Mac meet in the Union Room, open the trade screen (TURTWIG ↔ CHIMCHAR), the trade animation runs on both, Diamond: "Take good care of CHIMCHAR!"; afterwards the Diamond save holds CHIMCHAR and the Platinum save TURTWIG (tests/link `dp-pt-trade` schedules, `realtime=1`) |
+| LAN, Diamond/Pearl ↔ Platinum | diamond-lan-station-a/b, pearl-lan-station-a/b (`-006000/-007000/-009000.png`), *-lan-parties.txt | A Diamond (or Pearl) app and a Platinum app on this Mac meet in the Union Room (both chat lines); A walks up to B's avatar and presses A at 6600 (beside it at 7000), but no contact starts and the trade does not happen: afterwards A still holds TURTWIG and B CHIMCHAR (two Diamond runs, one Pearl run; see Defects). tests/link `dp-pt-trade` schedules, `realtime=1` |
+| Shell cases on D/P data | *-slots-*, *-sync-*, *-skin-*, *-touch_editor-*, *-launch-*, *-url_open, *-standalone_editor | Import/duplicate/rename/export (byte-identical)/delete of a Diamond/Pearl slot; "Sandgem (Diamond)" conflict chooser; skin and touch pad over the D/P field; `nativeplat://launch?game=diamond&slot=Sandgem` (and pearl) boots that game |
+
+## Ruby, Sapphire and Emerald
+
+The 12 GBA cases, run as `tests/mac/feature_matrix.py --game ruby`,
+`--game sapphire` and `--game emerald` on the package built from main
+80dc9d8c7 (evidence names `<game>-gba_<case>`; 12/12 ok on each game).
+Saves are the games' own: the house save `tests/rse/first_battle.sh` writes
+(`build/rse/first_battle/<game>/house.sav`, littleroot.sched and a quick
+save). `tools/package_macos.sh --test` also boots each
+of the six games from the unzipped bundle (`NP_MAC_SHOTS=build/evidence/pkg-mac`:
+`<game>-arm64.png`, the six title screens; GBA: START at 400, capture at 900).
+
+| Feature | Evidence | What they show |
+|---|---|---|
+| Continue | *-gba_continue | CONTINUE from the title into the Littleroot house |
+| F1 / F2 | *-gba_quicksave-* | "Saved" (the game's own save, slot file changed); F2 F2 reboots into the saved game |
+| Snapshots, rewind | *-gba_snapshots-* | F5/F7, F6 slot 2, rewind depth falls |
+| Speed | *-gba_speed-* | 4x and the G fast-forward toggle: more guest frames than iterations |
+| Audio | *-gba_audio-* logs | BGM 0 and SE 0 change the measured output per channel owner |
+| Layouts | *-gba_layouts-* | One 240x160 screen: fit, rotation 90, integer+linear, LCD effect |
+| Touch pad, editor | *-gba_touch-* | A/B pad without X/Y; the editor skips X/Y; the layout is saved |
+| Delta skin | *-gba_skin-* | A GBA `.deltaskin` (fixtures.deltaskin(gba=True)), landscape and portrait |
+| Mods | *-gba_mods-* | The example data patch installed from a zip; the main menu labels patched |
+| Custom carts | *-gba_carts-* | Cart sealed, bound to the slot, boots the patched game (Emerald: title screen) |
+| Save slots | *-gba_slots-* | `.sav` import, Continue from the imported slot |
+| URL | *-gba_launch-url | `nativeplat://launch?game=<game>&slot=…` starts that game's slot |
+
+Link cable (headless, two `np_headless` stations over the network layer):
+`tests/link/run_gba_link_tests.py` trades Ruby↔Sapphire and Ruby↔Emerald
+(each save's party holds the other side's Pokémon afterwards) and battles
+Ruby vs Sapphire in the Colosseum (in_battle 3605..14830 on both, the same
+Win/Loss screen). Sheets: `build/evidence/rse/link-trade-rs.png`,
+`link-trade-re.png`, `link-battle-rs.png`.
+
+## Black, White, HeartGold and SoulSilver
+
+Not the packaged app: a development build with only these four cores, made
+from the cores' `.wasm` (2026-10-08, the proposal builds of
+docs/BW_PLAN.md and docs/HANDOFF-hgss.md):
+
+```sh
+cmake -S shell -B build/app-bwhgss -G Ninja -DCMAKE_BUILD_TYPE=Release -DNP_CORE=real \
+  -DBUILD_TESTING=OFF -DNP_BUILD_TESTS=OFF "-DCMAKE_C_FLAGS_RELEASE=-O1 -g0 -DNDEBUG" \
+  -DNP_GUEST_WASM_black=<ndsrec-black.wasm> -DNP_GUEST_WASM_white=<ndsrec-white.wasm> \
+  -DNP_GUEST_WASM_heartgold=<pokeheartgold.wasm> -DNP_GUEST_WASM_soulsilver=<pokesoulsilver.wasm> \
+  -DNP_GUEST_POSTPROCESS=$PWD/tools/wasm2c_postprocess.py
+NP_BW_CORE=<dir with np_headless> NP_HGSS_CORE=<dir> NP_BLACK_ROM=… NP_WHITE_ROM=… NP_HG_ROM=… NP_SS_ROM=… \
+  NP_SAVE5=<np_save5> tests/bwhgss/parity.sh          # headless; also makes the B/W bedroom saves
+NP_BLACK_ROM=… tests/mac/feature_matrix.py --app build/app-bwhgss/nativeplat.app --game black   # n2_* cases
+```
+
+All 15 `n2_*` cases ran on each game: 15/15 ok on Black and White; on
+HeartGold and SoulSilver 11 ok and 4 skipped with their reason (continue,
+slots, editor: no in-game save; audio: no music yet). The per-feature status is
+in docs/FEATURE_PARITY.md ("Black / White and HeartGold / SoulSilver"). A 16th
+case, `n2_render`, was added afterwards and passes on all four: F12's core frame
+is 256x384 at render scale 1, 512x768 at 2 and 684x768 with widescreen
+(`<game>-n2_render-*-frame.png`; White's widescreen bedroom looked at).
+A 17th, `n2_battle_layout` (B/W only; 2026-10-09, an app built the same way with only
+the Black and White cores, build/app-bw, from main 73db46f55's cores), runs the bedroom save
+through the gift box into Bianca's battle with `battle_layout = hybrid`: the bedroom vertical,
+the battle hybrid (large top, the touch screen small at the right), the bedroom after it
+vertical again, on Black and White (`<game>-n2_battle_layout-{field,battle,after}.png`, looked at).
+`n2_mods` and `n2_carts` (B/W; the app rebuilt with the ROM view, pc_bw_romview.c): the
+Mods page installs the example package (`tests/bwhgss/bw_mod_example.py`, made from the
+player's ROM), the main menu reads CONTINUE (MOD); sealed as "Menu Cart" and bound to the
+slot ("Start" now plays cart "Menu Cart"), it boots the same; ok on Black and White
+(`<game>-n2_mods-menu.png`, `<game>-n2_carts-{2-bound,3-boot}.png`, looked at).
+Screenshots looked at: Black title (n2_boot), bedroom after CONTINUE
+(n2_continue), "Snapshot 1 loaded" in the bedroom (n2_snapshots-restored),
+the editor's Trainer tab on the real save (n2_editor-trainer: AAAAAAA, ID
+45994, $3000, 0:03:03), HeartGold's intro in the hybrid layout and the touch
+layout editor; headless: the bedroom after the X-menu save and after CONTINUE,
+HeartGold's naming screen.
 
 ## Defects and gaps
 
-- **Platinum ↔ Platinum LAN trade not completed in the app.** The stations
-  met and talked, but tests/link's Platinum trade schedule is timed for frame
-  lockstep; two free-running apps drift, and B's accept presses fell on "You
-  declined the offer". The Diamond ↔ Platinum run above completed its trade;
-  the Platinum trade is covered headless by `tests/link/run_link_tests.py`.
+- **No Union Room trade in the app on c8948448c.** In all four LAN runs
+  (Platinum ↔ Platinum, Diamond ↔ Platinum twice, Pearl ↔ Platinum) the two
+  stations met in the Union Room, station A walked up to B's avatar and pressed
+  A, but no contact started, so the trade schedules ran into the field and both
+  parties are unchanged (`*-lan-parties.txt`). On the 80dc9d8c7 package the
+  Platinum stations talked and the Diamond ↔ Platinum trade completed. The
+  schedules are timed for frame lockstep and the avatars move, so two
+  free-running apps can miss the talk; whether this is that drift or the
+  c8948448c pc_wm change is not established. Trades are covered headless by
+  `tests/link/run_link_tests.py`.
 - **Snapshots/rewind are refused for ~a second after CONTINUE**: the main
   menu's wireless check keeps `NP_STAT_LINK_ACTIVE` set until the field;
   F5 at frame 1700 was refused as "during a wireless session". By design,

@@ -1,0 +1,89 @@
+--- a/asm/nitrocrypto.s
++++ b/asm/nitrocrypto.s
+@@ -46,22 +46,22 @@
+ 
+ 	.rodata
+ 
+-TEMPNAME__$p16:
++TEMPNAME__p16:
+ 	.byte 0x00, 0x08, 0x01, 0x01
+ 	.byte 0x01, 0x10, 0x01, 0x00
+ 	.byte 0x00, 0x00, 0x00, 0x00
+ 
+-TEMPNAME__$p2:
++TEMPNAME__p2:
+ 	.byte 0x00, 0x08, 0x01, 0x01
+ 	.byte 0x01, 0x01, 0x01, 0x00
+ 	.byte 0x00, 0x00, 0x00, 0x00
+ 
+-TEMPNAME__$p4:
++TEMPNAME__p4:
+ 	.byte 0x00, 0x08, 0x01, 0x01
+ 	.byte 0x01, 0x04, 0x01, 0x00
+ 	.byte 0x00, 0x00, 0x00, 0x00
+ 
+-bits$7808:
++bits_7808:
+ 	.byte 0x00, 0x01, 0x02, 0x02, 0x03, 0x03, 0x03, 0x03, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04
+ 
+ shift:
+@@ -2041,7 +2041,7 @@
+ 	ldr r1, _02238D84 ; =0x00010001
+ 	ldr r2, [r2]
+ 	cmp r2, r1
+-	ldreq r5, _02238D88 ; =TEMPNAME__$p16
++	ldreq r5, _02238D88 ; =TEMPNAME__p16
+ 	beq _02238CB0
+ _02238C84:
+ 	ldr r1, [sb]
+@@ -2049,13 +2049,13 @@
+ 	cmp r1, #0x11
+ 	bne _02238CA0
+ 	cmp r0, #1
+-	ldreq r5, _02238D8C ; =TEMPNAME__$p4
++	ldreq r5, _02238D8C ; =TEMPNAME__p4
+ 	beq _02238CB0
+ _02238CA0:
+ 	cmp r1, #3
+ 	bne _02238CB0
+ 	cmp r0, #1
+-	ldreq r5, _02238D90 ; =TEMPNAME__$p2
++	ldreq r5, _02238D90 ; =TEMPNAME__p2
+ _02238CB0:
+ 	mov r7, #1
+ 	mov r6, r7
+@@ -2117,9 +2117,9 @@
+ 	bx lr
+ 	.balign 4, 0
+ _02238D84: .word 0x00010001
+-_02238D88: .word TEMPNAME__$p16
+-_02238D8C: .word TEMPNAME__$p4
+-_02238D90: .word TEMPNAME__$p2
++_02238D88: .word TEMPNAME__p16
++_02238D8C: .word TEMPNAME__p4
++_02238D90: .word TEMPNAME__p2
+ 	arm_func_end BN_gen_exp_bits
+ 
+ 	arm_func_start BN_mod_inverse_word
+@@ -4756,18 +4756,18 @@
+ _0223B1E0:
+ 	mov r1, r0, lsr r2
+ 	ands r0, r1, #0xf0
+-	ldreq r0, _0223B210 ; =bits$7808
++	ldreq r0, _0223B210 ; =bits_7808
+ 	ldreqsb r0, [r0, r1]
+ 	addeq r0, r0, r2
+ 	bxeq lr
+-	ldr r0, _0223B210 ; =bits$7808
++	ldr r0, _0223B210 ; =bits_7808
+ 	mov r1, r1, lsr #4
+ 	ldrsb r0, [r0, r1]
+ 	add r0, r0, r2
+ 	add r0, r0, #4
+ 	bx lr
+ 	.balign 4, 0
+-_0223B210: .word bits$7808
++_0223B210: .word bits_7808
+ 	arm_func_end BN_num_bits_word
+ 
+ 	; util.o

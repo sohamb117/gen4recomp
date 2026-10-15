@@ -1,0 +1,218 @@
+# Proves the Battle Frontier's Battle Arena, Level 50: the attendant's menus, the choose-half party menu (three entries), the
+# save before the challenge, seven trainers in a row with the GO ON menu between them, and the lobby's Battle Points.
+# Start: MAP_BATTLE_FRONTIER_BATTLE_ARENA_LOBBY (7,8) -> end: the lobby, seven wins.
+title = "Battle Frontier: Battle Arena, a Level 50 set of seven wins (three-turn judged battles)"
+priority = "P1"
+estimate = 38210
+refs = [
+  "data/maps/BattleFrontier_BattleArenaLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge)",
+  "data/maps/BattleFrontier_BattleArenaBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE)",
+  "src/battle_arena.c (three turns, then the judges: Mind, Skill, Body)",
+]
+notes = "Arena battles are one on one, no switching; after three turns the judges decide (src/battle_arena.c)."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 57400
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the attendant (BattleFrontier_BattleArenaLobby/map.json object_events[0])"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_CHALLENGEINFO: CHALLENGE (BattleFrontier_BattleArenaLobby/scripts.inc)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_LEVEL_MODE: LV. 50"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'select three Pokemon', the fade to the choose-half party menu (special ChoosePartyForBattleFrontier)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 0: ENTER/SUMMARY/CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "ENTER"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 1 entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "entry-three"
+note = "slot 2 entered: the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "'okay to save?' YES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 60
+until = "map_id!=6684"
+note = "Common_EventScript_SaveGame's dialog answered with A, the walk out of the lobby"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_ARENA_BATTLE_ROOM"
+note = "the corridor: the attendant's words and the walk to the battle room"
+
+[[step]]
+do = "advance_text"
+note = "opponent 1 enters (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Arena trainer 1 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 2 enters (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Arena trainer 2 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 3 enters (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Arena trainer 3 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 4 enters (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Arena trainer 4 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 5 enters (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Arena trainer 5 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 6 enters (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Arena trainer 6 of 7"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "MULTI_GO_ON_RECORD_REST_RETIRE (or GO_ON_REST_RETIRE): GO ON (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 7 enters (BattleFrontier_BattleArenaBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Arena trainer 7 of 7"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_ARENA_LOBBY"
+note = "the seventh win: the result, then back to the lobby"
+
+[[step]]
+do = "advance_text"
+shot = "seven-wins"
+note = "WonChallenge: Battle Points; the record YES/NO's default NO taken by A (BattleFrontier_BattleArenaLobby/scripts.inc)"
+
+[expect]
+map = "MAP_BATTLE_FRONTIER_BATTLE_ARENA_LOBBY"
+battles = 7

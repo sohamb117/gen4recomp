@@ -1,0 +1,262 @@
+# Suspected game/port defects found by the e2e milestones
+
+Each entry: what was seen, a minimal repro, and what is known about the cause. "Suspected" until the cause is
+pinned in the port or shown to be the cartridge's own behaviour.
+
+## Open: Diamond's Poffin cooking app traps the guest when it closes (port; shadow stack guard)
+
+Diamond 77 (tests/e2e/diamond/77-poffin-making, planned): cooking works (the berry, the burnt batter, RESULTS
+'Foul Poffin Lv. 02', 'put away in the case'); two frames after NO on 'Would you like to keep cooking Poffins?'
+closes the app (scr_seq 0391's Unk01D7 0 @0x010F, then RestoreOverworld @0x0097) the guest stops: `pc_os_context:
+shadow stack 0 (0xdf0b110, 262144 bytes) overflowed` (games/platinum/pc/wasm/src/pc_os_context_wasm.c
+ctx_check_guards: the guard word at the lowest address of a context's 256 KiB wasm shadow stack was overwritten),
+frame 9793 on core-dp at 9feb1ea70. Repro: 77's steps as written. Cause not yet pinned: a genuine shadow-stack
+overflow (a deep call chain or a large address-taken local on thread 0's stack) or a stray write onto the guard; under
+investigation (PC_CTX_TRACE, watchpoints). No shared code changed for it.
+
+## Fixed: the Game Corner's slot machine drew a white bottom screen on Diamond, Pearl and Platinum (armrec, VRAM mirrors)
+
+Diamond/Pearl 81 and Platinum 81 (the Veilstone Game Corner): the slot app plays (coins in, a spin, the reels stop,
+the credit counts down) but its bottom screen is plain white in every frame, where the cartridge draws a night sky
+with a moon over a field (slot.narc members 3 NCLR, 2 NCGR, 4 NSCR, games/diamond/files/data/slot, decoded). The
+milestones pass on their expects (the system works); the picture is wrong. Repro: Diamond 81 from its start.recipe
+on the gate core, or Platinum 81 on core-plat: the `slots` / `spinning` shots (build/evidence/dppt-main/
+diamond-81-game-corner/).
+
+State at the slot screen (Diamond 81's run with a guest-memory peek at frame 2625): DB_BG3CNT = 0x0323, char base
+block 8 = offset 0x20000 (the layer template's GX_BG_CHARBASE_0x20000: D/P ov85 0x021DED0C; Platinum
+src/overlay101/ov101_021D0D80.c:345-346). Engine B's BG VRAM is bank C alone (128 KB), so on a console 0x06220000
+is a mirror of 0x06200000: the game's tile upload to char base 0x20000 lands at offset 0 and the layer reads it back
+there. In the port the two addresses hold different bytes (the first 16 KB: 4343 nonzero at 0x06200000, 8140 at
+0x06220000), so the renderer (games/platinum/pc/hw/pc_gpu2d.c, BBG_BASE + (off & BBG_MASK 0x1FFFF)) reads offset 0,
+where the upload never arrived: every tile is transparent and the backdrop, palette 0 = 0x7FFF, shows.
+
+Cause: armrec's copying VRAM model (games/platinum/tools/armrec/armrec_rt.c, ARMREC_VRAM_COPY: wasm and Windows,
+so every shipped core and the gate cores) reconciles only the first mirror of each window. armrec_vram_render_begin
+and vram_remap pull windows to the store with vram_copy(0, 0) (mirror 0 only), and render_end pushes back to mirror
+0 only; the comment at armrec_rt.c:638-644 records "writes through a mirror other than the first" as unsolved. A
+write through 0x06220000 therefore never reaches bank C. The native aliasing model (mmap views) mirrors for real.
+
+Fixed in ef93d8d397 (armrec_rt.c, the copying model only; the native aliasing model and the 3DS port's per-access
+lookup, 3ds/src/3ds_vram.c vram_lookup's `% period`, already mirror): a reconcile (the render, a VRAMCNT remap) reads
+every alias of each mapped bank block, every window block that maps it in every mirror, merges what the guest
+changed through any of them into the bank byte by byte against the bank as it was before the pass, and pushes each
+changed block to all of its aliases; the render's own bank writes (display capture) reach every mirror too. A remap
+reads every mirror only of the blocks it moves (and of blocks whose bank the pass changed), so texture streaming
+keeps its cost. `PC_VRAM_MIRROR_STATS=1` counts, per window, the blocks found written through a non-primary mirror
+(stderr).
+
+Proof: Diamond 81 on the rebuilt gate core-dp passes in the same 3139 frames and its `slots`, `spinning` and
+`stopped` shots show the moon over the field (the decoded slot.narc screen); with PC_VRAM_MIRROR_STATS=1 its log
+has `first write through a non-primary mirror: sub BG mirror 1 block 0 (0x06220000), render 2520` (the slot app's
+upload). The gate cases (d-boot, d-intro, p-boot, p-intro, plat-600, d-state-boot, d-state-save) keep their hashes
+on the rebuilt cores (tools/gate.sh --refresh-cores). Evidence: build/evidence/dppt-main/diamond-81-game-corner/
+(after), build/evidence/dppt-main/diamond-81-game-corner-before/ (the white screen on 9feb1ea70).
+
+## Fixed: the Battle Frontier's rooms drew black on Platinum and HeartGold/SoulSilver (armrec, extended palettes)
+
+Platinum 98 (Battle Tower) and HeartGold/SoulSilver 87: after the elevator, the frontier engine's corridor and Battle
+Room showed only the sprites (attendant, player, trainer) on a black top screen, the bottom a flat colour. Platinum 98
+passed with it: its sheet never showed a room, so the pass was false. What the rooms should show is
+games/platinum/res/graphics/frontier/backgrounds/battle_tower.png (floor, walls, pillars, the carpet). Repro: Platinum
+98's lab recipe on the gate core, CHALLENGE, SINGLE, three picks, through the elevator; HeartGold 38's end save, Fly to
+Olivine, Route 40's gatehouse, the Tower, the same entry.
+
+State in Platinum's Battle Room: DISPCNT 0x40211F1D (mode 5, BG extended palettes on), BG3CNT 0x4533 (extended affine,
+256 colours, 16-bit map at 0x2800, chars at 0x30000; both loaded, 1926 and 7864 nonzero bytes), VRAMCNT A-I
+83 81 89 82 82 83 8C 81 82. The scene's palette goes to BG extended palette slot 3 (frontier_graphics.c
+InitBackgrounds: GX_VRAM_BGEXTPLTT_23_G, then GX_LoadBGExtPltt(..., 0x6000, 0x2000)); the SDK's
+GX_SetBankForBGExtPltt writes G = 0x8C for that (mst 4, ofs 1: slots 2 and 3).
+
+Cause: armrec_vram_extpal (tools/armrec/armrec_rt.c) tested F and G with `(cnt & 0x9F) == 0x84`, which folds the
+placement bits into the mst test, so ofs 1 matched nothing and slots 2 and 3 read as unmapped: every BG3 pixel took
+colour 0 of an all-zero palette. Fixed by testing `(cnt & 0x87) == 0x84` and leaving the slot choice to ofs bit 0, as the
+existing slot test already did; the 3DS port's pinned copy (3ds/src/3ds_vram.c, whose self-test comment had flagged
+the mask) has the same fix and now checks G at 0x8C. The OBJ extended-palette case (F or G at mst 5) keeps its
+`(cnt & 0x9F) == 0x85`: the SDK's GX_SetBankForOBJExtPltt only ever writes 0x85, so no game reaches ofs bits there,
+and what the console does with them is unverified.
+
+Shared runtime, so it reaches D/P, Platinum, HG/SS and B/W. B/W: black/02 stepped one frame at a time with VRAMCNT
+read every frame never puts F or G at mst 4 (F and G only 00, 80, 81, 89, 83, 8B), so the
+changed test answers as before on every frame and its picture cannot change.
+
+Proof, HG/SS: heartgold/87 on a core with the fix passes on both games (7 wins each) and its sheets show the
+elevator, the corridor (stone floor, the doors, the pillars) and the Battle Room (the floor, the yellow carpet, the
+pillars) drawn, the room again after each win; before the fix the same frames were black but for the sprites
+(build/evidence/hgss-sys/defect-frontier-rooms-black/). Field battles on the same core give the same np_gp hash over
+every frame as on the old core (HG 60, SS 60, HG 03, HG 101).
+
+Proof, Platinum: platinum/98 on a core-plat built with the fix passes (7 wins, 48057 frames) and its new
+`battle-room` shot after the first win shows the room drawn (stone floor, the walls and the door, the four
+pillars, the yellow carpet), as games/platinum/res/graphics/frontier/backgrounds/battle_tower.png lays it out;
+plat-600, d-boot and p-boot keep their expected hashes on the rebuilt cores.
+
+## Fixed: Black/White's Musical show never opened its curtain (port: the ARM7's VBlank count)
+
+Black and White, tests/e2e/black/75-musical: the dress-up and the backstage scene (zone 78, "I guess everyone is
+ready. Let's go up on stage!") play. Then the show app (map_id 0 from frame 8007 on Black, 8107 on White) shows the
+closed red curtain with the Musical logo over the audience forever. The audience animates, and no key or tap does
+anything. There is no DEFECT or trap line. Repro: `NP_CORE_BUILD=$PWD/build/core-bwm tools/heavy.sh --run python3
+tests/e2e/run.py --game black --systems --only 75-musical --planned` (from 15's end save plus the milestone's recipe).
+Step 12 (advance_text) fails with "text did not end in 12000 frames".
+
+Cause: the show's main function, ov132_021F879C, was stuck in state 6, waiting for its show scripts to end. It was
+found with macOS `sample` on np_gp at the hang, and lldb read its work pointer at the function's entry. The scripts
+(ov132_021FAC74, run by the script VM sub_02011298) are stepped by ov132_021FABD8 once per elapsed frame. The elapsed
+count is how much `OS_GetVBlankCount()` changed since the last frame: work+0x1E8 = count - work+0x1EC. That count is
+the word at 0x02FFFC3C, TWL-SDK's HW_VBLANK_COUNT_BUF. On a console, the ARM7's VBlank interrupt (NitroSDK
+os_irqTable.c, OSi_IrqVBlank) increments it. The port models the ARM7 in host code, and nothing there incremented
+it. It read 0 at the hang, so the scripts never took a step.
+
+Fix: OS_Halt in pc_os_lite.c now increments HW_VBLANK_COUNT_BUF on each delivered VBlank, before the ARM9's handler
+runs. The address comes from the SDK header each build compiles against: 0x027FFC3C on D/P/Pt and HG/SS, 0x02FFFC3C
+on Black/White. So the counter now counts in every game.
+
+On the fixed core (build/core-bwm2, bw-script), the curtain is open by frame 8903. Darmanitan and three other
+performers dance on the lit stage until frame 13709. Then the run goes back to the backstage (78) and the theater
+(77). 75-musical passes on both games: Black in 14923 frames, White in 15055.
+
+## Fixed: Black/White stopped in N's Castle's throne room and in the ending on a VRAM bank overlap (armrec)
+
+Black and White, zone 278 (the throne room): the scene where N calls his dragon and the stone answers (scr 0556
+script 3, zone_event 278 trigger 1 on 0x40B6 == 1) aborted the core every time, Black at frame 7618 and White at 7760
+of the repro: `armrec: VRAM banks D and I are both mapped at 0x06600000 ... VRAMCNT = 83 8B 80 84 83 81 82 80 82,
+window sub OBJ block 0`, then `guest trap: abort()`. The same trap fired about 14.6k frames after Ghetsis's win, in N's
+farewell before the credits. Repro: /tmp/League2833/t277.sav (a synthesized save at zone 277: 8 badges, 0x40A1/A2/A5/
+A6/D4/D5/DC set, the stone), walk into 278, trigger 0's scene, then trigger 1.
+
+Cause: armrec's VRAM model refused two banks in one window block ("this port aliases each window onto one bank's
+storage"), on the claim that the SDK never makes that state. It does: GxSetBankForSubOBJ (NitroSDK gx_vramcnt.c, and
+every role's setter has the same shape) stores the new bank first, then moves the old one to LCDC, so between two
+register stores D (128 KB) and I (16 KB) are both sub OBJ. The decompiled C ports never saw it (their VRAM hook runs
+at the setter's return); the recompiled ROM's per-store hook (ARMREC_VRAM_HOOK) does. Fixed in armrec_rt.c by modelling
+the console: overlapping banks are legal, reads OR them and a write reaches each of them. The copying VRAM model
+(wasm and Windows, every shipped core) shows the OR in the window and writes the bytes the guest changed back to
+every bank; the native aliasing model fences such a block and stops only if a frame renders while the overlap stands.
+On the fixed core (build/core-bwm, bw-script) the repro plays the whole scene (N, then Reshiram and Zekrom in the
+room) and saves at frame 16932.
+
+## Fixed: HeartGold froze at a trainer's sight encounter; scripted NPCs drew as a white block (port)
+
+HeartGold 04 (tests/e2e/heartgold/04-route30-31-violet) stops at the first route trainer. Repro: start from 03's end
+save (Route 29 west of New Bark), CONTINUE, `walk_to (553,292)` north up Route 30 (wild battles fled): Youngster
+Joey (Route 30 object 4 at (553,332), std_trainer TRAINER_YOUNGSTER_JOEY) spots the player at (552,332) around
+frame 8759 and the field never moves again: no battle starts, `field_ready` stays 0, A/B do nothing. The top screen
+shows the player and Joey as one white/blue block with only the player's shadow drawn. The same block, without
+the freeze, stands where the player and a scripted NPC are during the Cherrygrove guide-gent tour (02) and the
+Cherrygrove rival scene (03); their milestones pass on their saves, their pictures show the block. Core: hgss-play2's
+22:23 build of main c2f26070e. Lead from the port side: before 165d72148 the player looked exactly like this when
+sprite textures were never uploaded (VBlank-queue tasks failing to be created): look for GF_AssertFail from
+SysTask_CreateOnVBlankQueue or a full 32-entry VBlank queue during the encounter (the emote and the approach
+loading textures in one long frame), else another unprototyped callback (unk_02037C94.c sub_020381C0, :1170;
+custom_safari_zone.c). Every route trainer waits on it.
+
+Fixed on the port side by hgss-play3 in ced1934b8: the trainer approach's sub_02064598 read its task from an r0 the
+C never passed (five more such C-to-assembly calls fixed with it). HeartGold 04 now passes through Joey and the
+route trainers after him, and the 02/03 sheets no longer show the block.
+
+## Fixed: HeartGold's first battle aborted in the 3D command FIFO (port)
+
+The first wild battle (Route 29) stopped as it began: `pc-gpu3d: command 0x10 arrived while 0x16 still wanted 3 of
+its 16 parameters`, then `abort()`. G3_LoadMtx44 -> GX_SendFifo64B (gxasm.s) was recompiled without the geometry
+hook, so its stmia to the FIFO went to plain memory; GX_SendFifo64B is a host override since c2f26070e. Wild
+battles, the rival (03) and the catching tutorial now run.
+
+## Fixed: HeartGold's first field load hung (port)
+
+The intro reached the first map load at frame 16169 and no frame completed after it: the field init (fieldmap.c
+ov01_021E662C) called CARD_SpiWaitGetStatus twice and the second OS_LockCard spun forever, because armrec emitted
+`bl _ll_udiv` as a goto into msl.s's helper body, whose `bx lr` returned before OS_UnLockCard; the same check
+then needed the cartridge's IR chip on AUXSPI (command 0x08 -> 0xAA). Fixed by armrec fe357c02a (a `.type NAME,
+@function` label starts a function), the IR chip model 53b112d0c, the timer/tick, geometry-port and card-timing
+fixes up to 165d72148 and the prop-animation callback 9d997a419: HeartGold 01 now passes from a blank chip.
+
+## Fixed: Emerald dropped the player through Granite Cave B1F's floor on arrival (copyvar through NULL)
+
+Arriving on Granite Cave B1F by ladder, the first step fell to B2F at once, on plain cave floor. B1F's map scripts
+(data/maps/GraniteCave_B1F/scripts.inc) set VAR_ICE_STEP_COUNT on transition with `copyvar VAR_ICE_STEP_COUNT, 1`
+(data/scripts/cave_hole.inc in both decomps; the ROMs are built without UBFIX) and fall through a hole whenever it
+is 0 (CaveHole_CheckFallDownHole). `copyvar` copies `*GetVarPointer(1)`, and GetVarPointer returns NULL for a number
+below VARS_START (pokeemerald src/event_data.c:164-172, src/scrcmd.c:368-373; pokeruby the same lines): the console
+reads the BIOS there, open bus and never 0; the port's zeroed low memory made the count 0. Filling the BIOS region
+with the open-bus word was tried and rejected: other NULL reads (the naming screen's VBlank callback after
+FREE_AND_SET_NULL(sNamingScreen)) then followed it as a pointer and crashed the native core. The fix is
+games/{emerald,ruby}/pc/patches/scrcmd.c.patch: ScrCmd_copyvar reads a source that is no variable as its number,
+as VarGet does and as the UBFIX script (`setvar VAR_ICE_STEP_COUNT, 1`) means. Regression: Emerald milestone 11
+(Granite Cave B1F/B2F), tests/dp/regress.sh e-/r-/s- cases unchanged.
+
+## Fixed: choosing a sphere or trap in the D/P Underground reset the game (armrec)
+
+Any sphere or trap chosen from an Underground list (UG menu > SPHERES/TRAPS > an entry) ended in "A communication
+error has occurred" and a reset: GF_AssertFail with the link layer up (error_handling.c). sub_0205EC6C was called on
+NULL from ov18_0224A0EC: the list's scroll prompts were never made. The UG start menu (ov18_02249684) compares the
+chosen entry, a function pointer from its data table (0x02249B51: `.word` of a Thumb function carries bit 0, as on
+the ROM and as C's &F does through irbridge), with `ldr rN, =ov18_02249B50` literals, and armrec translated those
+as 0x02249B50: nothing matched. The cause was the recompiler: literal_c_value (games/platinum/tools/armrec/armrec.py)
+dropped the interworking bit build_data_blobs already set. A bare literal naming a Thumb function now gets bit 0
+(51 `ldr =thumbfunc; cmp` sites in D/P); calls through such words still dispatch (armrec_dispatch tries the exact
+address, then bit 0 clear). Regressions: the armrec bridge test (asm literal, asm `.word`, C &F of one Thumb
+function agree, and a call through the literal works), tests/gameplay dp scenario 9-underground, milestones 91/92.
+
+## Fixed: the D/P e2e probe reset the game in the Underground
+
+The probe's tile grid asked GetMetatileBehavior about tiles past the map matrix; the block-loader provider asserts
+on such a block index (ov05_021EF844), harmless on the surface but a comm error and reset in the Underground. The
+probe (games/diamond/pc/game/pc_dp_field.c e2e_on_matrix) now asks only for tiles on the matrix.
+
+## Fixed: the Platinum e2e probe put the Union Room into a communication error
+
+The same class on Platinum. A Union Room station run with the probe on (PC_E2E=1: every np_gp / e2e bot run)
+showed "A communication error has occurred" about 180 frames after entering the room (map 466), alone or with a
+partner; without the probe, with PC_E2E=0 or with another variable in the environment, it stayed in the room. Repro:
+a station minted from tests/link/recipes/union-b.recipe on tests/link/schedules/trade-b.sched, np_headless
+--lockstep beside an idle station, 6000 frames: `link_active 1 -> 0` at 5657 with the probe, none without. The probe's
+tile grid (games/platinum/pc/src/pc_np_field.c e2e_tile) asked TerrainCollisionManager about every tile of its 64x64
+window; for a tile past the map matrix the land-data provider
+(LandDataManager_GetRelativeLoadedMapsQuadrantOfTile, overlay005/land_data.c) raises
+CommManager_SetCommError(COMM_ERROR_RESET_SAVEPOINT) while the comm layer is up (and GF_ASSERTs otherwise). The
+probe (pc_np_field.c e2e_on_matrix) now asks only for tiles on the matrix, as D/P's does; the guest's frames without
+the probe are unchanged.
+
+## Fixed: OS_ResetSystem stopped the core (Platinum, Diamond, Pearl)
+
+Every reset the game makes itself ended the run: the player's L+R+START+SELECT, Platinum's NINTENDO WFC SETTINGS
+on the main menu (WFCSettings_StartApplication runs the WFC utility, DWC_StartUtility, then always calls
+OS_ResetSystem), the error-reset screens and the reset after the credits all reached
+`pc_os_lite: OS_ResetSystem: soft reset has no host meaning yet` and `guest trap: abort()`. The cause was the port
+itself: games/platinum/pc/src/pc_os_lite.c (D/P link the same file) had no reboot. It now does what the console
+does: the runtime (np_host_reset, core/runtime/np_core.c np_rt_reboot) stores the backup chip if it is dirty, keeps
+it, discards the instance (memory, fibers) and boots a fresh one from _start within the same frame; the new
+instance loads the kept chip, and the carry puts back the reset parameter word (RESET_ERROR survives) and the RTC.
+Options and the link are the host's and stay. The reset is counted in the `resets` status (NP_STAT_RESETS) and
+logged (`pc_os_lite: OS_ResetSystem: soft reset (parameter N)`, `np_core: soft reset N`); bots.wait_reset waits for
+the counter, so 56 (Platinum) and 59b (D/P) end on it with the core running and judge the save the game wrote.
+Regressions: tests/gameplay scenarios 9-soft-reset and 10-wfc-settings (Platinum), dp 7-soft-reset; core/tests
+test_soft_reset.
+
+## Not a defect: D/P's GTS connect screen "waits with no time-out"
+
+The entry said the GTS trade path's "Connecting to Nintendo Wi-Fi Connection..." stayed up for 1800+ frames. That
+does not reproduce: after YES on "Save this Nintendo DS system's Nintendo Wi-Fi Connection User Information to this
+Game Card and connect?" the connecting screen lasts about 250 frames with no input, then D/P's own recompiled DWC
+shows "No access point in range. Please try again when closer to an access point. ... (50099)" and waits for a
+button; B gives "Reconnect to Nintendo WFC?", NO returns to the field (the 97 milestone's own contact sheet shows
+the 50099 box in its "wfc-connecting" shot). The search runs against the port's WM model (pc_wm.c), which reports
+no parent and no access point. 50099 is the Auto Connect library's own choice: overlay 4 ov04_021ECCEC returns
+-50099 when the search found nothing and -51099 when it found a configured access point it could not use (the flag
+ov04_021EC2C4 sets). Platinum's modelled AC layer (pc_dwc_connect.c) follows the same rule. Regression: tests/gameplay
+dp scenario 8-gts-offline.
+
+## Fixed: Platinum connecting to Nintendo WFC trapped the core
+
+Answering YES on the Global Terminal's Nintendo WFC screen trapped the core: `wasm trap: Unreachable`. The cause was
+NintendoWFC_ConnectToDWCServer, which called pc/stubs.list trap stubs generated as `void f(void)` with arguments:
+CPS_SetSslHandshakePriority, DWC_Auth_SetCustomNas and DWC_AC_Create. wasm-ld routes such calls to a silent
+signature-mismatch thunk. games/platinum/pc/src/pc_dwc_connect.c and pc_dwc_auth.c now give those functions, and the
+rest of the Auto Connect layer, their header signatures, modelling a console that finds no access point. The game
+then shows its own "No access point in range ... Error code: 50099" and "Reconnect to Nintendo WFC?";
+NO returns to the field. The regression test is tests/gameplay scenario 8-wfc-offline.
+
+An audit of the remaining signature-mismatch thunks (64; listed by pc/wasm/check_module.py) found that every other
+caller sits behind a successful connection: NAS login, SVL, ND download, SOCL sockets, VCT voice chat, the PPW lobby.
+With the connection failing, none of them is reachable offline.

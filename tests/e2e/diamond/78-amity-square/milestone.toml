@@ -1,0 +1,57 @@
+# Amity Square entry: step onto the west coord event with an allowed PIKACHU, answer YES, and the Pikachu
+# follower (object 5) is placed beside the player and walks with them (var 0x4099 1, 0x409A its species).
+# Start: MAP_AMITY_SQUARE (12,47). End: (12,45), one step on with the PIKACHU behind (flag 0x200 clear).
+title = "Amity Square: walk with Pikachu"
+priority = "P2"
+version = "both"
+estimate = 1899
+refs = [
+  "maps.h:257",
+  "zone_event 0245 coord 0",
+  "zone_event 0245 object 0",
+  "zone_event 0245 object 5",
+  "scr_seq 0266 @0x006A-0x009A",
+  "scr_seq 0266 @0x009C-0x00AE",
+  "scr_seq 0266 @0x00CC-0x00F6",
+  "scr_seq 0266 @0x026C-0x02E1",
+  "scr_seq 0266 @0x0450-0x0476",
+  "scr_seq 0266 @0x050D-0x0513",
+  "scr_seq 0266 @0x05BD-0x0614",
+  "scr_seq 0266 @0x07C0-0x07D7",
+  "msg 236 #2",
+  "msg 236 #3",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 2900
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 16
+note = "onto the (12,46) coord event (var 0x4099 == 0): script 2 turns the player (Move_0794) and checks the party"
+
+[[step]]
+do = "advance_text"
+max = 900
+note = "msg 236 #2 'stroll with your PIKACHU?': advance_text's A answers YES (VAR_RESULT 0 -> L_0450): HealParty, 0x409D slot, 0x409A species, ClearFlag 0x200, AddEvent 5 at (12,47), var 0x4099 1, ClearAmitySquareSteps, msg 236 #3"
+shot = "follower-joins"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "any text left; harmless on the field"
+
+[[step]]
+do = "advance_text"
+shot = "walking-together"
+
+[expect]
+map = "MAP_AMITY_SQUARE"
+position = [12, 45]   # Move_07AC (step up) for the player and the follower at scr_seq 0266 @0x0600-0x0608
+party = ["SPECIES_PIKACHU"]
+flags_clear = ["0x200"]   # scr_seq 0266 @0x0513: the PIKACHU follower object 5 shown
+vars = { "0x4099" = 1, "0x409A" = 25, "0x409D" = 0 }   # scr_seq 0266 @0x05E7, @0x0464, @0x045E

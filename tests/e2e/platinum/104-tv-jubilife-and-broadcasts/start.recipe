@@ -1,0 +1,7 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26104
+money 3000
+party SPECIES_TURTWIG 15 ITEM_NONE
+# below the TV tiles at (6..7,3) (pc_maptiles.py 0x86)
+map MAP_HEADER_OREBURGH_CITY_MIDDLE_HOUSE 6 4 FACE_UP

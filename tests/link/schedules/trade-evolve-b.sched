@@ -1,0 +1,26 @@
+# Union Room trade with a trade evolution, station B (UNIONB, recipes/union-b-kadabra.recipe).
+# trade-b.sched up to the confirmation (KADABRA in CHIMCHAR's slot); B waits
+# ("Communicating") through A's evolution scene, then quits with A.
+900:a:20
+1200:a:20
+1800:a:20
+2100:a:20
+2400:a:20
+2800:a:24
+3100:a:10
+3300:a:10
+3500:a:10
+3700:a:10
+3900:a:10
+5250:a:10
+5450:a:10
+10760:a:6
+10840:a:6
+10920:a:6
+11420:a:6
+11620:down:4
+11660:a:6
+11760:a:6
+16900:b:6
+16980:a:6
+17080:a:6

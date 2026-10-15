@@ -1,0 +1,10 @@
+# Black/White, from parity.sh's bedroom save (the player at (5,6)): CONTINUE,
+# down to (5,7) facing the gift box at (5,8), then A through the box, the
+# starter choice (Tepig) and Bianca's battle (in_battle from ~9900 to
+# ~14000), and on into Cheren's (~17200).
+5000:start:4:60:2
+5300:a:4:40:20
+7000:down:4
+7040:down:12
+7100:down:4
+7150:a:4:40:300

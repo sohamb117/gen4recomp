@@ -1,0 +1,20 @@
+# References to another overlay's function by name where another overlay the
+# referencing code can have resident has a function at the same address
+# (games/diamond/pc/tools/dp_ovlabel_lint.py --xmap): `<caller> <callee>`, the
+# caller an overlay number or a static file's name, each with why the named
+# overlay is the resident one.
+#
+# The battle's catch (battle_command.c, overlay 12) shows the Pokedex entry
+# through ov18_021F8974 and closes it with ov18_021F89D0 on the manager the
+# first returned. Overlay 18 is resident for every battle that is not a
+# Wi-Fi one (ov12_0223843C unloads OVY_18 when sub_02039998() is 0);
+# overlay 0 (NitroDWC, ov00_021F89D0 in HG, ov00_021F89CC in SS), which
+# shares 18's window, is called by overlay 12 only when sub_02039998() is
+# set (ov12_0223A7A0), and no Pokemon is caught in a Wi-Fi battle.
+12 ov18_021F89D0
+# ScrCmd_BugContestAction (scrcmd_pokemon_misc.c, field overlay 1) creates
+# the contest with BugContest_New. Its only script (scr_seq_0151) runs
+# `ScriptOverlayCmd 1, 0` first, which loads FS_OVERLAY_ID(bug_contest)
+# (ScrCmd_ScriptOverlayCmd's table), and unloads it after
+# `BugContestAction 1`; overlays 19 and 25 hold other code at 0x022598C0.
+1 BugContest_New

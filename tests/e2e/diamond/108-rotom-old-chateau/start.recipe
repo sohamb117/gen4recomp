@@ -1,0 +1,16 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31108
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# game completed: every script gate is CheckGameCompleted/CheckFlag 0x964 (scrcmd_flags.c:194-201 -> unk_0205EC84.c:55-56)
+flag 0x964
+pokedex 1
+# NationalDex 2 gate (scr_seq 0329 @0x0033): Pokedex_GetNatDexFlag (scrcmd.c:3872-3882)
+national-dex 1
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# Rotom is Ghost/Electric with Levitate: Earthquake fails, Crunch is 2x [INFERENCE: hand calc, OHKO at lv15]
+party-move 0 0 MOVE_CRUNCH
+# below the TV bg (11,3) (zone_event 0288 bg 0); door (11,7) <- MAP_OLD_CHATEAU_2F_CORRIDOR; [INFERENCE] (11,4) walkable
+map MAP_OLD_CHATEAU_2F_ROOM_2 11 4 FACE_UP

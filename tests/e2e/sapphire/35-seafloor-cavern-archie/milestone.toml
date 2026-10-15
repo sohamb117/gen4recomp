@@ -1,0 +1,461 @@
+# Proves Dive on Route 128 (the submarine's trail: Underwater_SeafloorCavern -> SEAFLOOR_CAVERN_ENTRANCE), the cavern's Strength
+# and Rock Smash rooms, the admin (TRAINER_SEAFLOOR_CAVERN_GRUNT_3) and the leader at Room 9 (TRAINER_SEAFLOOR_CAVERN_GRUNT_5):
+# Kyogre awakens, VAR_SOOTOPOLIS_STATE 1, then Steven on Route 128 (VAR_ROUTE128_STATE 2).
+# Start: Mossdeep (19,11) -> end: MAP_ROUTE128 (the scene ends with Steven above the sea).
+title = "Seafloor Cavern: Archie wakes Kyogre (Sapphire)"
+priority = "P0"
+version = "sapphire"
+estimate = 24843
+refs = [
+  "data/maps/SeafloorCavern_Room9/map.json coord_events (17,42) VAR_SEAFLOOR_CAVERN_STATE=0",
+  "data/maps/SeafloorCavern_Room9/scripts.inc:15-200 (leader: trainerbattle_no_intro TRAINER_SEAFLOOR_CAVERN_GRUNT_5; the legend wakes; ROUTE128_STATE 1, SOOTOPOLIS_STATE 1, FLAG_HIDE_WALLACE_SOOTOPOLIS/FLAG_HIDE_STEVEN_SOOTOPOLIS clear)",
+  "data/maps/SeafloorCavern_Entrance/map.json warp_events[1] (10,1) -> ROOM1",
+  "data/maps/Underwater_SeafloorCavern/map.json warp_events[0] (6,7) -> UNDERWATER4 (the cavern mouth)",
+  "constants/version.inc (Sapphire: SEAFLOOR_CAVERN_GRUNT_3 = SHELLY_2, _5 = ARCHIE_2)",
+]
+notes = "Sapphire branch (other: ../ruby/35-seafloor-cavern-maxie). Admin: TRAINER_SHELLY_2 (33): SHARPEDO 38, MIGHTYENA 38; leader: TRAINER_ARCHIE_2 (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43. Dive: walk_to dive = true (gba_world dive/emerge legs). The rooms: gba_puzzle.py (boulders, rocks, Room 6's currents). The boost puts Dive and Strength on the lead."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 37300
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 1
+map = "MAP_SEAFLOOR_CAVERN_ENTRANCE"
+dive = true
+on_battle = "flee"
+max = 20000
+note = "Mossdeep south, Surf Routes 127 -> 128, Dive (Route128 map.json dive connection -> MAP_UNDERWATER4), its water door (38,26) -> UNDERWATER_SEAFLOOR_CAVERN, surface there (setdivewarp MAP_SEAFLOOR_CAVERN_ENTRANCE 10,17: Underwater_SeafloorCavern/scripts.inc:35-36), Surf to the entrance's north warp (10,1) -> ROOM1 (5,18)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEAFLOOR_CAVERN_ROOM1"
+
+# Rooms 1, 2, 3 and 8 (Strength boulders, Rock Smash rocks): python3 tests/e2e/tools/gba_puzzle.py --game ruby
+# MAP_SEAFLOOR_CAVERN_ROOM1 5 18 6 2, ROOM2 12 19 5 2, ROOM3 4 15 8 1 --via 10,9 9,6, ROOM8 5 12 5 2. Pokeruby's way
+# runs 1 -> 2 -> 6 (currents) -> 3 -> 8 -> 9: Room 2's north-east warp (12,2) to Room 7 has no route (the solver
+# exhausts the boulders), its north-west (5,2) leads to Room 6.
+[[step]]
+do = "steps"
+route = [[5, 17], [4, 17], [4, 10]]
+
+[[step]]
+do = "steps"
+route = [[4, 10]]
+face = "right"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[5, 10]]
+
+[[step]]
+do = "steps"
+route = [[5, 10]]
+face = "down"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "down"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 11], [11, 11]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[12, 11], [12, 7], [9, 7], [9, 5], [7, 5], [7, 3], [6, 3], [6, 2]]
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEAFLOOR_CAVERN_ROOM2"
+
+[[step]]
+do = "steps"
+route = [[12, 17], [11, 17], [11, 15]]
+
+[[step]]
+do = "steps"
+route = [[11, 15]]
+face = "up"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[11, 14], [15, 14], [15, 12]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[15, 11]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[15, 10], [12, 10]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[11, 10]]
+
+[[step]]
+do = "steps"
+route = [[11, 10]]
+face = "up"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[11, 7]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[11, 6], [8, 6]]
+
+[[step]]
+do = "steps"
+route = [[8, 6]]
+face = "left"
+interact = true
+note = "Rock Smash: A + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[7, 6]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[6, 6], [6, 3], [5, 3], [5, 2]]
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEAFLOOR_CAVERN_ROOM6"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 19
+surf = true
+note = "Room 6 is a pool of currents: off the arrival mat, Surf (A + YES) onto (11,19)"
+
+[[step]]
+do = "steps"
+route = [[11, 18], [14, 16], [14, 17], [19, 11], [19, 10], [8, 12], [7, 12], [4, 8], [4, 1]]
+note = "the currents (MB_*_CURRENT, ridden: gba_puzzle.py --game ruby MAP_SEAFLOOR_CAVERN_ROOM6 11 19 4 1) to the north landing and its warp (4,1) -> ROOM3 (4,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEAFLOOR_CAVERN_ROOM3"
+
+[[step]]
+do = "steps"
+route = [[4, 14], [6, 14]]
+
+[[step]]
+do = "steps"
+route = [[6, 14]]
+face = "up"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[6, 13], [7, 13], [7, 12]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[8, 12], [8, 11]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[7, 11], [7, 10]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[7, 9], [8, 9]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[9, 9]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[10, 9], [10, 8], [11, 8], [11, 6], [9, 6], [9, 2], [8, 2], [8, 1]]
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEAFLOOR_CAVERN_ROOM8"
+
+[[step]]
+do = "steps"
+route = [[5, 11], [3, 11], [3, 8], [5, 8]]
+
+[[step]]
+do = "steps"
+route = [[5, 8]]
+face = "up"
+interact = true
+note = "Strength: A on the boulder + YES"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 7]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[4, 7], [4, 6]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 6]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 5]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[4, 5]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 5]]
+
+[[step]]
+do = "press"
+keys = "right"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[6, 5]]
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[6, 4]]
+
+[[step]]
+do = "press"
+keys = "left"
+hold = 24
+gap = 40
+note = "push the boulder"
+
+[[step]]
+do = "steps"
+route = [[5, 4], [5, 2]]
+
+[[step]]
+do = "wait_map"
+map = "MAP_SEAFLOOR_CAVERN_ROOM9"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 43
+note = "Room 9 from its north warp (5,4) down to below the leader's coord event"
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 42
+on_text = "stop"
+note = "coord (17,42) SEAFLOOR_CAVERN_STATE 0"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_ARCHIE_2 (34): MIGHTYENA 41, CROBAT 41, SHARPEDO 43"
+
+[[step]]
+do = "advance_text"
+shot = "legend-awakes"
+note = "the legend wakes and leaves; the teams leave"
+
+[expect]
+map = "MAP_ROUTE128"
+badges = 7
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_BADGE04_GET", "FLAG_BADGE05_GET", "FLAG_BADGE06_GET", "FLAG_BADGE07_GET", "FLAG_HIDE_EVIL_LEADER_SEAFLOOR_CAVERN"]
+flags_clear = ["FLAG_HIDE_WALLACE_SOOTOPOLIS", "FLAG_HIDE_STEVEN_SOOTOPOLIS"]
+battles = 1
+
+[expect.vars]
+VAR_SOOTOPOLIS_STATE = 1
+VAR_ROUTE128_STATE = 2  # Room 9 sets 1 (SeafloorCavern_Room9/scripts.inc:194); Route 128 OnFrame state 1 plays Steven's scene -> 2 (Route128/scripts.inc:12,84)

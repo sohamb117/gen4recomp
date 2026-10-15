@@ -1,0 +1,14 @@
+# Scenario 8 (Diamond/Pearl): the GTS with no access point. D/P run their own
+# recompiled DWC and Auto Connect against the port's WM model
+# (games/platinum/pc/src/pc_wm.c), which scans and finds no parent or access
+# point: after about 250 frames of "Connecting to Nintendo Wi-Fi
+# Connection..." the game's own DWC shows "No access point in range ...
+# (50099)" (arm9 overlay 4 ov04_021ECCEC: -50099 when nothing was found,
+# -51099 when a configured access point was), then B, NO on "Reconnect?",
+# and the receptionist sends the player back to the field.
+RECIPE=recipes/gts.recipe
+SCHEDULE=schedules/gts.press
+FRAMES=5600
+SHOTS=3300,3450,3550,3700,3800,3950,4100,4200,4400,4800,5599
+EXPECT_MAP=28
+EXPECT_LOG='stored 524288-byte save'

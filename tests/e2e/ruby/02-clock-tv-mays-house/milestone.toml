@@ -1,0 +1,176 @@
+# Proves the house intro: upstairs (2F OnTransition INTRO_STATE 4 -> 5), the 2F wall clock (A, UP to YES, A), Mom
+# upstairs, the Petalburg Gym TV report on 1F, out to Littleroot, May's mom (YoureNewNeighbor) and May in her room
+# (RIVAL_STATE 3, LITTLEROOT_STATE 1).
+# Start: Brendan's 1F -> end: MAP_LITTLEROOT_TOWN outside May's door (14,9).
+title = "Set the wall clock, Dad on TV, meet May next door"
+priority = "P0"
+version = "both"
+estimate = 3954
+refs = [
+  "data/maps/LittlerootTown_BrendansHouse_1F/map.json warp_events[2] (8,2) -> 2F",
+  "data/maps/LittlerootTown_BrendansHouse_2F/scripts.inc:6-9 (OnTransition INTRO_STATE 4 -> players_house.inc:1-4: 5)",
+  "data/maps/LittlerootTown_BrendansHouse_2F/map.json bg_events wall clock (5,1)",
+  "data/scripts/players_house.inc:46-76 (wall clock: ClockIsStopped, StartWallClock, INTRO_STATE 6, FLAG_SET_WALL_CLOCK, Mom upstairs)",
+  "src/wallclock.c:740-743 (A ends the setting), :777 (YES/NO cursor starts on NO), :786-788",
+  "data/maps/LittlerootTown_BrendansHouse_1F/scripts.inc:55,83 (OnFrame INTRO_STATE 6 -> PetalburgGymReport)",
+  "data/scripts/players_house.inc:148-176 (report male, INTRO_STATE 7)",
+  "data/maps/LittlerootTown/map.json warp_events[0] (14,8) -> MAYS_HOUSE_1F",
+  "data/maps/InsideOfTruck/scripts.inc:33 (male: VAR_LITTLEROOT_HOUSES_STATE_2 1)",
+  "data/maps/LittlerootTown_MaysHouse_1F/scripts.inc:47,90-105 (YoureNewNeighbor: FLAG_MET_RIVAL_MOM, HOUSES_STATE_2 2)",
+  "data/maps/LittlerootTown_MaysHouse_2F/scripts.inc:7,14-17 (May moved to (7,2) until FLAG_DEFEATED_RIVAL_ROUTE103)",
+  "data/maps/LittlerootTown_MaysHouse_2F/scripts.inc:29-45 (May: RIVAL_STATE 3, LITTLEROOT_STATE 1, removeobject)",
+  "data/maps/LittlerootTown/scripts.inc:20-21,53-55 (OnTransition RIVAL_STATE 3 -> FLAG_RIVAL_LEFT_FOR_ROUTE103)",
+  "data/maps/LittlerootTown/scripts.inc:74,172-176 (OnFrame INTRO_STATE 7 -> BeginDexUpgradeScene: 8, on the first step outside after the TV)",
+  "tests/rse/rs-1-home.sched, tests/rse/rs-2-rival.sched",
+]
+notes = "rs-1-home.sched/rs-2-rival.sched play the same beats by presses (first_battle.sh legs 1-2 on Ruby and Sapphire). R/S differ from Emerald: May herself is upstairs (object 1, no Poke Ball), the trigger var is VAR_LITTLEROOT_HOUSES_STATE_2 (male) and the town var VAR_LITTLEROOT_STATE. The clock's YES/NO opens on NO (src/wallclock.c:777 InitMenu cursor 1), hence UP before A."
+
+[start]
+from = "prev"
+
+[run]
+frames = 6000
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 2
+note = "1F stairs (warp 2) -> 2F (7,1); 2F OnTransition INTRO_STATE 4 -> 5"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_2F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+face = "up"
+interact = true
+note = "wall clock bg event (5,1) -> LittlerootTown_BrendansHouse_2F_EventScript_1B69D3 (players_house.inc:46-65)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+until = "field=0"
+note = "ClockIsStopped (players_house.inc:61), until special StartWallClock's screen takes over the field"
+
+[[step]]
+do = "wait_frames"
+n = 90
+note = "the face's fade-in"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+shot = "clock-confirm"
+note = "accept the default time (src/wallclock.c:740-743 -> Task_SetClock3: 'Is this the correct time?')"
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+note = "YES/NO opens on NO (src/wallclock.c:777)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 20
+note = "YES -> Task_SetClock5, back to the field; INTRO_STATE 6 + FLAG_SET_WALL_CLOCK (players_house.inc:64-65)"
+
+[[step]]
+do = "advance_text"
+note = "Mom comes upstairs (object 14): HowDoYouLikeYourRoom (players_house.inc:78-89)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 1
+note = "2F stairs warp 0 -> 1F (8,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F"
+
+[[step]]
+do = "advance_text"
+shot = "tv-report"
+note = "1F OnFrame INTRO_STATE 6 -> PetalburgGymReport -> INTRO_STATE 7 (players_house.inc:148-176)"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 8
+note = "1F door mat (warp 1) -> Littleroot (5,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 8
+note = "May's house door (Littleroot warp 0) -> MAYS_HOUSE_1F (2,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_MAYS_HOUSE_1F"
+
+[[step]]
+do = "advance_text"
+note = "OnFrame HOUSES_STATE_2 1 -> YoureNewNeighbor: FLAG_MET_RIVAL_MOM, HOUSES_STATE_2 2 (LittlerootTown_MaysHouse_1F/scripts.inc:47,90-105)"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 2
+note = "stairs (warp 2) -> 2F (1,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_MAYS_HOUSE_2F"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "May (object 1, at (7,2) by her notebook) -> RIVAL_STATE 3, LITTLEROOT_STATE 1, May leaves (LittlerootTown_MaysHouse_2F/scripts.inc:29-45)"
+
+[[step]]
+do = "advance_text"
+shot = "may"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 1
+note = "2F stairs warp 0 -> 1F (2,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_MAYS_HOUSE_1F"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 8
+note = "door mat (warp 1) -> Littleroot (14,8); OnTransition RIVAL_STATE 3 -> FLAG_RIVAL_LEFT_FOR_ROUTE103"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_LITTLEROOT_TOWN"
+flags = ["FLAG_SET_WALL_CLOCK", "FLAG_HIDE_MACHOKE_MOVER_1", "FLAG_HIDE_MACHOKE_MOVER_2", "FLAG_MET_RIVAL_MOM", "FLAG_HIDE_MAY_UPSTAIRS", "FLAG_RIVAL_LEFT_FOR_ROUTE103"]
+
+[expect.vars]
+VAR_LITTLEROOT_INTRO_STATE = 8
+VAR_LITTLEROOT_HOUSES_STATE_2 = 2
+VAR_LITTLEROOT_RIVAL_STATE = 3
+VAR_LITTLEROOT_STATE = 1

@@ -1,0 +1,19 @@
+# Boost on 35's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# For TRAINER_LEADER_CANDICE (SNEASEL 40, PILOSWINE 40, ABOMASNOW 42, FROSLASS 44: Avalanche, Ice Shard, Blizzard,
+# Double Team, res/trainers/data/leader_candice.json) and the gym's ace trainers. The Grass/Ground lead (ice x4) lost
+# to her at lv74 and at lv85 (Froslass's Double Team and Blizzard), so a fire fighter joins: Infernape in slot 5,
+# sent in by the Candice fight's send = "best" when the lead falls; it stays for the league (Flamethrower, Close
+# Combat, Ice Punch for the dragons, Thunder Punch for the water types). HP and PP refilled.
+party-level 0 85
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_STONE_EDGE
+party-level 1 30
+party-level 2 60
+party-level 3 65
+party SPECIES_INFERNAPE 80 ITEM_NONE
+party-move 4 0 MOVE_FLAMETHROWER
+party-move 4 1 MOVE_CLOSE_COMBAT
+party-move 4 2 MOVE_ICE_PUNCH
+party-move 4 3 MOVE_THUNDER_PUNCH

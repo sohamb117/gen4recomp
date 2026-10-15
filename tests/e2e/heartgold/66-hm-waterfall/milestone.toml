@@ -1,0 +1,81 @@
+# Proves Waterfall in the field: Mt. Mortar's middle entrance from Route 42, Surf up the cave's lake to the foot of
+# the waterfall (row 22), A asks to use Waterfall (std_field_waterfall), YES, and the player climbs it.
+# Start: 29's end, MAP_NEW_BARK (684,394) -> end: MAP_MOUNT_MORTAR_1F_ENTRANCE (45,20), above the waterfall.
+title = "HM07 Waterfall: Mt. Mortar's waterfall"
+priority = "P0"
+version = "both"
+estimate = 7301
+refs = [
+  "games/heartgold/src/field_move.c:358-391 (FieldMove_CheckWaterfall: surfing, BADGE_RISING, FIELD_MOVE_CHECK_WATERFALL)",
+  "games/heartgold/src/metatile_behavior.c:430-432, include/constants/metatile_behavior.h:27 (TILE_BEHAVIOR_WATERFALL 0x13)",
+  "games/heartgold/files/fielddata/script/scr_seq/scr_seq_0146.s:675-722 (scr_seq_0146_005 std_field_waterfall, scr_seq_0146_012 std_menu_waterfall)",
+  "zone_event 041_R42 (MAP_ROUTE_42) warp 3 (464,175) -> MAP_MOUNT_MORTAR_1F_ENTRANCE warp 1 (45,50); MAP_MOUNT_MORTAR_1F_ENTRANCE behaviour 0x13 tiles (38..52,22)",
+  "chain 20 (Ecruteak's east gate (415,175), the gatehouse (10,7), Route 42), 26 (HM07 at the Ice Path's end), 32 (Tohjo Falls climbed with walk_to surf = true)",
+]
+notes = "Feraligatr (slot 5) knows Waterfall. walk_to surf = true climbs a waterfall it plans up (bots.py Terrain.field_move 'waterfall': A + YES on the bump). Mahogany's side of Route 42 did not plan west (a walk from Mahogany stalled at (525,173)): the way in is Ecruteak's east gate, as chain 20. Scouted on HeartGold 29's end save: Mt. Mortar at 12481, the foot of the falls (45,23) at 13918, the field move at 13943, (45,20) at 14398 (two wild battles fled). Measured: HeartGold 7301 frames, SoulSilver 5706 (wild battles fled on the way vary it)."
+
+[start]
+from = "29-new-bark-elm-master-ball"
+
+[run]
+frames = 11000
+
+[[step]]
+do = "fly"
+map = "MAP_ECRUTEAK"
+
+[[step]]
+do = "walk_to"
+x = 415
+z = 175
+on_battle = "flee"
+note = "Ecruteak's east gate (warp 10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_42_ECRUTEAK_GATEHOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 7
+note = "-> Route 42"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE_42"
+
+[[step]]
+do = "walk_to"
+x = 464
+z = 175
+surf = true
+on_battle = "flee"
+note = "Mt. Mortar's middle entrance (warp 3)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MOUNT_MORTAR_1F_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 45
+z = 23
+surf = true
+on_battle = "flee"
+shot = "below-falls"
+note = "Surf up the lake to the foot of the waterfall"
+
+[[step]]
+do = "walk_to"
+x = 45
+z = 20
+surf = true
+on_battle = "flee"
+shot = "above-falls"
+note = "up the falls: bump, A, YES (Feraligatr's Waterfall)"
+
+[expect]
+map = "MAP_MOUNT_MORTAR_1F_ENTRANCE"
+position = [45, 20]
+log = ["walk_to: waterfall ahead, using the field move"]

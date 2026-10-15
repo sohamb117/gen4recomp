@@ -1,0 +1,6 @@
+# Boost on 05's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Replaces the Route 202 grind to 13: at 05's level the starter loses Barry's Route 203 battle
+# (TRAINER_RIVAL_ROUTE_203_TURTWIG: STARLY 7, CHIMCHAR 9). Razor Leaf in slot 3 is the move 07/08 use on
+# Roark (GEODUDE 12, ONIX 12, CRANIDOS 14: x4, x4, x2) and the starter would learn it at 13 by grinding.
+party-level 0 16
+party-move 0 3 MOVE_RAZOR_LEAF

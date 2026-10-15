@@ -11,17 +11,21 @@ Status: **done** shown working in the packaged macOS app (evidence linked) ·
 progress · **no** not started · **n/a** no counterpart (reason given).
 
 Evidence names are cases in [docs/evidence/README.md](evidence/README.md)
-(screenshots in `build/evidence/`, made by `tests/mac/feature_matrix.py` on
-`build/dist/nativeplat-macos-arm64.zip`, 2026-10-04). Platinum rows: main
-904498583; Diamond/Pearl rows and Windows: main 33e316444.
+(screenshots made by `tests/mac/feature_matrix.py`). The Platinum, Diamond
+and Pearl rows were re-run on 2026-10-11 on the ten-core macOS package built
+from main c8948448c (`~/Downloads/nativeplat/nativeplat-macos-arm64-c8948448c.zip`,
+sha256 `58fa10e2ea39e12bfd3fef146e05ad3e5fdc4c8b43c8295090510f1258d94c12`);
+that pass's screenshots, logs and `matrix.json` are in
+`build/evidence/dppt-app-c8948448c/`. Windows rows: main 80dc9d8c7 (not
+re-run in this pass).
 
-**All three games** were run in the packaged app (main 33e316444 plus this
-shell): the in-game rows were run on Diamond, Pearl and Platinum from saves
-minted with `tests/gameplay` recipes (`--game diamond|pearl` runs of
-`tests/mac/feature_matrix.py`; Diamond and Pearl evidence names carry a
-`diamond-` / `pearl-` prefix). Shell rows that do not depend on the game
-(launcher, slots, options UI, sync, updater, skins, relay) were exercised
-with Platinum data and run the same code for every game.
+**All three games** were run in the packaged app: every `ds` case of
+`tests/mac/feature_matrix.py` (33) ran with `--game platinum`, `--game diamond`
+and `--game pearl`, 33/33 ok on each game, from saves minted with
+`tests/gameplay` and `tests/link` recipes on the gate cores. Diamond and Pearl
+evidence names carry a `diamond-` / `pearl-` prefix. The shell cases (launcher,
+slots, sync, skins, touch editor, URL) ran in each game's pass with that game's
+ROM and save; the relay, updater, UI scale and About cases use no game data.
 
 ## Launcher and import
 
@@ -31,7 +35,7 @@ with Platinum data and run the same code for every game.
 | ROM import with SHA-1 verification | US dumps; Platinum rev 0 recognised and refused | done | done | done | launcher_import |
 | File picker and drag-and-drop import | SDL3 dialog + drop | done | done | done | launcher_import (2 drops, 1 dialog) |
 | Generated cache from ROM | Not needed: the core reads the cartridge filesystem at runtime | n/a | n/a | n/a |  |
-| Save slots, Continue / Edit / Delete | Named slots: new, duplicate, rename, export/import .sav, delete | done | done | done | slots, continue; diamond-continue, pearl-continue |
+| Save slots, Continue / Edit / Delete | Named slots: new, duplicate, rename, export/import .sav, delete | done | done | done | slots, continue; diamond-slots, diamond-continue, pearl-slots, pearl-continue |
 | Custom carts | Sealed mod package sets bound to a slot | done | done | done | carts; diamond-carts, pearl-carts |
 | Import inbox (mobile Documents) | Same on iOS | no (iOS deferred) | no | no |  |
 
@@ -67,9 +71,9 @@ with Platinum data and run the same code for every game.
 |---|---|---|---|---|---|
 | Keyboard / gamepad defaults, rebinding | Every action, 3 keys + 1 pad button | done | done | done | controls |
 | Touch: mouse and fingers | Stylus on the bottom screen in every layout | done | done (touch bag in tests/gameplay) | done (touch bag in tests/gameplay) |  |
-| On-screen touch pad, layout editor | Same, per orientation | done | shell | shell | touch_editor |
-| Touch skins | Delta `.deltaskin` (hand-made test skin) | done | shell | shell | skin |
-| Speed hotkeys up to very high | `1` cycles 1x-8x/uncapped; F hold, G toggle | done (1800 iterations ran 6642 frames with G) | done (6648 frames) | done | speed; diamond-speed, pearl-speed |
+| On-screen touch pad, layout editor | Same, per orientation | done | done | done | touch_editor; diamond-touch_editor, pearl-touch_editor |
+| Touch skins | Delta `.deltaskin` (hand-made test skin) | done | done | done | skin; diamond-skin, pearl-skin |
+| Speed hotkeys up to very high | `1` cycles 1x-8x/uncapped; F hold, G toggle | done (1800 iterations ran 6642 frames with G) | done (6648 frames) | done (6648 frames) | speed; diamond-speed, pearl-speed |
 | F1 quick save / F2 quick load | The game's own save without its menu; reboot from it | done | done | done | quicksave; diamond-quicksave, pearl-quicksave |
 
 ## Saves
@@ -78,7 +82,7 @@ with Platinum data and run the same code for every game.
 |---|---|---|---|---|---|
 | Normal save, atomic writes, backups | Backup chip image, temp + rename, `.bak` | done | done | done | slots, editor; diamond-editor, pearl-editor |
 | Semantic checkpoints | 4 in-memory snapshot slots (F5/F6/F7) and hold-to-rewind | done | done (snapshot 1 loaded; rewind depth 286 to 271) | done (snapshot 1 loaded; rewind depth 286 to 271) | snapshots; diamond-snapshots, pearl-snapshots |
-| Cloud / device sync | Folder sync, three-way with conflict chooser | done | shell | shell | sync |
+| Cloud / device sync | Folder sync, three-way with conflict chooser | done | done (Diamond slot mirrored, conflict chooser) | done (Pearl slot mirrored, conflict chooser) | sync; diamond-sync, pearl-sync |
 | Portable mode (`portable.txt`) | Same | done | done | done | portable (every case runs portable) |
 
 ## Save editor
@@ -93,14 +97,14 @@ with Platinum data and run the same code for every game.
 
 | Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
 |---|---|---|---|---|---|
-| Save import/export | Raw 512 KiB `.sav` / DeSmuME `.dsv` | done | shell | shell | slots |
+| Save import/export | Raw 512 KiB `.sav` / DeSmuME `.dsv` | done | done (import, export byte-identical) | done (import, export byte-identical) | slots; diamond-slots, pearl-slots |
 | Cross-generation transfer | Pal Park: GBA cart + save in the slot | done (MIGRATE FROM EMERALD on the main menu) | done (MIGRATE FROM EMERALD) | done (MIGRATE FROM EMERALD) | palpark; diamond-palpark, pearl-palpark |
 
 ## Link and online
 
 | Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
 |---|---|---|---|---|---|
-| LAN link battles/trades | DS local wireless over LAN (Union Room, Underground) | done (two installs on one Mac, see `lan`); headless: tests/link trade, battle, Underground | done (Diamond app meets a Platinum app; D↔D, D↔P, D↔Pt trades headless in tests/link) | done (Diamond app meets a Platinum app; D↔D, D↔P, D↔Pt trades headless in tests/link) | lan; diamond-lan |
+| LAN link battles/trades | DS local wireless over LAN (Union Room, Underground) | done (two installs on one Mac meet in the Union Room, see `lan`); headless: tests/link trade, battle, Underground | done (a Diamond app meets a Platinum app in the Union Room; the free-running app trade did not complete on c8948448c, see diamond-lan; D↔D, D↔P, D↔Pt trades headless in tests/link) | done (a Pearl app meets a Platinum app in the Union Room; the app trade did not complete, see pearl-lan; trades headless in tests/link) | lan; diamond-lan, pearl-lan |
 | Relay lobby, PINs | UDP relay rooms keyed by PIN | done (two installs, both "1 in range") | shell (relay transport is game-independent) | shell (relay transport is game-independent) | relay |
 | Spectators, tournaments |  | no | no | no |  |
 | Fast-forward locked to 1x in link play | `NP_STAT_LINK_ACTIVE` | done (snapshots/rewind/quick load refused while active) | core | core |  |
@@ -126,13 +130,136 @@ with Platinum data and run the same code for every game.
 
 | Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
 |---|---|---|---|---|---|
-| macOS build | Self-contained ad-hoc signed app zip, all three cores | done | done (boots) | done (boots) | games_boot; `tools/package_macos.sh --test` |
-| Windows build | exe zip, all three cores (zig cross-build) | done (title under wine) | done (title under wine) | done (title under wine) | windows (`tools/package_windows.sh --test`) |
+| macOS build | Self-contained ad-hoc signed app zip, ten cores (D/P/Pt, B/W, HG/SS, R/S/E), package c8948448c | done | done | done | games_boot, diamond-games_boot, pearl-games_boot; `tools/package_macos.sh --test` (pkg-mac10) |
+| Windows build | exe zip, all six cores (zig cross-build) | done (title under wine) | done (title under wine) | done (title under wine) | windows, pkg-win (`tools/package_windows.sh --test`) |
 | iOS IPA |  | no (needs Xcode) |  |  |  |
-| URL launch | `nativeplat://launch?game=&slot=` through LaunchServices | done | shell | shell | url_open, launch |
-| Launch flags | `--game`, `--slot`, `--launcher`, `--editor` | done | done | done | launch, games_boot |
+| URL launch | `nativeplat://launch?game=&slot=` through LaunchServices | done | done | done | url_open, launch; diamond-url_open, pearl-url_open |
+| Launch flags | `--game`, `--slot`, `--launcher`, `--editor` | done | done | done | launch, games_boot; diamond-launch, pearl-launch |
 | In-place updater | Release check + verified download (never self-replaces) | done |  |  | updater |
 | UI scale, reduced motion, About |  | done |  |  | ui_scale, about |
+
+## Story and side systems
+
+| Gen1Recomp | DPPt equivalent | Platinum | Diamond | Pearl | Evidence |
+|---|---|---|---|---|---|
+| Story and side systems (e2e) | The bot-driven milestones of tests/e2e on the core (headless) | core: chain.txt 01-56, new game to the credits and the game's own reset; systems.txt 31b, 60-81, 90-118 (HMs, rods, honey tree, Day Care and hatching, evolution, trades, contest, Poffins, Amity Square, Great Marsh, Trophy Garden, Game Corner, Underground, VS Seeker, Pokétch, Battle Zone, Battle Frontier, Global Terminal offline, TV, National Dex, Pal Park, Hall of Fame PC, roamers, legendaries) | core: chain.txt 01-59b to the credits and the reset; systems.txt 68-75, 78, 80, 81, 90-112 (rods, honey tree, Day Care and hatching, evolution, NPC trade, Amity Square, Trophy Garden, Game Corner, Underground, Battle Zone, Battle Tower, GTS offline, TV, VS Seeker, Pokétch, roamers, legendaries, National Dex, Pal Park, Hall of Fame PC); trade evolution by link (`dp_trade_evolve`); **not yet**: 60-67 (HM field uses), 76 (contest first place), 77 (Poffins: a guest trap, tests/e2e/DEFECTS.md), 79 (Great Marsh); exclusions in diamond/systems.txt | core: Diamond's dirs with its own 50 and 103 (Palkia) | `tests/e2e/run.py --game <game>` (+ `--systems`); sheets in `build/evidence/dppt-main/<game>-<milestone>/` |
+
+## Ruby / Sapphire / Emerald (GBA)
+
+Status as above; **core** rows are shown headless (`np_headless`,
+`tests/rse/first_battle.sh`, `tests/dp/regress.sh` e-/r-/s- cases);
+**app** rows ran in the packaged macOS app (`tests/mac/feature_matrix.py
+--game ruby|sapphire|emerald` on the zip built from main 80dc9d8c7, the 12
+GBA cases, all ok on each game). Evidence is in `build/evidence/` (outside
+git). Branch rse, 2026-10-07.
+
+| Feature | GBA equivalent | Ruby | Sapphire | Emerald | Evidence |
+|---|---|---|---|---|---|
+| Boot, intro, new game | Boot to Littleroot and the house | core | core | core | regress r-/s-/e-littleroot |
+| First battle | Route 101: Birch's bag, Torchic, the wild battle won | core (Poochyena; lab, map 260) | core (Poochyena) | core (Zigzagoon) | first_battle.sh; `*-01-first-battle.png` |
+| Normal save / CONTINUE | The game's own flash save, CONTINUE from the title | core | core | core | first_battle.sh (continue) |
+| F1 quick save, F2 F2 quick load | The game's own save from the field (refused elsewhere); quick load reboots from it | app (toast "Saved", slot changed; F2 F2 rebooted) | app | app | first_battle.sh; `<game>-gba_quicksave-*.png` |
+| Snapshots, rewind | Core snapshots (`np_core_state_*`), 17.5 MB each | app (F5/F7, F6 slot 2, rewind depth) | app | app | first_battle.sh (state); `<game>-gba_snapshots-*.png` |
+| Fast-forward, speed | Shell speed keys, game-independent | app (4x and G toggle: guest frames > iterations) | app | app | `<game>-gba_speed-*.png` |
+| Save slots, import/export | 128 KiB flash `.sav` (mGBA/VBA), mGBA's +16-byte RTC record dropped | app (import, Continue; unit-tested) | app | app | test_shell (sav_footer); `<game>-gba_slots-*.png` |
+| Screen layout | One 240x160 screen: rotation, integer/fit scale, effects | app (fit, rotation 90, integer+linear, LCD) | app | app | `<game>-gba_layouts-*.png` |
+| Render scale / widescreen 3D | No 3D on the GBA | n/a | n/a | n/a |  |
+| Music / SFX volume | Per m4a channel owner: BGM player's tracks (DirectSound and PSG) vs the SE players and cries | core (battle: both 256 rms 2267; BGM 0: 998; SE 0: 2035; both 0: 0); app | app | app | np_headless -o bgm_volume/se_volume; `<game>-gba_audio-*` |
+| Cries | m4a DPCM (compressed) and reversed voices mixed | core (DPCM decode bit-exact vs cry_poochyena.wav) | core | core |  |
+| Instant text | `NP_OPT_TEXT_INSTANT`: text printers print to the next wait (patches/text.c.patch) | core | core | core | `ruby-instant-text.png`, `emerald-instant-text.png` |
+| Touch skins | Delta `.deltaskin` with `com.rileytestut.delta.game.gba`, own choice per console (`skin_gba`) | app (dropped GBA skin, landscape and portrait) | app | app | `<game>-gba_skin-*.png` |
+| On-screen touch pad, editor | The DS layout without X/Y (not drawn, hit, picked or selected: `NP_TC_HIDE_GBA`) | app (pad A/B only; Tab skips X/Y; layout saved) | app | app | `<game>-gba_touch-*.png`, test_shell |
+| Shell autotest | `NP_AUTOTEST rom=` on the real renderer | shell | shell | shell | `*-shell-autotest.png` |
+| Mods / custom carts | Data packages: `mod.toml` + `<game>.ips` applied to the ROM at boot (`gba_mods.c`; the code is compiled, so data only); per-game `mods/<game>/`, carts pin the set | app (install .zip, menu patched; cart sealed, bound, boots the patch) | app | app | `*-mod-menu.png` vs `*-vanilla-menu.png`, `<game>-gba_mods-*`, `<game>-gba_carts-*` |
+| nativeplat:// URL | Launch a GBA slot from a URL | app | app | app | `<game>-gba_launch-url.png` |
+| Mystery Gift / e-Reader | n/a: Mystery Event needs an e-Reader/link partner distributing events that no longer exist; no offline event writer is in scope |  n/a | n/a | n/a |  |
+| Link cable trades/battles | SIO multi-player as an exact synchronous bus over `np_host_net_*` (`gba_link.c`; LAN/relay/loopback) | core: trade with Sapphire and with Emerald (both saves hold the swapped Pokemon), Colosseum battle with Sapphire (same frames and Win/Loss screen on both) | core (trade, battle) | core (trade with Ruby, Direct Corner) | `tests/link/run_gba_link_tests.py`; `build/evidence/rse/link-trade-rs.png`, `link-trade-re.png`, `link-battle-rs.png` |
+| macOS app / Windows build | All six cores in each package (main 80dc9d8c7): macOS arm64 zip, Windows x64 zig cross-build | app (package --test title; the 12 GBA cases on the packaged app); Windows: title under wine | same | same | `build/evidence/pkg-mac/<game>-arm64.png`, `pkg-win/shot-<game>.png`; docs/evidence/README.md |
+
+## Black / White and HeartGold / SoulSilver
+
+Where the cores are (docs/BW_PLAN.md, docs/HANDOFF-hgss.md): Black and White
+play the whole story on the core with the ARM7 VBlank count (build/core-bwm2):
+the e2e chain (tests/e2e/black|white/chain.txt) runs from a new game through
+the credits (32 ends in the game's own reset) and the post-credits lab (34),
+and the 29 side systems in each systems.txt pass, Landorus by a Black ↔ White
+link trade (docs/BW_PLAN.md "The chain and the side systems on the VBlank-count
+core", "The post-game trade"; evidence `build/evidence/bw/<game>-<milestone>/`).
+HeartGold
+and SoulSilver play the whole story too: the e2e chain
+(tests/e2e/heartgold/chain.txt; soulsilver/chain.txt runs heartgold's dirs
+with its own 31, the Whirl Islands and Lugia) runs on both games from a new
+game on a blank chip through Lance, the Hall of Fame, the credits and the
+game's reset (38; tests/e2e/README.md; the contact sheets in the
+nativeplat-hgss-e2e checkout's `build/e2e/<game>/<milestone>/`). Of the 43
+side systems in each systems.txt, 41 pass on both games: the HMs (Rock Climb
+after the Earth Badge), Headbutt trees, the Old, Good and Super Rods, the Day Care and hatching,
+evolution, trades, the PC, the Bug-Catching Contest, Pokéathlon, Safari Zone,
+Apricorns, the Ruins of Alph puzzle, the walking Pokémon, the phone, the
+Battle Tower, Voltorb Flip, the Kanto post-game (the S.S. Aqua, the eight Kanto
+Gym Leaders, Blue the eighth, Red on Mt. Silver) and the legendaries (HeartGold's
+Lugia and Kyogre, SoulSilver's Ho-Oh and Groudon, Raikou caught roaming on both,
+Steven's Latias/Latios roamer); 106 (Pal Park) and 107 (the Pokéwalker) are
+references for run_features. 70, 71, 72 and 87 need a core from main c7d3ca1a29 on (the fishing trace,
+in_battle_app), and 87 needs the armrec extended-palette fix (tests/e2e/DEFECTS.md: the Battle
+Frontier's rooms drew black);
+evidence `build/evidence/hgss-sys/<game>-<milestone>/`. HeartGold field checks use a
+save at New Bark's west exit (`NP_HG_FIELD_SAVE`); HeartGold makes its music
+since main 9bfca2d74 (the sound heap in the port window).
+
+Status as above, plus **not yet** (what it needs is said). **core**:
+`tests/bwhgss/parity.sh` (np_headless; frames and logs in
+`build/evidence/bwhgss/<game>/`). **app**: `tests/mac/feature_matrix.py --app
+build/app-bwhgss/nativeplat.app --game <game>` (the 15 `n2_*` cases) on a
+development build of the app with only these four cores (NP_CORE=real from the
+cores' `.wasm`, 2026-10-08); evidence `build/evidence/<game>-n2_<case>-*`.
+B/W in-game cases run in the bedroom from parity.sh's save (CONTINUE), HG/SS's
+at ~1600 frames (the intro after the title). **shell**: the shell tests on
+synthetic saves (`shell_editor_bw`, `shell_editor_hgss`, `shell_unit`). Black's
+and White's columns are the same unless said; so are HeartGold's and
+SoulSilver's.
+
+| Feature | Black | White | HeartGold | SoulSilver | Evidence / what it needs |
+|---|---|---|---|---|---|
+| Launcher card, ROM import with SHA-1, drop | app | app | app | app | n2_import (drop: "Imported"), n2_boot (card → New → OK → title) |
+| Story and side systems (e2e) | core (build/core-bwm2): chain.txt 01-32 to the credits and the game's own reset, 34 after them; systems.txt's 29 systems (HMs, fishing, day care and hatching, evolution, trades, PC, Battle Subway, Hall of Fame, Musical, Entralink, Royal Unova, TV, Black City, the legendaries, Tornadus, Landorus by link trade); `tests/e2e/run.py --game black` (+ `--systems`) | core (the same; White Forest, Thundurus, its own 27/32/34 twins) | core: chain.txt 01-38 to Lance, the Hall of Fame, the credits and the game's own reset; systems.txt's 41 of 43 systems (HMs, Headbutt, the three rods, Day Care and hatching, evolution, trades, PC, Bug-Catching Contest, Pokéathlon, Safari Zone, Apricorns, Ruins of Alph, walking Pokémon, phone rematch, Battle Tower, Voltorb Flip, the Kanto leaders, Blue, Red, Lugia, Kyogre, Raikou, Steven's Latias); the trade evolution by link (hgss_trade_evolve); `tests/e2e/run.py --game heartgold` (+ `--systems`); **not yet**: 106/107 (Pal Park, Pokéwalker: run_features) | core (the same; its own 31 (the Whirl Islands, Lugia), 100 (Ho-Oh), 102 (Groudon)) | `build/evidence/bw/<game>-<milestone>/` (contact sheets, end saves); HG/SS: `build/evidence/hgss-sys/<game>-<milestone>/` and `build/evidence/hgss-sys/link-hgss_trade_evolve/`, the chain's sheets in the nativeplat-hgss-e2e checkout's `build/e2e/<game>/`; tests/e2e/PLAN.md; docs/BW_PLAN.md "The chain and the side systems on the VBlank-count core" |
+| Generated cache from ROM | n/a | n/a | n/a | n/a | the core reads the cartridge at run time |
+| Save slots, Continue / Edit | app (import, Continue, Edit save...; macOS app c8948448c: the bedroom) | app (same) | app (macOS app c8948448c): Continue from the game's own save into New Bark, the .sav imported from the slots page and played, Edit save... on it (Ross, $3000, CYNDAQUIL Lv5) | app (same) | n2_slots, n2_continue, n2_editor (`<game>-n2_*`) |
+| Custom carts, mods | app: the packages (pc_modfs.c's, shared) served as a ROM view (`pc/src/pc_bw_romview.c`): claimed whole files and NARC members moved past the image's used area, their FAT entries patched; the Mods page installs the example package (`tests/bwhgss/bw_mod_example.py`, made from the player's ROM) and the main menu reads CONTINUE (MOD); sealed as a cart and bound to the slot it boots the same; with nothing selected the frames are the cartridge's | app | core: B/W's ROM view (`pc_bw_romview.c`, linked by games/heartgold/pc/Makefile.wasm) serves the example package (`tests/bwhgss/hgss_mod_example.py`, made from the player's ROM): the main menu reads CONTINUE (MOD), the rest of it unchanged (parity.sh `example package`, `bwhgss/heartgold/menu-mod/`); the app's Mods page is not yet shown with HG/SS | core (the same check) | n2_mods, n2_carts (B/W); parity.sh `mods` |
+| Screen layouts, swap, rotation, scaling | app | app | app | app | n2_layouts (8 layouts) |
+| Battle layout | app: NP_STAT_IN_BATTLE from overlay 93's battle POKECON (`pc/src/pc_bw_e2e.c`); Bianca's battle sets it at ~9920 and clears it at ~14030, and the app's `battle_layout = hybrid` draws the bedroom vertical, the battle hybrid (large top), the bedroom after it vertical again | app | core: `pc/patches/src/encounter.c.patch` (Encounter_New to _Delete); a wild Sentret in Route 29's grass sets in_battle at frame 3329, RUN ("Got away safely!") clears it at 4650 with the field back; the Battle Frontier's battles (no encounter) by `pc/patches/src/launch_application.c.patch` (Battle_Init to Battle_Exit): e2e 87's seven Battle Tower battles each raise and drop it | core: the same wild battle on Route 29 from SoulSilver's New Bark save (in_battle 0 -> 1 -> 0, RUN) | parity.sh `NP_STAT_IN_BATTLE`, `hgss-wild.sched`, B/W `battle` (`bw-battle.sched`); n2_battle_layout (`<game>-n2_battle_layout-{field,battle,after}.png`); `bwhgss/hooks/heartgold-wild-*.png`; the layout switch itself is shell |
+| Camera zoom / tilt | core: Platinum's zoom / tilt on B/W's GFL field camera (`pc/src/pc_bw_camera.c`, the field overlay's seven `GFL_G3D_CAMERA_Switching` calls through `pc/patches/<VER>/arm9/overlays/21/asm/*.s.patch`), the game's camera never written: the bedroom and Nuvema farther (zoom 512), closer (128), flatter (tilt 10 / 15 degrees), byte-identical to the plain frame once back at the defaults | core (same) | core: Platinum's zoom / tilt on HG's field draw (`pc/patches/src/field/fieldmap.c.patch`, `pc_hg_field.c` pc_np_camera_begin/_end), the game's camera never written: New Bark farther (zoom 512), closer (128), flatter (tilt 20 degrees), and byte-identical to the plain frame once back at the defaults | core: the same patch; New Bark changes with zoom / tilt and is byte-identical back at the defaults | parity.sh `camera zoom` (B/W: `camera` in the bedroom); `bwhgss/hooks/heartgold-camera-*.png`, `bwhgss/<black|white>/camera*/` |
+| Shader FX, performance presets | app | app | app | app | n2_effects |
+| V-Sync, frame cap, logic clock, UI scale | shell | shell | shell | shell | game-independent |
+| 3D render scale, widescreen 3D | app (renderer-side, no game hook: F12's core frame is 256x384 at 1x, 512x768 at render_scale 2, 684x768 with widescreen, the bedroom's walls in full) | app (same sizes) | app (same sizes) + core in the field: New Bark at 512x768 and 342x384, the wide frame showing more of the town | app (same sizes) + core in the field (512x768, 342x384) | n2_render (`<game>-n2_render-*-frame.png`); `build/evidence/bwhgss/hooks/` |
+| Screenshots (F12) | app | app | app | app | n2_screenshot (`screenshots/<game>-*.png`) |
+| Trainer Card, Pokédex diploma PNG | app/shell (editor on the save; export in shell_editor_bw) | same | shell (shell_editor_hgss exports both) | same | Unova / Johto badge names, 649 / 493 species |
+| ROM-derived music / SFX | core + app (title rms 7424; app output treble 1219) | same | core + app (title rms 6591, intro 3754, New Bark 2407; macOS app c8948448c: title peak 32768, treble 839) | core + app (title 6591, intro 3757; app: the same peak and treble) | parity.sh title / intro music; n2_audio |
+| Music / SFX volume | core + app: B/W's music players (0, 6) classed as music (`pc/src/pc_bw_snd.c`); title rms 7424, `bgm_volume=0` 46, `se_volume=0` 7491; macOS app c8948448c in the bedroom: output peak 32768, `bgm_volume = 0` 15360 (treble 1219 to 190) | core + app (same numbers; app bedroom 32768 to 15360) | core + app: the shared Platinum table already fits (players 1, 2, 7 music; PLAYER_OPED 8 has no sequences and nothing in src/ plays on it); title rms 6591, `bgm_volume=0` 0, `se_volume=0` 6295; New Bark 2407 -> 0 / 2407; app title peak 32768 to 0 | core + app (title: same numbers; app 32768 to 0) | parity.sh `title, bgm_volume 0` / `se_volume 0`; n2_audio-bgm0 / -se0 (`<game>-n2_audio-peaks.txt`) |
+| Music low-pass filter | app (treble 1219 to 895 at 3X) | app (1224 to 895) | app (macOS app c8948448c: treble 839 to 555) | app (839 to 555) | n2_audio-filter3 |
+| Speed hotkeys, fast-forward | app (4x: 7000 iterations ran 7294 frames; G: 28000) | app | app (1600 iterations ran 1894; G: 6400) | app | n2_speed |
+| Keyboard / gamepad rebinding | shell | shell | shell | shell |  |
+| Touch (stylus) | core (the SAVE item tapped in the X menu) | same | core (touch tutorial, naming done by taps) | same | parity.sh |
+| On-screen touch pad, layout editor | app | app | app | app | n2_touch |
+| Touch skins | app | app | app | app | n2_skin |
+| F1 quick save / F2 quick load | core + app: the game's own asynchronous save without the menu, the player held by a game event (`pc_bw_e2e.c` quicksave_frame); in the bedroom saved in ~85 frames, the player free again, np_save5 verifies; X-menu greying rules not applied | core + app (same) | core + app: `pc_hg_field.c` (Field_SaveGameNormal behind the start menu's gates) in New Bark: saved the same frame, np_save4 verifies, CONTINUE returns there | core + app: the same in New Bark, np_save4 verifies | parity.sh `F1 quick save in the bedroom`; `bwhgss/hooks/black-quicksave-005700.png`; n2_quicksave (macOS app c8948448c: toasts Saving... and Saved, B/W in the bedroom at 6801 / 6890, HG/SS in New Bark both at 2251) |
+| Normal save, atomic writes, backups | core + app (X menu save; np_save5 verifies both copies; CONTINUE) | same | core: the game's own save from the touch menu (SAVE, YES, overwrite YES; `tests/bwhgss/hgss-save.sched`): np_save4 verifies both blocks, CONTINUE comes back to New Bark; the slot file's atomic write and .bak are the shell's | core (same) | parity.sh save/continue, n2_continue; parity.sh `the game's own save` (HG/SS) |
+| Snapshots (F5/F6/F7), rewind | core + app (bedroom: 3/3 round trips; rewind depth 387 to 372) | app (401 to 386) | core + app (title and Oak: round trips; rewind 263 to 248) | same | parity.sh, n2_snapshots |
+| Folder sync | shell | shell | shell | shell | slot summaries read B/W and HG/SS saves |
+| Portable mode | app | app | app | app | every n2 case |
+| Save editor (embedded, standalone) | app (Edit save... on the real save: AAAAAAA, $3000) + shell | same | shell (synthetic saves; names and Add Pokemon with the HG ROM) | same | n2_editor; shell_editor_bw / hgss |
+| Save editor tabs, checks, undo, backups | shell | shell | shell | shell | shell_editor_bw / hgss, shell_unit |
+| Save import / export | app (import) + shell | same | shell (import from the HeartGold card) | same | n2_slots; shell_editor_hgss |
+| Cross-generation transfer | core + app: Poké Transfer. Black's Route 15 lab (overlay 107, the Download Play parent) sends `dl_rom/child_r_eng.srl` to a second station, the `poketransfer` core with a Gen 4 card in slot 1. The station's Download Play client (NitroSDK's multiboot child over `pc_wm.c`) receives the child, checks it against the recompiled image and boots it. The child reads the card, the six are dragged into the frame and caught in the capture minigame (stylus schedules recorded by `tests/poketransfer/catchbot.py`), then transferred. The card's save is written without them and Black's box 1 holds them with the same personality values; both saves verify after the games' own writes. Cards: Platinum and HeartGold. App: `nativeplat --poke-transfer --game <diamond|pearl|platinum|heartgold|soulsilver> [--slot S]` or a Gen 4 slot's *Poke Transfer station* makes a window the second DS. `n2_poke_transfer` runs two installs of an app built with the black and poketransfer guests (main 743b967694, `build/shell-pt`), free-running at 60 Hz over local wireless: the lab window's Download Play screen, and the child window receives the child (frames 7445-10148), verifies and boots it, and shows BOX 1 with the six from the Platinum card while the lab says "Please select Pokémon in the other DS system." (build/evidence/poketransfer/inc5-app/). The minigame and the transfer are not scripted there, because the two windows are not in lockstep. The station's screens stay black while it waits for and receives the download (a DS shows its Download Play menu). Not covered: Diamond, Pearl and SoulSilver cards, and White's lab (the child is byte-identical in White). The Relocator (`dl_rom/child2_r_eng.srl`, the movie-legendary download a Wonder Card opens) is out of scope | not run: the same child program and lab overlay, byte-identical to Black's; no White lab schedule recorded | core: Pal Park migration from a GBA cartridge (D/P's flash-chip model on HG/SS's CTRDG library, `pc/src/pc_hg_agb.c`): with the National Pokédex and an Emerald cartridge and save in the slot, the main menu shows MIGRATE FROM EMERALD; the first six of box 1 migrate, both games save, the six are the Pal Park's migrated Pokémon (np_save4 dump `migrated`) and the Emerald save keeps the other two (`tests/hgss/run_features.py pal_park`, np_headless `--gba-rom/--gba-save`). The Catching Show itself (the Pal Park in Fuchsia) is not played. Poké Transfer reads a HeartGold card (Black column) | core (the same check). Poké Transfer with a SoulSilver card: not run | run_features `pal_park`; `tests/poketransfer/run_tests.py` `link`, `transfer_platinum`, `transfer_heartgold`; build/evidence/poketransfer/ (REPORT.md, inc4-frames/, inc4-saves/, inc4-app-editor/, inc5-app/); `black-n2_poke_transfer` |
+| LAN / relay link | core: the C-Gear's beacons and the Union Room on pc_wm.c over np_host_net; a Black ↔ White trade and a battle-room Single Battle between two lockstep stations (`tests/link/run_link_tests.py --game black:white`: bw_trade, bw_battle; docs/BW_PLAN.md "Link play"); post-game trades between the chain's own players on the VBlank-count core: a Boldore traded to White evolves into Gigalith on arrival (trade evolution) and Thundurus comes to Black (bw_trade_landorus), Tornadus to White (bw_trade_landorus_white), both saves checked with np_save5; each feeds the e2e Landorus run (black/white 88-89: the Abundant Shrine, Landorus caught) | core (station B of the same scenarios; White's Landorus by bw_trade_landorus_white) | core: the Pokemon Center's Union Room on pc_wm.c over np_host_net (D/P's host fragment); a HeartGold ↔ SoulSilver trade (party slot 1 for slot 1, saved by both) and a Union Room battle (both enter two Pokemon, fought to the end, both back in the room) between two lockstep stations (`tests/link/run_link_tests.py --game heartgold:soulsilver`: hgss_trade, hgss_battle; and hgss_trade_evolve: B's KADABRA arrives on A and evolves into ALAKAZAM, A's save keeps it; recorded by `tests/link/linkbot.py`, the e2e bots on two `np_gp --lockstep` stations); across games, HeartGold ↔ Platinum, Diamond and Pearl trades in the Union Room (HeartGold's slot 1 for the other's slot 0, saved by both; `--game heartgold:platinum` / `heartgold:diamond` / `heartgold:pearl`: hg_platinum_trade, hg_diamond_trade, hg_pearl_trade) | core (same scenarios, station B) | the relay transport itself is shell |
+| Fast-forward locked in link play | core: NP_STAT_LINK_ACTIVE 1 in the Union Room and the battle room (pc_wm.c; run_link_tests' logs) | core | core: NP_STAT_LINK_ACTIVE 1 from entering the Union Room through the battle and back (pc_wm.c; hgss_battle's logs: `link_active 0 -> 1` at the room, 1 at the end) | core (same) |  |
+| Mystery Gift | shell: `.pgf` cards into the 12 slots; core: delivery in game (no unlock: MYSTERY GIFT is on the main menu from the first save), the Pokemon Center's deliveryman (Striaton, milestone 07's save; he stands there only while a card waits) hands out an item card (Rare Candy into the bag) and a Pokemon card (Pikachu into the party), both cards marked used and kept by the game's save (`tests/bwhgss/run_features.py mystery_gift`, np_save5 dump; passes on the VBlank-count core build/core-bwm2 from the chain's 07 end saves, 2026-10-10) | core (the same check, same run) | shell: `.pcd` / `.pgt` import; core: delivery in game, the Poke Mart's deliveryman hands out an item card (Rare Candy into the bag) and a Pokewalker course card (course 24 unlocked), both gifts consumed and kept by the game's save (`tests/hgss/run_features.py mystery_gift`, np_save4 dump's `pokewalker`) | same (core: the same check) | shell_editor_bw / hgss; `run_features.py mystery_gift` (tests/bwhgss, tests/hgss) |
+| Pokewalker | n/a (no Pokewalker) | n/a | core, no walker device: the cartridge's IR chip is modelled (53b112d0c), so CONNECT TO POKéWALKER on the main menu runs; on a save without a boxed Pokémon it stops with the game's own "Please come back once you have placed at least one Pokémon in a PC Box", back to the title, CONTINUE then works (headless, docs/HANDOFF-hgss.md); course gifts arrive by Mystery Gift (row above). A walker on the far end of the IR (its protocol and EEPROM) is not modelled | same |  |
+| Fix cartridge bugs | core: the documented Gen 5 bug at one decision point, the 0 damage glitch (a 1 the last "other" modifier lowers ends as 0): overlay 93's damage routine's last multiply through `pc/src/pc_bw_rules.c`; PC_NP_RULES_CHECK in Bianca's battle: 1 x 1/2 is 0 with the bit off, 1 with it on, other products unchanged; Bianca's battle hashes the same with the bit off and on (Black). The other Gen 5 bugs span turns or handlers and stay | core (same) | core: the documented Rage bug (a raging battler that picks another move keeps only rage) gated in the before-turn pass (`pc/patches/src/battle/battle_controller_player.c.patch`); PC_NP_RULES_CHECK: status2 0x800000 with the bit off, 0x1 (only the confusion) with it on. Platinum's other two have nothing to fix: HG/SS's multi-turn list already names Shadow Force, and no HG/SS trainer has a form | core (the same patch and check) | parity.sh `fix-bugs rule: Rage` (HG/SS) |
+| Instant text | core: the print stream task's glyph call goes to `PcBw_RushPrinter` (`pc/patches/<VER>/arm9/asm/ndsrec_arm9_006.s.patch`, `pc/src/pc_bw_text.c`); the X menu's "Would you like to save the game?" whole with YES/NO open at frame 22101 where the cartridge shows "W"; the save then completes and verifies; macOS app c8948448c: from the bedroom's X menu, "Woul" without it, whole with YES/NO with it, at frame 6905 | core + app (same) | core + app: Platinum's rule on HG's printer (`pc/patches/src/text.c.patch`); Oak's first page whole at frame 7285 where the cartridge shows "H", button waits kept, the intro still reaches naming | same patch; app (same) | parity.sh `instant text (Oak)`; `bwhgss/hooks/heartgold-text-*.png`; n2_instant_text (app frame 7290: "Huh?" vs the whole page) |
+| macOS app | app (packaged): the ten-core macOS package of main c8948448c (`tools/package_macos.sh --test`; `nativeplat-macos-arm64-c8948448c.zip`, sha256 `58fa10e2ea39e12bfd3fef146e05ad3e5fdc4c8b43c8295090510f1258d94c12`) boots to the title (frames=4950, no input), and the n2 cases run on it (Continue into the bedroom, slots, editor, audio, quick save, instant text) | app (same) | app (packaged, the same zip; title at frames=4800, the n2 cases with Continue into New Bark) | app (same) | docs/evidence/README.md "macOS package, ten cores" (pkg-mac10/<game>-arm64.png); `<game>-n2_*` |
+| Windows build | app (packaged, title only): the ten-core Windows package of main 0bb574077 (`tools/package_windows.sh --test`, nativeplat.exe under wine; zip sha256 `14b640be85b0813b85ed7e806b62e6055ab3b09308f0947d51575ef92c28336a`) boots to the title (frames=4950, no input) | app (same, title) | app (same; frames=4800, the intro runs to the title) | app (same, title) | docs/evidence/README.md "Windows package, ten cores"; `pkg-win10/shot-<game>.png` |
+| URL launch, launch flags | app | app | app | app | n2_launch; `--game/--slot` in every case |
 
 ## n/a, with reasons
 

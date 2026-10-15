@@ -1,0 +1,59 @@
+# Proves the TV: the player watches the house TV's emergency news (the roaming Latias/Latios report the Hall of
+# Fame readies with FLAG_SYS_TV_LATI): Event_TV counts GAME_STAT_WATCHED_TV, airs the news, starts the roamer
+# (InitRoamer, FLAG_LATIOS_OR_LATIAS_ROAMING) and takes the news off the air (FLAG_SYS_TV_LATI cleared).
+# Start: MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F (4,5) below the TV -> end: same tile.
+title = "TV: watch the emergency news on the house TV"
+priority = "P1"
+version = "both"
+estimate = 1273
+refs = [
+  "src/field_control_avatar.c:457-458 (MetatileBehavior_IsPlayerFacingTVScreen -> Event_TV)",
+  "data/scripts/tv.inc:1-15 (Event_TV: incrementgamestat GAME_STAT_WATCHED_TV, CheckForBigMovieOrEmergencyNewsOnTV)",
+  "src/tv.c:2115-2133 (CheckForBigMovieOrEmergencyNewsOnTV: the player's own house 1F and FLAG_SYS_TV_LATI -> 1)",
+  "data/scripts/tv.inc:43-55 (EventScript_1A6F0B: the news (.ifdef SAPPHIRE: Latios, else Latias), InitRoamer, clearflag FLAG_SYS_TV_LATI, setflag FLAG_LATIOS_OR_LATIAS_ROAMING)",
+  "data/scripts/hall_of_fame.inc:32-34 (ReadyLatiTVEvent: setflag FLAG_SYS_TV_LATI)",
+  "include/constants/game_stat.h:48 (GAME_STAT_WATCHED_TV 44)",
+  "include/constants/metatile_behaviors.h:138 (MB_TELEVISION 0x86: Brendan's house 1F (4,4))",
+]
+notes = "The other channels need a show the save lab cannot write: player-made shows (Pokemon Today, fishing advice) are created inactive and air only on a record-mixing partner's TV (src/tv.c:798-850,1259-1276 active = 0); the interview shows (src/tv.c:1085-1126 active = 1) need Easy Chat input at a reporter; FLAG_SYS_TV_START comes from Mauville (MauvilleCity/scripts.inc:8). The house TV's emergency news is the one broadcast a standalone start can air. Sapphire's news text names the other Lati (tv.inc:44-48 .ifdef SAPPHIRE); the state the script leaves is the same, so the dir is shared."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 2000
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 5
+face = "up"
+interact = true
+note = "facing the TV (4,4) from below: Event_TV (field_control_avatar.c:457-458)"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "tv-news"
+note = "the emergency news: EventScript_1A6F0B's message (tv.inc:43-48)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "tv-news-flying"
+note = "page 2: 'reports of a blue (Ruby) / red (Sapphire) FLYING POKeMON' (LittlerootTown_BrendansHouse_1F/text.inc:123-135)"
+
+[[step]]
+do = "advance_text"
+shot = "tv-off"
+note = "InitRoamer, FLAG_SYS_TV_LATI cleared, FLAG_LATIOS_OR_LATIAS_ROAMING, TurnOffTVScreen (tv.inc:49-54)"
+
+[expect]
+map = "MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F"
+position = [4, 5]
+flags = ["FLAG_LATIOS_OR_LATIAS_ROAMING"]
+flags_clear = ["FLAG_SYS_TV_LATI"]
+save = [
+  's["game_stats"][44] >= 1',
+]

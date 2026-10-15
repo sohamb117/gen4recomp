@@ -1,0 +1,243 @@
+#!/usr/bin/env python3
+"""
+ndsrec: static recompilation front end for NDS ROMs, from the ROM alone.
+
+    ndsrec.py info ROM.nds
+    ndsrec.py emit ROM.nds --out DIR [--symbols MAP] [--modules arm9,ov005]
+    ndsrec.py lcf ROM.nds
+    ndsrec.py extract ROM.nds PATH --out FILE
+    ndsrec.py mbimage-c ROM.nds --prefix NAME --out FILE.c
+
+`info` prints the cartridge layout (header, ARM9 static, autoloads,
+overlays, ARM7, TWL sections) and the discovery census per module.
+`emit` writes armrec-ready assembly (tools/ndsrec/emit.py) under DIR, plus
+DIR/host_overrides.txt (the primitive names armrec drops in favour of the
+host's C, from the symbol map's `override` entries) and DIR/emit.txt (what
+was written: files, functions, cross-module calls bound by name and left to
+run-time dispatch). `extract` copies one file of the ROM's file system
+(e.g. Black/White's Download Play child, dl_rom/child_r_eng.srl) out to
+FILE, for a build that recompiles it as its own image. `mbimage-c` writes
+what a Download Play child's host checks the image it receives against,
+as C constants NAME_*: the SHA-1 of the ROM header's first 0x160 bytes,
+of the ARM9 and ARM7 statics as the image stores them (the ARM9 static
+BLZ-compressed), and of the ARM9 static once crt0 has decompressed it,
+with the sizes and the module parameters' address.
+
+The symbol map is tools/ndsrec/sigs.py's output: one entry per line,
+
+    func NAME 0xADDR arm|thumb MODULE override|ref
+    data NAME 0xADDR SIZE text|data|bss MODULE
+
+Everything it does not name is called sub_XXXXXXXX / ovNN_XXXXXXXX.
+Nothing written by `emit` may be committed: it is the ROM's code and data.
+"""
+import argparse
+import collections
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+import discover  # noqa: E402
+import emit  # noqa: E402
+import nds  # noqa: E402
+
+
+def load_symbols(path):
+    funcs = collections.defaultdict(dict)    # module -> {addr: name}
+    data = collections.defaultdict(dict)     # module -> {addr: (name, size, sec)}
+    overrides = []
+    prims = {}
+    if not path:
+        return funcs, data, overrides, prims
+    for line in open(path):
+        line = line.split("#", 1)[0].split()
+        if not line:
+            continue
+        if line[0] == "func":
+            _, name, addr, st, mod, role = line[:6]
+            a = int(addr, 16)
+            funcs[mod][a] = name
+            if role == "override":
+                overrides.append(name)
+                prims[a | (1 if st == "thumb" else 0)] = name
+        elif line[0] == "data":
+            _, name, addr, size, sec, mod = line[:6]
+            data[mod][int(addr, 16)] = (name, int(size, 0), sec)
+    return funcs, data, overrides, prims
+
+
+def cmd_info(a):
+    rom = nds.Rom(a.rom)
+    print(rom.summary())
+    if a.no_discover:
+        return
+    res = discover.discover_all(rom)
+    tot = collections.Counter()
+    for name, m in res.items():
+        nt = sum(1 for f in m.funcs.values() if f.thumb)
+        ni = sum(len(f.insns) for f in m.funcs.values())
+        bad = sum(1 for f in m.funcs.values() for i in f.insns.values()
+                  if i.kind == "invalid")
+        tot["funcs"] += len(m.funcs)
+        tot["thumb"] += nt
+        tot["insns"] += ni
+        tot["invalid"] += bad
+        if m.opaque:
+            tot["opaque"] += 1
+            print("%-6s opaque, left as data: %s" % (name, m.opaque))
+        elif a.verbose:
+            print("%-6s functions %6d (thumb %6d)  instructions %7d  invalid %d" % (
+                name, len(m.funcs), nt, ni, bad))
+    print("discovery: %d modules, %d functions (%d Thumb, %d ARM), %d instructions, "
+          "%d undecodable, %d opaque" % (len(res), tot["funcs"], tot["thumb"],
+                                         tot["funcs"] - tot["thumb"], tot["insns"],
+                                         tot["invalid"], tot["opaque"]))
+
+
+def cmd_emit(a):
+    rom = nds.Rom(a.rom)
+    funcs, data, overrides, prims = load_symbols(a.symbols)
+    res = discover.discover_all(rom)
+    # named functions the discovery missed are added as seeds
+    for mod, fs in funcs.items():
+        if mod in res:
+            m = res[mod]
+            missing = [(addr, None) for addr in fs if addr not in m.funcs]
+            if missing:
+                sym_state = {}
+                for line in open(a.symbols):
+                    p = line.split()
+                    if p and p[0] == "func" and p[4] == mod:
+                        sym_state[int(p[2], 16)] = p[3] == "thumb"
+                m.run([(addr, sym_state.get(addr, True), "entry") for addr, _ in missing],
+                      pointer_scan=False, gap_fill=False)
+    mods = a.modules.split(",") if a.modules else list(res)
+    resolver = emit.Resolver(rom, res, funcs)
+    os.makedirs(a.out, exist_ok=True)
+    stats = {}
+    nfiles = 0
+    for name in mods:
+        files = emit.emit_module(rom, name, res[name], resolver, funcs.get(name, {}),
+                                 data.get(name, {}), a.out, prims=prims,
+                                 per_file=a.per_file, stats=stats)
+        nfiles += len(files)
+    with open(os.path.join(a.out, "host_overrides.txt"), "w") as fh:
+        fh.write("# generated by tools/ndsrec from the symbol map: the host "
+                 "layer's C replaces these\n")
+        for n in sorted(set(overrides)):
+            fh.write(n + "\n")
+    report = ("rom %s sha1 %s\nfiles %d\nfunctions %d\ninstructions %d\n"
+              "cross-overlay calls bound by name %d\ncalls left to run-time "
+              "dispatch %d\n" % (rom.gamecode, rom.sha1, nfiles,
+                                 sum(len(res[n].funcs) for n in mods),
+                                 stats.get("insns", 0), resolver.bound_cross,
+                                 resolver.dyn))
+    for n in mods:
+        if res[n].opaque:
+            report += "opaque %s: %s\n" % (n, res[n].opaque)
+    with open(os.path.join(a.out, "emit.txt"), "w") as fh:
+        fh.write(report)
+    sys.stdout.write(report)
+
+
+def cmd_lcf(a):
+    """The two NitroSDK link-time values the host's boot needs, read off
+    crt0's `_start` stack set-up, in the xMAP's `#>VALUE NAME` form:
+    SDK_AUTOLOAD_DTCM_START (the first literal loaded once `_start` has
+    switched to SVC mode, `mov r0, #0x13; msr cpsr_c, r0`, whose stack it
+    puts at the DTCM's top) and SDK_IRQ_STACKSIZE (the first literal below
+    64 KB loaded once it has switched to IRQ mode, `mov r0, #0x12`, which it
+    subtracts from the IRQ stack's top for the system-mode stack). NitroSDK
+    and TWL-SDK crt0 both have that shape; TWL-SDK's runs its autoload and
+    cache set-up first, so the literal pool's order says nothing."""
+    import disasm
+    rom = nds.Rom(a.rom)
+    view = rom.module_segment("arm9")
+    data, base = view.lookup(rom.arm9_entry)
+    dtcm = irq = None
+    mode = None
+    addr = rom.arm9_entry
+    for _ in range(160):
+        ins = disasm.decode(data, addr - base, addr, False)
+        if ins.text in ("mov r0, #0x13", "mov r0, #0x12"):
+            mode = ins.text[-4:]
+        elif ins.lit is not None and ins.lit_size == 4:
+            o = ins.lit - base
+            v = int.from_bytes(data[o:o + 4], "little")
+            if mode == "0x13" and dtcm is None:
+                dtcm = v
+            elif mode == "0x12" and irq is None and v < 0x10000:
+                irq = v
+        addr += 4
+    if dtcm is None or irq is None:
+        sys.exit("ndsrec lcf: crt0's literal pool does not have the expected shape")
+    print("#>%08X          SDK_AUTOLOAD_DTCM_START (crt0 _start literal)" % dtcm)
+    print("#>%08X          SDK_IRQ_STACKSIZE (crt0 _start literal)" % irq)
+
+
+def cmd_extract(a):
+    rom = nds.Rom(a.rom)
+    data = rom.file(rom.file_id(a.path))
+    tmp = a.out + ".tmp"
+    with open(tmp, "wb") as fh:
+        fh.write(data)
+    os.replace(tmp, a.out)
+
+
+def cmd_mbimage_c(a):
+    import hashlib
+    rom = nds.Rom(a.rom)
+    r = rom.raw
+
+    def sha(b):
+        return "{%s}" % ", ".join("0x%02X" % x for x in hashlib.sha1(b).digest())
+
+    p = a.prefix
+    out = ["/* generated by tools/ndsrec/ndsrec.py mbimage-c from %s (sha1 %s): what a Download Play"
+           " child's host checks the received image against */" % (os.path.basename(a.rom), rom.sha1),
+           "const unsigned char %s_header_sha1[20] = %s;" % (p, sha(r[:0x160])),
+           "const unsigned int %s_arm9_ram = 0x%08Xu;" % (p, rom.arm9_ram),
+           "const unsigned int %s_arm9_size = 0x%Xu;" % (p, rom.arm9_size),
+           "const unsigned char %s_arm9_sha1[20] = %s;" % (p, sha(r[rom.arm9_off:rom.arm9_off + rom.arm9_size])),
+           "const unsigned int %s_arm7_size = 0x%Xu;" % (p, rom.arm7_size),
+           "const unsigned char %s_arm7_sha1[20] = %s;" % (p, sha(rom.arm7)),
+           "const unsigned int %s_module_params = 0x%08Xu;" % (p, rom.module_params_addr),
+           "const unsigned int %s_image_size = 0x%Xu;" % (p, len(rom.arm9)),
+           "const unsigned char %s_image_sha1[20] = %s;" % (p, sha(rom.arm9))]
+    tmp = a.out + ".tmp"
+    with open(tmp, "w") as fh:
+        fh.write("\n".join(out) + "\n")
+    os.replace(tmp, a.out)
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    p = sub.add_parser("info")
+    p.add_argument("rom")
+    p.add_argument("--no-discover", action="store_true")
+    p.add_argument("-v", "--verbose", action="store_true")
+    p = sub.add_parser("emit")
+    p.add_argument("rom")
+    p.add_argument("--out", required=True)
+    p.add_argument("--symbols")
+    p.add_argument("--modules")
+    p.add_argument("--per-file", type=int, default=300)
+    p = sub.add_parser("lcf")
+    p.add_argument("rom")
+    p = sub.add_parser("extract")
+    p.add_argument("rom")
+    p.add_argument("path")
+    p.add_argument("--out", required=True)
+    p = sub.add_parser("mbimage-c")
+    p.add_argument("rom")
+    p.add_argument("--prefix", required=True)
+    p.add_argument("--out", required=True)
+    a = ap.parse_args()
+    {"info": cmd_info, "emit": cmd_emit, "lcf": cmd_lcf, "extract": cmd_extract,
+     "mbimage-c": cmd_mbimage_c}[a.cmd](a)
+
+
+if __name__ == "__main__":
+    main()

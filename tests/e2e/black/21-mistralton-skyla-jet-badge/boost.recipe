@@ -1,0 +1,12 @@
+# Boost on 20's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# The party is full (6 since 13) and only Darmanitan (slot 0, Lv 43-44) can fight: on White a double battle on
+# Route 7 (Liepard 32 and Swoobat 32) fainted the Lv 21 Blitzle beside it, and Skyla (trdata #25: Swoobat 33,
+# Unfezant 33, Swanna 35), Cheren at Twist Mountain (trdata #539-541, up to 35) and Brycen (Beartic 39) come next.
+# np_save5 set-level raises the members in place: Darmanitan 50, Sawk 45, Blitzle and the starter 40, Patrat
+# (the Cut carrier) and Pansage 35.
+party-level 0 50
+party-level 5 45
+party-level 2 40
+party-level 4 40
+party-level 3 35
+party-level 1 35

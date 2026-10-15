@@ -1,0 +1,11 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26062
+money 3000
+
+# Strength needs BADGE_ID_MINE (src/field_move_tasks.c:463, scripts_field_moves.s:191).
+# Copy of pc/tests/corpus/hm-strength.recipe (its comment explains the rejected first boulder).
+badge BADGE_ID_MINE
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_STRENGTH
+map MAP_HEADER_MT_CORONET_1F_NORTH_ROOM_1 18 44 FACE_UP

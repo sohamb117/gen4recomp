@@ -142,6 +142,14 @@ class Func(object):
         # copies a sibling entry point's code in, and it is what tells a BL to
         # a real function apart from a BL used as a long branch.
         self.entries = set([name])
+        # Its start macro opens with `.balign 4`: every one but
+        # non_word_aligned_thumb_func_start.
+        self.word_aligned = not thumb
+        # A second name for the function that follows it at the same
+        # address, with no body of its own: HG/SS's msl.s opens _fadd and
+        # _f_add back to back. Emitted as a C alias, so dispatch sees one
+        # function under both names.
+        self.alias_of = None
 
 
 # --------------------------------------------------------------------------
@@ -151,6 +159,12 @@ class Func(object):
 ADDR_IN_NAME = re.compile(r"^_([0-9A-Fa-f]{6,8})$")
 OV_ADDR_IN_NAME = re.compile(r"^(?:ov\d+_|sub_|FUN_)([0-9A-Fa-f]{6,8})$")
 ADDR_COMMENT = re.compile(r";\s*0x([0-9A-Fa-f]+)")
+# `.type NAME, @function` (or %function / STT_FUNC), matched on a raw line.
+TYPE_FUNCTION = re.compile(r"^\s*\.type\s+([A-Za-z_.$?][\w.$?]*)\s*,\s*"
+                           r"(?:[@%#]function|STT_FUNC)\b", re.I)
+# A call target spelled as a guest address to dispatch at run time; see
+# emit_branch().
+DISPATCH_TARGET = re.compile(r"^armrec_dispatch_([0-9A-Fa-f]{8})$")
 
 # A label states its address twice: in its own `; 0x...` comment, and in the
 # assembler's location counter. Where they disagree the counter wins, and the
@@ -599,8 +613,15 @@ def preprocess(path, defines, incdirs):
     "no such file or directory: 'c'"), and a failed cpp silently leaves the
     file unpreprocessed, which is what left GAME_VERSION and every
     constants/*.h name unresolved in Diamond's assembly.
+
+    The preprocessor is the compiler's assembler-with-cpp mode, the one a
+    `.S` file gets, not macOS's /usr/bin/cpp: that one is traditional, so it
+    pastes nothing (HG/SS's FS_OVERLAY_ID(OVY_45) stays
+    SDK_OVERLAY_##OVY_45##_ID) and keeps a define's `//` comment in its
+    expansion (`MAP_NEW_BARK 60 // MAP_T20` ends the line it lands in).
+    Diamond's and Pearl's assembly preprocess identically under both.
     """
-    cmd = ["cpp", "-P"]
+    cmd = ["cc", "-E", "-P", "-x", "assembler-with-cpp"]
     text = None
     lines = expand_includes(path, incdirs)
     if lines is None:
@@ -612,9 +633,8 @@ def preprocess(path, defines, incdirs):
         if any(INDENTED_DIRECTIVE.match(l) for l in raw):
             lines = raw
     if lines is not None:
-        # macOS's cpp is a traditional-mode preprocessor, and it ignores an
-        # indented `#include` on the first line of its input; mwasm does
-        # not care. Moving every directive to column one costs nothing.
+        # mwasm takes an indented `#include`; cpp wants the `#` in column
+        # one. Moving every directive there costs nothing.
         text = "".join(INDENTED_DIRECTIVE.sub(r"#", l) for l in lines)
         cmd.append("-I" + (os.path.dirname(path) or "."))
     for d in incdirs:
@@ -632,7 +652,7 @@ def preprocess(path, defines, incdirs):
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, input=text)
         if r.returncode == 0 and r.stdout:
-            return r.stdout.splitlines(True)
+            return expand_local_macros(path, r.stdout.splitlines(True))
     except (OSError, subprocess.SubprocessError):
         pass
     return None
@@ -640,6 +660,61 @@ def preprocess(path, defines, incdirs):
 
 INDENTED_DIRECTIVE = re.compile(
     r"^[ \t]+#(?=\s*(?:include|if|ifdef|ifndef|elif|else|endif|define|undef)\b)")
+
+
+MACRO_DEF = re.compile(r"^\s*\.macro\s+([A-Za-z_][\w.]*)[\s,]*(.*)$", re.I)
+
+
+def expand_local_macros(path, lines):
+    """
+    Expand the invocations of a macro the .s file defines itself.
+
+    armrec matches the shared macros (asm/macros.inc, cw.inc) by name, but a
+    file's own macro is content: HG/SS's unk_0203BA5C.s builds its spawn table
+    from a `spawn` macro of `.short`s. Its arguments substitute for `\\param`
+    textually, as the assembler does. Definitions stay in place; parse_file
+    skips them.
+    """
+    try:
+        with open(path, "r", errors="replace") as fh:
+            local = {m.group(1) for m in map(MACRO_DEF.match, fh) if m}
+    except OSError:
+        return lines
+    if not local:
+        return lines
+    macros = {}
+    out = []
+    cur = None
+    for line in lines:
+        code = split_comment(line.rstrip("\n"))[0].strip()
+        if cur is not None:
+            if code.lower().startswith(".endm"):
+                cur = None
+            else:
+                macros[cur][1].append(line)
+            out.append(line)
+            continue
+        m = MACRO_DEF.match(code)
+        if m and m.group(1) in local:
+            cur = m.group(1)
+            params = [p.split("=")[0].strip()
+                      for p in re.split(r"[,\s]+", m.group(2).strip()) if p]
+            macros[cur] = (params, [])
+            out.append(line)
+            continue
+        word = code.split(None, 1)
+        if word and word[0] in macros:
+            params, body = macros[word[0]]
+            args = [a.strip() for a in word[1].split(",")] if len(word) > 1 else []
+            # Longest name first, so `\flag` cannot eat the head of `\flagIdx`.
+            subst = sorted(zip(params, args), key=lambda pa: -len(pa[0]))
+            for b in body:
+                for p, a in subst:
+                    b = b.replace("\\" + p, a)
+                out.append(b)
+            continue
+        out.append(line)
+    return out
 
 
 def place_functions(funcs):
@@ -660,7 +735,7 @@ def place_functions(funcs):
         # `arm_func_end NAME` with no start marker is still the source calling
         # it a function.
         if nxt.addr is None and (not nxt.markerless or nxt.attested):
-            align = 2 if nxt.thumb else 4
+            align = 4 if nxt.word_aligned else 2
             nxt.addr = (end + align - 1) & ~(align - 1)
 
 
@@ -694,6 +769,21 @@ def bl_is_call(ins, target_addr, thumb):
         return None
     d = target_addr - (ins.addr + 4)
     return THUMB_B_REACH[0] <= d <= THUMB_B_REACH[1]
+
+
+def is_bodiless(f):
+    """Nothing but labels yet: a function start that another one follows."""
+    return all(isinstance(it, Label) for it in f.items)
+
+
+def alias_target(f, funcs):
+    """The function an alias (chain) names, or None."""
+    by_name = dict((g.name, g) for g in funcs)
+    seen = set()
+    while f is not None and f.alias_of is not None and f.name not in seen:
+        seen.add(f.name)
+        f = by_name.get(f.alias_of)
+    return f.name if f is not None and f.alias_of is None else None
 
 
 def split_call_targets(funcs, globals_, problems):
@@ -803,6 +893,9 @@ def parse_file(path, defines, incdirs=(), lines=None):
     # is known, so a directive armrec cannot size costs the rest of one
     # label's run rather than the rest of the file.
     loc = None
+    # Where this file's labels are, for a size that measures from one
+    # (`.space 0x40-(.-ov00_022186AC)`, HG/SS's padded overlay tables).
+    here = {}
     # A section's origin appears in no .s file, so the first label carrying an
     # address fixes it and everything before that label is placed by
     # subtracting. `off` counts bytes from the section start while the origin
@@ -838,12 +931,24 @@ def parse_file(path, defines, incdirs=(), lines=None):
     # the start marker and keep the end one, and an end marker naming a label
     # is the source saying that label is a function, so trust it.
     ends_named = set()
+    # Names this file declares `.type NAME, @function`. HG/SS's msl.s opens
+    # `_fadd` with arm_func_start, never ends it, and marks the fifty-odd
+    # runtime routines after it (`_ll_udiv`, `_fmul`, `_ll_shl`, ...) with
+    # nothing but `.type`. Without this they were labels inside `_f_add`, and a
+    # `bl _ll_udiv` became a goto whose `bx lr` returned from the caller.
+    typed_funcs = set()
     for raw in lines:
         code, _ = split_comment(raw.rstrip("\n"))
         parts = code.strip().split(None, 1)
         if len(parts) == 2 and parts[0].lower() in ("arm_func_end",
                                                     "thumb_func_end"):
             ends_named.add(parts[1].strip())
+            continue
+        # On the raw line: `@` opens a comment, so split_comment() has
+        # already cut `@function` off `code`.
+        m = TYPE_FUNCTION.match(raw)
+        if m:
+            typed_funcs.add(m.group(1))
 
     def enter_section(name):
         """Switch sections, remembering where the old one had got to."""
@@ -944,11 +1049,14 @@ def parse_file(path, defines, incdirs=(), lines=None):
                 addr = addr_from_name(name)
             # A `.global` label with neither an address comment nor an
             # address-derived name is still somewhere, and the location
-            # counter is where. Narrowed to `.global` deliberately: a local
-            # label gaining an address would also gain a case in every
-            # computed branch resolving against the enclosing function's
-            # labels, which changes control flow rather than a symbol table.
-            if addr is None and loc is not None and name in globals_:
+            # counter is where. In code, narrowed to `.global` deliberately:
+            # a local label gaining an address would also gain a case in
+            # every computed branch resolving against the enclosing
+            # function's labels, which changes control flow rather than a
+            # symbol table. A data section has no such branches, and HG/SS
+            # name their file-local tables (unk_0203BA5C.s's sSpawnMaps).
+            if (addr is None and loc is not None
+                    and (name in globals_ or section != ".text")):
                 addr = loc
             # Where the label says it is, against where the assembler has got
             # to. The counter wins, and the disagreement is counted into the
@@ -957,18 +1065,32 @@ def parse_file(path, defines, incdirs=(), lines=None):
                 problems[addr_contradiction(name, addr, loc)] += 1
                 addr = loc
             lab = Label(name, addr, lineno)
+            if addr is not None or loc is not None:
+                here[name] = addr if addr is not None else loc
             prev_was_insn = False
             # A file predating the arm_func_start convention marks its entry
             # points with a bare ".global NAME" / "NAME:", as both files in
             # arm9/lib/syscall do. The same shape also spells data, so the
             # promotion is undone below for any of these that no instruction
             # ever followed.
-            if ((cur_func is None or cur_func.markerless)
-                    and section == ".text"
-                    and (name in globals_ or name in ends_named)):
+            # A `.type NAME, @function` label is an entry point, even inside a
+            # function a start macro opened and never ended, unless a start
+            # macro already named it.
+            typed_entry = (name in typed_funcs
+                           and not any(f.name == name for f in funcs))
+            if (((cur_func is None or cur_func.markerless)
+                    and (name in globals_ or name in ends_named))
+                    or typed_entry) and section == ".text":
+                prev = cur_func
                 cur_func = Func(name, thumb_mode, addr, True, markerless=True,
-                                attested=name in ends_named)
+                                attested=(name in ends_named
+                                          or name in typed_funcs))
                 funcs.append(cur_func)
+                # Two names on one entry point (HG/SS's msl.s: `_dadd:` then
+                # `_d_add:`): the first, which nothing but labels has
+                # followed, is the second's alias.
+                if prev is not None and is_bodiless(prev):
+                    prev.alias_of = name
             if cur_func is not None and section == ".text":
                 # The address of a function is that of its own label: the
                 # "; 0x…" comment, checked against the location counter just
@@ -1004,12 +1126,23 @@ def parse_file(path, defines, incdirs=(), lines=None):
             thumb = hl.startswith("thumb") or hl.startswith("non_word")
             name = rest.strip()
             addr = addr_from_name(name)
+            prev = cur_func if section == ".text" else None
             cur_func = Func(name, thumb, addr, hl != "local_arm_func_start",
                             file_local=hl == "local_arm_func_start")
+            cur_func.word_aligned = hl != "non_word_aligned_thumb_func_start"
             thumb_mode = thumb
             funcs.append(cur_func)
+            # Two start macros back to back (msl.s's `_fadd` and `_f_add`):
+            # one function, two names.
+            if prev is not None and is_bodiless(prev):
+                prev.alias_of = name
             if section != ".text":
                 enter_section(".text")
+            # The macro opens with `.balign 4, 0`, bar the non-word-aligned
+            # form. HG/SS's Thumb functions often carry no address comment,
+            # so the counter is all that places them.
+            if hl != "non_word_aligned_thumb_func_start" and loc is not None:
+                loc = align_up(loc, 4)
             prev_was_insn = False
             continue
         if hl in ("arm_func_end", "thumb_func_end"):
@@ -1130,6 +1263,8 @@ def parse_file(path, defines, incdirs=(), lines=None):
                     off = None
                 if loc is None and off is not None:
                     pend.append((len(data_items), off))
+                if d in ("space", "skip", "fill") and loc is not None:
+                    rest = location_expr(rest, loc, here)
                 data_items.append((loc, None, d, rest))
                 if cur_func is not None and section == ".text":
                     cur_func.items.append(Directive(d, rest, lineno))
@@ -1170,9 +1305,12 @@ def parse_file(path, defines, incdirs=(), lines=None):
         cur_func.items.append(ins)
         prev_was_insn = True
 
-    # A markerless label that turned out to head data, not code, is data.
+    # A markerless label that turned out to head data, not code, is data. An
+    # alias stays exactly when the function it names does.
+    bodied = set(f.name for f in funcs if f.alias_of is None and (
+        not f.markerless or any(isinstance(it, Insn) for it in f.items)))
     funcs = [f for f in funcs
-             if not f.markerless or any(isinstance(it, Insn) for it in f.items)]
+             if (alias_target(f, funcs) if f.alias_of else f.name) in bodied]
 
     # Twice, either side of the split, and neither is redundant. The first
     # pass gives split_call_targets() an address for every `bl` to compare
@@ -1339,6 +1477,131 @@ WASM_ASM_NAMES = None
 # --xmap: {object: {section: origin}} from the ROM's link map; parse_file()
 # starts each section's location counter there. Set by main().
 XMAP_ORIGINS = {}
+# Functions that hand their result back in the condition flags: they write
+# them with `msr cpsr_f` (any MSR to the CPSR's flags field) before
+# returning, and their callers branch on the flags right after the call.
+# The EABI soft-float comparisons are the case (TWL-SDK's runtime,
+# __aeabi_cfcmple and kin: `bl cmp; bcs`, Black's angle normalisation
+# loops). A function's flags are its own C locals, so after a call to one of
+# these the caller reloads them from the CPSR the MSR wrote. Set by main().
+FLAG_RESULT_FUNCS = frozenset()
+
+# --overlay-dispatch: a call into another overlay is bound by name only when
+# that overlay is the one thing that can be at the address. Overlays share
+# windows; the matching ROM assembles `bl ov10_0221BE20` to a branch to
+# 0x0221BE20, and whatever is resident there runs, so a disassembler's name
+# for an address several overlays occupy says nothing about which one the
+# code means (HG's battle controller named the trainer AI's ov10_0221BE20
+# where overlay 8's sub-menu entry, at the same address, is the one loaded:
+# the bag SIGBUSed). Such a call becomes armrec_dispatch() of the address,
+# resolved by residency as the hardware resolves it. Calls within the
+# caller's own overlay and calls into the static module keep their name.
+# Set by main() from the xMAP: {name: [(overlay, addr)]} for every symbol the
+# link places in an overlay, and {overlay: (start, end)}.
+OVL_SYMS = None
+OVL_RANGES = {}
+# The overlay of the file being translated (None: the static module). Set
+# by process().
+CUR_OVERLAY = None
+# Decompiled C reached through one of those dispatches, {name: (overlay,
+# addr)}: main() registers each at its guest address under its overlay
+# (through its c2u$ adapter), so a dispatch can find C as well as assembly.
+DISPATCHED_C = {}
+OVL_DISPATCHES = Counter()
+
+
+def overlay_dispatch_addr(target):
+    """The guest address to dispatch a call to `target` through, or None to
+    bind it by name. See OVL_SYMS."""
+    if OVL_SYMS is None:
+        return None
+    hits = OVL_SYMS.get(target)
+    if not hits:
+        return None
+    # A name more than one overlay defines (pret's .global data labels,
+    # `_0223DC20` in overlays 13 and 80) is the caller's own if the caller
+    # defines it; otherwise every definition is at the one address its name
+    # spells, and dispatch reaches whichever is resident.
+    if any(o == CUR_OVERLAY for o, _a in hits):
+        return None
+    if len(set(a for _o, a in hits)) != 1:
+        return None
+    ovl, addr = hits[0]
+    if CUR_OVERLAY is not None and CUR_OVERLAY in OVL_RANGES:
+        lo, hi = OVL_RANGES[CUR_OVERLAY]
+        # The named overlay overlaps the caller's own, so it is never whole
+        # while the caller runs: the call reaches what the caller's load left
+        # of it (HG/SS's overlay 73 calls overlay 0's code past its own end).
+        # Only the name can say which; keep it.
+        s, e = OVL_RANGES.get(ovl, (0, 0))
+        if s < hi and lo < e:
+            return None
+    else:
+        lo = hi = None
+    for k, (s, e) in OVL_RANGES.items():
+        if k in (ovl, CUR_OVERLAY) or not (s <= addr < e):
+            continue
+        # An overlay that overlaps the caller's own is never resident while
+        # the caller runs.
+        if lo is not None and s < hi and lo < e:
+            continue
+        return addr
+    return None
+
+
+XMAP_OVL_RE = re.compile(
+    r"^#>([0-9A-Fa-f]{8})\s+SDK_OVERLAY\.(\w+)\.(START|END) \(linker command file\)")
+
+
+def load_xmap_overlays(path):
+    """({name: (overlay, addr)}, {overlay: (start, end)}) from an mwld xMAP.
+
+    An overlay's id is its place in the link (the ROM's overlay table is in
+    link order): D/P's OVERLAY_NN and HG/SS's OVY_NN agree with it, and HG/SS
+    name some (`field`, `pokegear`). Every symbol listed between an overlay's
+    START and END belongs to it."""
+    ids, ranges, syms = {}, {}, {}
+    cur = None
+    with open(path, "r", errors="replace") as fh:
+        for line in fh:
+            m = XMAP_OVL_RE.match(line)
+            if m:
+                name, addr = m.group(2), int(m.group(1), 16)
+                if name not in ids:
+                    ids[name] = len(ids)
+                    n = re.search(r"(\d+)$", name)
+                    if n and int(n.group(1)) != ids[name]:
+                        sys.exit("armrec: xMAP overlay %s is number %d in link "
+                                 "order" % (name, ids[name]))
+                o = ids[name]
+                r = ranges.setdefault(o, [addr, addr])
+                if m.group(3) == "START":
+                    r[0] = addr
+                    cur = o
+                else:
+                    r[1] = addr
+                    cur = None
+                continue
+            if cur is None:
+                continue
+            m = XMAP_SYM_RE.match(line)
+            if not m:
+                continue
+            sec, name = m.group(2), m.group(3)
+            if name == sec or name.startswith("$") or name.startswith("."):
+                continue
+            syms.setdefault(name, []).append((cur, int(m.group(1), 16)))
+    return syms, dict((k, tuple(v)) for k, v in ranges.items())
+
+
+def writes_cpsr_flags(func):
+    """Does the body contain an MSR to the CPSR's flags field?"""
+    for it in func.items:
+        if isinstance(it, Insn) and it.mnem == "msr":
+            dest = split_operands(it.ops)[0].strip().lower()
+            if dest.startswith("cpsr") and ("_" not in dest or "f" in dest.split("_")[1]):
+                return True
+    return False
 
 _C_STDLIB = """
     isalnum isalpha isblank iscntrl isdigit isgraph islower isprint ispunct
@@ -2063,6 +2326,46 @@ def emit_branch(ctx, ins, out, func, is_call):
     if target in func.labels and not (is_call and target in func.entries):
         out.append("goto L_%s;" % sanitize(target))
         return
+    # `bl armrec_dispatch_XXXXXXXX`: a call whose target the front end could
+    # not bind to a name at build time (tools/ndsrec: an address in an
+    # overlay window more than one overlay can occupy beside the caller).
+    # It is resolved at run time by residency, as the hardware does.
+    dm = DISPATCH_TARGET.match(target)
+    if dm:
+        addr = int(dm.group(1), 16)
+        if is_call:
+            t = ctx.newtmp()
+            out.append("{ uint64_t %s = armrec_dispatch(0x%08Xu, r0, r1, r2, r3);"
+                       % (t, addr))
+            out.append("  r0 = (uint32_t)%s; r1 = (uint32_t)(%s >> 32); }" % (t, t))
+        else:
+            out.append("return armrec_dispatch(0x%08Xu, r0, r1, r2, r3);" % addr)
+        return
+    # A call into another overlay at an address other overlays can occupy
+    # beside the caller: the name is the disassembler's guess, the address
+    # is the ROM's. See OVL_SYMS.
+    if target not in ctx.rename:
+        oaddr = overlay_dispatch_addr(target)
+        if oaddr is not None:
+            OVL_DISPATCHES["C" if ctx.is_host_call(target) else "asm"] += 1
+            if ctx.is_host_call(target):
+                # Decompiled C: main() registers its c2u$ adapter at the
+                # address under its overlay, and the count keeps the adapter
+                # generated (the bridge makes one per boundary name).
+                hits = OVL_SYMS[target]
+                DISPATCHED_C[target] = hits
+                ctx.ext_calls[ctx.rename.get(target, sanitize(target))] += 1
+            if is_call:
+                t = ctx.newtmp()
+                out.append("{ uint64_t %s = armrec_dispatch(0x%08Xu, r0, r1, r2, r3); /* %s */"
+                           % (t, oaddr, target))
+                out.append("  r0 = (uint32_t)%s; r1 = (uint32_t)(%s >> 32); }" % (t, t))
+                if target in FLAG_RESULT_FUNCS:
+                    out.append("ARM_FLAGS_FROM_PSR(armrec_mrs(0));")
+            else:
+                out.append("return armrec_dispatch(0x%08Xu, r0, r1, r2, r3); /* %s */"
+                           % (oaddr, target))
+            return
     # branch/call to another function
     sym = ctx.rename.get(target, sanitize(target))
     if ctx.symtab.get(target) is None and target not in ctx.symtab:
@@ -2102,6 +2405,8 @@ def emit_branch(ctx, ins, out, func, is_call):
         t = ctx.newtmp()
         out.append("{ uint64_t %s = %s(%s, r0, r1, r2, r3);" % (t, call, sym))
         out.append("  r0 = (uint32_t)%s; r1 = (uint32_t)(%s >> 32); }" % (t, t))
+        if target in FLAG_RESULT_FUNCS:
+            out.append("ARM_FLAGS_FROM_PSR(armrec_mrs(0));")
     else:
         out.append("%s(%s, r0, r1, r2, r3);" % (tail, sym))
 
@@ -2176,16 +2481,22 @@ def emit_insn(ctx, ins, func, out):
         out.append("r0 = armrec_swi(0x%Xu, r0, r1, r2, r3);" % num)
         return
     if m == "adr":
-        # ADR rd, label: materialise the address of a local label.
+        # ADR rd, label [+|- constant]: materialise the address of a local
+        # label, optionally offset (HG/SS's MSL: `adr r0, UNK_020F1D7C - 0x100`).
         toks = split_operands(ins.ops)
         rd = reg_num(toks[0])
         target = toks[1].strip()
+        off = 0
+        mo = re.match(r"^([A-Za-z_.$][\w.$]*)\s*([-+])\s*(\S+)$", target)
+        if mo and parse_int(mo.group(3)) is not None:
+            off = parse_int(mo.group(3)) * (-1 if mo.group(2) == "-" else 1)
+            target = mo.group(1)
         addr = ctx.symtab.get(target)
         if addr is None:
             addr = addr_from_name(target)
         if addr is None:
-            raise Unsupported("ADR to unknown label %r" % target)
-        out.append("%s = 0x%08Xu;" % (ctx.regc(rd), addr))
+            raise Unsupported("ADR to unknown label %r" % toks[1].strip())
+        out.append("%s = 0x%08Xu;" % (ctx.regc(rd), (addr + off) & 0xFFFFFFFF))
         return
     if m == "clz":
         toks = split_operands(ins.ops)
@@ -2194,7 +2505,14 @@ def emit_insn(ctx, ins, func, out):
     if m == "mrs":
         toks = split_operands(ins.ops)
         spsr = 1 if "spsr" in toks[1].lower() else 0
-        out.append("%s = armrec_mrs(%d);" % (ctx.regc(reg_num(toks[0])), spsr))
+        if spsr:
+            out.append("%s = armrec_mrs(1);" % ctx.regc(reg_num(toks[0])))
+        else:
+            # The flags live in this function's locals, not in the word
+            # armrec_mrs keeps: NZCV come from the locals, the rest from it.
+            out.append("%s = (armrec_mrs(0) & 0x0FFFFFFFu) | ((uint32_t)nf << 31) | "
+                       "((uint32_t)zf << 30) | ((uint32_t)cf << 29) | ((uint32_t)vf << 28);"
+                       % ctx.regc(reg_num(toks[0])))
         return
     if m == "msr":
         toks = split_operands(ins.ops)
@@ -2215,6 +2533,8 @@ def emit_insn(ctx, ins, func, out):
                 raise Unsupported("bad MSR source %r" % src)
             val = ctx.regc(rn)
         out.append("armrec_msr(%d, 0x%08Xu, %s);" % (spsr, mask, val))
+        if not spsr and mask & 0xFF000000:
+            out.append("ARM_FLAGS_FROM_PSR(%s);" % val)
         return
     if m in ("mrc", "mcr"):
         toks = [t.strip() for t in split_operands(ins.ops)]
@@ -2281,16 +2601,22 @@ def collect_literals(path, lines=None):
     return lits
 
 
-def literal_c_value(ctx, tok):
+def literal_c_value(ctx, tok, thumb_funcs=()):
     """
     Resolve a literal-pool word to a C expression.
 
     Handles a bare constant, a symbol, and a symbol with an offset expression
-    such as "gMTRNG_State + 607 * 4".
+    such as "gMTRNG_State + 607 * 4". A bare name of a Thumb function carries
+    the interworking bit, as the ROM's word does and as build_data_blobs()
+    gives the same `.word` in data: code compares such a word with a function
+    pointer read from a table (ov18_02249684, the Underground menu).
     """
     tok = tok.strip()
     try:
-        return "0x%08Xu" % (eval_asm_expr(tok, ctx.symtab) & 0xFFFFFFFF)
+        v = eval_asm_expr(tok, ctx.symtab) & 0xFFFFFFFF
+        if tok in thumb_funcs:
+            v |= 1
+        return "0x%08Xu" % v
     except Unsupported:
         pass
     # Leading symbol we cannot resolve yet (it lives in decompiled C), plus an
@@ -2343,6 +2669,23 @@ def insn_size(mnem, ops, thumb):
     if mnem in ("bl", "blx") and reg_num((ops or "").strip()) is None:
         return 4
     return 2
+
+
+HERE_DOT = re.compile(r"(?<![\w.$?])\.(?![\w.$?])")
+
+
+def location_expr(rest, loc, labels):
+    """
+    A size spelled from the location counter (`.`) and this file's labels,
+    with both as numbers: `.space 0x40-(.-ov00_022186AC)` pads a table to
+    0x40 bytes, which only the counter can say.
+    """
+    if not HERE_DOT.search(rest):
+        return rest
+    out = HERE_DOT.sub("0x%X" % loc, rest)
+    return re.sub(r"[A-Za-z_$?][\w.$?]*",
+                  lambda m: ("0x%X" % labels[m.group(0)]
+                             if m.group(0) in labels else m.group(0)), out)
 
 
 def directive_size(name, args):
@@ -2710,7 +3053,11 @@ def absorb_foreign_entries(funcs, path, foreign):
         for _round in range(len(foreign) + 1):
             want = None
             for it in f.items:
-                if not (isinstance(it, Insn) and it.mnem in BRANCH_MNEMS):
+                # Only a plain branch. A BL into another file is a call: a
+                # private copy would turn it into a goto whose `bx lr` returns
+                # from this function. Left alone, it calls the symbol, or fails
+                # at the link if nothing defines it.
+                if not (isinstance(it, Insn) and it.mnem == "b"):
                     continue
                 target = (it.ops or "").strip()
                 if target in f.labels:
@@ -3177,6 +3524,39 @@ def file_touches_agb(path):
         return False
 
 
+# The game card's ROM bus: ROMCTRL (0x040001A4), which starts a command and
+# reports busy/data-ready, the command bytes (0x040001A8) and the data port
+# (0x04100010), which is a pop. A file naming one gets ARMREC_CARD_HOOK and
+# goes through pc/src/pc_card_rom.c's card model. Diamond/Pearl/Platinum's
+# hosts replace the card layer that names them; TWL-SDK's (Black/White)
+# reads the ROM ID and small blocks through them with the CPU, named as
+# literals (.word 0x040001A4).
+CARD_ADDR_RE = re.compile(r"0x0*40001[ab][0-9a-f]\b|0x0*4100010\b", re.I)
+
+
+def file_touches_card(path):
+    try:
+        with open(path, "r", errors="replace") as fh:
+            return CARD_ADDR_RE.search(fh.read()) is not None
+    except OSError:
+        return False
+
+
+# The timers' counters, TM0CNT_L .. TM3CNT_L (0x04000100 to 0x0400010F),
+# named as literals (.word 0x04000100: the SDK's OS_GetTick, OS timer code).
+# A file naming one gets ARMREC_TIMER_HOOK: its loads there go through
+# pc/src/pc_timers.c, which lets time pass for a loop polling a counter.
+TIMER_ADDR_RE = re.compile(r"0x0*400010[0-9a-f]\b", re.I)
+
+
+def file_touches_timer(path):
+    try:
+        with open(path, "r", errors="replace") as fh:
+            return TIMER_ADDR_RE.search(fh.read()) is not None
+    except OSError:
+        return False
+
+
 def collect_symbols(paths, defines, incdirs, stems, local_rename=True):
     """
     Pass 1: every function and data symbol, with its guest address.
@@ -3233,17 +3613,23 @@ def collect_symbols(paths, defines, incdirs, stems, local_rename=True):
         for f in parsed[p][0]:
             func_names.add(f.name)
 
-    # One data label declared `.global` in two files is a duplicate symbol the
-    # real linker rejects, and the one shape the per-file rule below cannot
-    # arbitrate. There are none here, so say so rather than picking one.
+    # One data label declared `.global` in two files at two addresses is a
+    # duplicate symbol the real linker rejects, and the one shape the per-file
+    # rule below cannot arbitrate. Overlays that share a window can each
+    # define one at the same address (HG/SS's _0223DC20 in overlays 13 and
+    # 80): a reference is that address, and what is there is whichever
+    # overlay is resident, as on the hardware, so those are not reported.
     global_data_owners = {}
+    global_data_addrs = {}
     for p in paths:
         _, data, globals_, _, _ = parsed[p]
         for addr, label, kind, _ in data:
             if (kind == "label" and label and addr is not None
                     and label in globals_ and label not in func_names):
                 global_data_owners.setdefault(label, set()).add(p)
-    for label in sorted(n for n, ps in global_data_owners.items() if len(ps) > 1):
+                global_data_addrs.setdefault(label, set()).add(addr)
+    for label in sorted(n for n, ps in global_data_owners.items()
+                        if len(ps) > 1 and len(global_data_addrs[n]) > 1):
         sys.stderr.write("armrec: data label %s is .global in %d files (%s); "
                          "one of them wins the symbol table\n"
                          % (label, len(global_data_owners[label]),
@@ -3380,6 +3766,8 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
     c2u$ adapter under --wasm) so a dispatch through a stored pointer still
     lands somewhere.
     """
+    global CUR_OVERLAY
+    CUR_OVERLAY = overlay
     literals_raw = collect_literals(path, lines)
     merge_multi_entry(funcs, path)
     for k, v in absorb_foreign_entries(funcs, path, foreign).items():
@@ -3401,7 +3789,7 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
     literals = {}
     for k, v in literals_raw.items():
         try:
-            literals[k] = literal_c_value(tmpctx, v)
+            literals[k] = literal_c_value(tmpctx, v, thumb_funcs or ())
         except Unsupported:
             continue
     ext |= tmpctx.used_ext
@@ -3410,7 +3798,16 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
     ok_funcs = 0
     total_funcs = len(funcs)
     ext_calls = Counter()
+    aliases = []
     for f in funcs:
+        if f.alias_of:
+            target = alias_target(f, funcs)
+            tf = next(g for g in funcs if g.name == target)
+            f.addr = tf.addr
+            f.thumb = tf.thumb
+            aliases.append((f, tf))
+            ok_funcs += 1
+            continue
         body, ctx, ok, failures = emit_func(f, symtab, literals, stats, rename,
                                             asm_funcs, abi_trap)
         ext |= ctx.used_ext
@@ -3476,7 +3873,11 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
                               ("#define ARMREC_SPI_HOOK 1\n"
                                if file_touches_spi(path) else "") +
                               ("#define ARMREC_AGB_HOOK 1\n"
-                               if file_touches_agb(path) else "")))
+                               if file_touches_agb(path) else "") +
+                              ("#define ARMREC_CARD_HOOK 1\n"
+                               if file_touches_card(path) else "") +
+                              ("#define ARMREC_TIMER_HOOK 1\n"
+                               if file_touches_timer(path) else "")))
         for name in sorted(called - defined):
             out.write("extern uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t);\n" % name)
         for name in sorted(ext):
@@ -3496,6 +3897,10 @@ def process(path, stem, funcs, data, symtab, outdir, stats, report, emit=True,
             for line in render_func(f, body, ctx):
                 out.write(line + "\n")
             out.write("\n")
+        for f, tf in aliases:
+            out.write('uint64_t %s(uint32_t, uint32_t, uint32_t, uint32_t) '
+                      '__attribute__((alias("%s")));\n\n'
+                      % (rename.get(f.name, f.name), rename.get(tf.name, tf.name)))
 
         # Always-resident code does both jobs at startup. An overlay does not:
         # Its slots are reserved at startup so a dispatch to a non-resident
@@ -3836,10 +4241,15 @@ def main():
                     help="the ROM link's arm9.elf.xMAP: gives an address to a "
                          "function whose source carries none, and counts "
                          "every function whose address disagrees with it")
+    ap.add_argument("--overlay-dispatch", action="store_true",
+                    help="--wasm with --xmap: a call into another overlay at an "
+                         "address other overlays can occupy is dispatched by "
+                         "address and residency, not bound by name (OVL_SYMS)")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
 
-    global TARGET_WASM, GUEST_LIBC_EXT, WASM_ASM_NAMES, XMAP_ORIGINS
+    global TARGET_WASM, GUEST_LIBC_EXT, WASM_ASM_NAMES, XMAP_ORIGINS, FLAG_RESULT_FUNCS
+    global OVL_SYMS, OVL_RANGES
     TARGET_WASM = args.wasm
     GUEST_LIBC_EXT = frozenset(n for spec in args.guest_libc
                                for n in spec.split(",") if n)
@@ -3853,6 +4263,10 @@ def main():
     xmap = load_xmap(args.xmap) if args.xmap else None
     if xmap is not None:
         XMAP_ORIGINS = xmap[3]
+    if args.overlay_dispatch:
+        if not (args.wasm and args.xmap):
+            ap.error("--overlay-dispatch needs --wasm and --xmap")
+        OVL_SYMS, OVL_RANGES = load_xmap_overlays(args.xmap)
 
     abi_trap = {}
     for spec in args.abi_trap:
@@ -3881,6 +4295,22 @@ def main():
         for name in data_syms:
             if name in symtab:
                 data_syms[name] = symtab[name]
+    if OVL_SYMS is not None:
+        # armrec's overlay of a file (its path) and the link's (its place in
+        # the xMAP) must be the same numbering, or every decision above is
+        # about the wrong overlays.
+        wrong = []
+        for p in args.files:
+            ovl = overlay_of(p)
+            if ovl is None:
+                continue
+            for f in parsed[p][0]:
+                hits = OVL_SYMS.get(f.name)
+                if hits and all(o != ovl for o, _a in hits):
+                    wrong.append("%s: %s is overlay %s in the xMAP" % (p, f.name, [o for o, _a in hits]))
+        if wrong:
+            sys.exit("armrec: --overlay-dispatch: overlay numbering disagrees "
+                     "with the xMAP:\n  " + "\n  ".join(wrong[:10]))
     bad = entry_label_mismatches(args.files, parsed)
     if bad:
         for line in bad:
@@ -3956,16 +4386,20 @@ def main():
     # name that is only declared.
     asm_names = set(symtab)
     declared = set()
+    flag_result = set()
     for p in args.files:
         pfuncs, pdata, pglobals = parsed[p][0], parsed[p][1], parsed[p][2]
         for f in pfuncs:
             asm_names.add(f.name)
             asm_names |= set(f.entries)
             asm_names |= set(f.labels)
+            if writes_cpsr_flags(f):
+                flag_result |= set(f.entries)
         for _addr, label, kind, _payload in pdata:
             if kind == "label" and label:
                 asm_names.add(label)
         declared |= set(pglobals)
+    FLAG_RESULT_FUNCS = frozenset(flag_result)
     if args.wasm:
         # Defined, not merely declared: a `.global` alone can name C.
         WASM_ASM_NAMES = frozenset(asm_names)
@@ -4036,10 +4470,24 @@ def main():
                 " * is deliberately NOT here, see armrec_overlay_data()\n"
                     " * below.\n"
                     " */\n")
+            # Decompiled C that an overlay dispatch can reach: registered at
+            # its guest address under its overlay, through its c2u$ adapter
+            # (OVL_SYMS; DISPATCHED_C). Every C definition of the name, in
+            # every overlay that has one.
+            creg = []
+            for name in sorted(DISPATCHED_C):
+                for ovl, addr in DISPATCHED_C[name]:
+                    creg.append((addr, ovl, name))
+            for name in sorted(DISPATCHED_C):
+                f.write("extern uint64_t %s%s(uint32_t, uint32_t, uint32_t, uint32_t);\n"
+                        % (C2U_PREFIX, sanitize(name)))
             f.write("void armrec_init_all(void);\n")
             f.write("void armrec_init_all(void) {\n")
             for n in names:
                 f.write("    armrec_init_%s();\n" % n)
+            for addr, ovl, name in creg:
+                f.write('    armrec_register_overlay(0x%08Xu, %s%s, "%s", %d);\n'
+                        % (addr, C2U_PREFIX, sanitize(name), name, ovl))
             f.write("}\n")
             f.write("\n/*\n"
                     " * The data half, one function per overlay, called by\n"
@@ -4066,6 +4514,11 @@ def main():
             f.write("    if (id >= 0 && id < %d && armrec_ovl_data[id])\n" % top)
             f.write("        armrec_ovl_data[id]();\n")
             f.write("}\n")
+    if OVL_SYMS is not None:
+        sys.stderr.write("armrec: --overlay-dispatch: %d calls into a shared overlay "
+                         "window dispatched by address (%d to recompiled code, %d to "
+                         "decompiled C)\n" % (sum(OVL_DISPATCHES.values()),
+                                               OVL_DISPATCHES["asm"], OVL_DISPATCHES["C"]))
     if args.out and not args.scan and not args.wasm:
         with open(os.path.join(args.out, "armrec_externs.c"), "w") as f:
             f.write('#include "armrec_rt.h"\n\n')

@@ -23,9 +23,11 @@
  * stored last is a game write, i.e. a new reload. Enabling a timer (the
  * control's start bit going 0 -> 1) loads the counter from the reload, as
  * on hardware. Resolution is one frame: a read between VBlanks sees the
- * counter as of the last one.
+ * counter as of the last one, unless the reader is polling it (see
+ * armrec_timer_load below).
  */
 #include <nitro.h>
+#include <stdint.h>
 
 #define PC_TIMER_CYCLES_PER_VBLANK 560190u
 
@@ -58,7 +60,14 @@ static void pc_timer_irq(int t)
     reg_OS_IF = 0;
 }
 
-void pc_timers_step(void)
+/* Overflows that happened while a poll advanced the timers, delivered at the
+ * next VBlank (the poll runs inside guest code, often with interrupts off,
+ * as in OS_GetTick). Meanwhile the timer's IF bit is set, as on hardware
+ * for a raised, not yet taken interrupt: OS_GetTick counts such a pending
+ * overflow into the tick's high part itself. */
+static u32 sPendingIrq[4];
+
+static void pc_timers_advance(u32 cycles, int polled)
 {
     static const u16 prescale[4] = { 1, 64, 256, 1024 };
     u32 overflows_below = 0;
@@ -86,7 +95,7 @@ void pc_timers_step(void)
             ticks = overflows_below; /* count-up: one tick per lower overflow */
         } else {
             u32 p = prescale[ctl & 3];
-            sTimers[t].acc += PC_TIMER_CYCLES_PER_VBLANK;
+            sTimers[t].acc += cycles;
             ticks = sTimers[t].acc / p;
             sTimers[t].acc %= p;
         }
@@ -102,8 +111,56 @@ void pc_timers_step(void)
         sTimers[t].last_written = sTimers[t].counter;
         overflows_below = n;
 
-        if (ctl & 0x40) {
+        if ((ctl & 0x40) && n) {
+            if (polled) {
+                sPendingIrq[t] += n;
+                reg_OS_IF |= OS_IE_TIMER0 << t;
+            } else {
+                while (n--) pc_timer_irq(t);
+            }
+        }
+    }
+}
+
+/* Counter loads since the last VBlank, by recompiled code naming a timer
+ * register (ARMREC_TIMER_HOOK). The port runs a frame's guest work between
+ * two VBlanks without counting cycles, so a counter read there sees the
+ * value of the last VBlank, which is right for code that samples the time
+ * (D/P/Pt read OS_GetTick a few times a frame) and endless for code that
+ * waits on it: Black's IR probe (ov231) spins on OS_GetTick for 60 us, and
+ * TWL-SDK's OS_SpinWait-like loops likewise. After PC_TIMER_FREE_POLLS
+ * reads within one frame the reader is taken to be waiting, and each
+ * further read advances every timer by PC_TIMER_POLL_CYCLES, about one
+ * iteration of such a loop. Deterministic: it depends only on the reads. */
+#define PC_TIMER_FREE_POLLS 256u
+#define PC_TIMER_POLL_CYCLES 256u
+static u32 sPolls;
+
+uint32_t armrec_timer_load(uint32_t a, int size)
+{
+    if (((a & 3u) == 0) && ++sPolls > PC_TIMER_FREE_POLLS) {
+        pc_timers_advance(PC_TIMER_POLL_CYCLES, 1);
+    }
+    switch (size) {
+    case 4: return *(volatile u32 *)(uintptr_t)a;
+    case 2: return *(volatile u16 *)(uintptr_t)a;
+    default: return *(volatile u8 *)(uintptr_t)a;
+    }
+}
+
+void pc_timers_step(void)
+{
+    int t;
+
+    sPolls = 0;
+    for (t = 0; t < 4; t++) {
+        if (sPendingIrq[t]) {
+            u32 n = sPendingIrq[t];
+
+            sPendingIrq[t] = 0;
+            reg_OS_IF &= ~(OS_IE_TIMER0 << t);
             while (n--) pc_timer_irq(t);
         }
     }
+    pc_timers_advance(PC_TIMER_CYCLES_PER_VBLANK, 0);
 }

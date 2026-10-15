@@ -1,0 +1,18 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26114
+money 3000
+# post-game: story-cleared only sets the trainer-info bit (pc_lab.c:798-800); every script gate
+# checks FLAG_GAME_COMPLETED (src/clear_game.c:204-206, scrcmd_system_flags.c:151, system_flags.c:69-71)
+story-cleared 1
+flag FLAG_GAME_COMPLETED
+# Heatran shows only with natdex, Buck talked and room state 1 (scripts_stark_mountain_room_3.s:20-32)
+national-dex 1
+# scripts_battleground.s:118
+flag FLAG_TALKED_TO_BATTLEGROUND_BUCK
+# state 1 = after the Charon event (state 0 fires it instead, scripts_init_stark_mountain_room_3.s:10)
+var VAR_STARK_MOUNTAIN_ROOM_3_STATE 1
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# 4x vs Fire/Steel
+party-move 0 0 MOVE_EARTHQUAKE
+map MAP_HEADER_STARK_MOUNTAIN_ROOM_3 7 7 FACE_UP

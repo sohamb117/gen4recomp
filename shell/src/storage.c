@@ -160,7 +160,7 @@ int np_storage_remove_tree(const char *path)
 void np_storage_rom_path(np_game game, char *out, size_t n)
 {
     char rel[64];
-    SDL_snprintf(rel, sizeof rel, "roms/%s.nds", np_game_id(game));
+    SDL_snprintf(rel, sizeof rel, "roms/%s.%s", np_game_id(game), np_game_is_gba(game) ? "gba" : "nds");
     np_storage_path(out, n, rel);
 }
 
@@ -492,8 +492,9 @@ int np_storage_slot_import(np_game game, const char *src, char name_out[NP_SLOT_
         SDL_snprintf(err, errn, "Cannot open %s.", src);
         return -1;
     }
+    int gba = np_game_is_gba(game);
     if (size > 4 * (Sint64)NP_SAVE_BYTES) {
-        SDL_snprintf(err, errn, "Not a Diamond/Pearl/Platinum save: the file is too large.");
+        SDL_snprintf(err, errn, "Not a %s save: the file is too large.", np_game_title(game));
         return -1;
     }
     size_t len;
@@ -505,7 +506,7 @@ int np_storage_slot_import(np_game game, const char *src, char name_out[NP_SLOT_
     size_t raw;
     const char *why = NULL;
     int r = -1;
-    if (np_sav_normalize(data, len, &raw, &why)) {
+    if (np_sav_normalize(data, len, gba, &raw, &why)) {
         SDL_snprintf(err, errn, "%s", why);
     } else {
         /* Name the slot after the file: "Platinum (USA).sav" -> "Platinum (USA)". */

@@ -127,7 +127,7 @@ static void tier_colors(int badges, uint32_t *base, uint32_t *light)
     *light = lights[t];
 }
 
-static const char *const badge_names[8] = {"Coal", "Forest", "Cobble", "Fen", "Relic", "Mine", "Icicle", "Beacon"};
+static const char *const sinnoh_badges[8] = {"Coal", "Forest", "Cobble", "Fen", "Relic", "Mine", "Icicle", "Beacon"};
 static const uint32_t badge_colors[8] = {0x5A5A5A, 0x3FA34D, 0xC9853A, 0x6FA8DC,
                                          0xC9A23A, 0x8C6E4E, 0x9AD7F0, 0xF0D040};
 
@@ -178,6 +178,7 @@ static void render_trainer(canvas *c, const np_card_info *in)
 
     /* Badge case. */
     panel(c, 44, 352, 676, 92, 10, (base & 0xFEFEFE) >> 1);
+    const char *const *badge_names = in->badge_names ? in->badge_names : sinnoh_badges;
     for (int b = 0; b < 8; b++) {
         int cx = 86 + b * 84, cy = 386;
         bool have = in->badges >> b & 1;
@@ -240,11 +241,12 @@ static void render_diploma(canvas *c, const np_card_info *in)
     text_centered(c, mid, 322, in->national_dex ? "in the National Pokedex." : "on the way to the National Pokedex.", 2,
                   ink, 0);
 
-    /* Caught out of the 493 species of Generation IV. */
-    int bar_w = 520, filled = in->dex_caught > 493 ? bar_w : bar_w * in->dex_caught / 493;
+    /* Caught out of the generation's species (493 in Gen IV, 649 in Gen V). */
+    unsigned total = in->dex_total ? in->dex_total : 493;
+    int bar_w = 520, filled = in->dex_caught > total ? bar_w : bar_w * (int)in->dex_caught / (int)total;
     frame(c, mid - bar_w / 2 - 4, 360, bar_w + 8, 28, 2, ink);
     fill(c, mid - bar_w / 2, 364, filled, 20, red);
-    snprintf(line, sizeof line, "%u / 493", in->dex_caught);
+    snprintf(line, sizeof line, "%u / %u", in->dex_caught, total);
     text_centered(c, mid, 400, line, 2, ink, 0);
 
     snprintf(line, sizeof line, "Awarded %04d-%02d-%02d", in->year, in->month, in->day);

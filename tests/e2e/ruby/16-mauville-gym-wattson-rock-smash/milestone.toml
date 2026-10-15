@@ -1,0 +1,139 @@
+# Proves the switch-barrier gym (R/S: three coord switches (0,9)/(8,11)/(4,15), each press toggles every beam via
+# special MauvilleGymSpecial2 and FLAG_MAUVILLE_GYM_BARRIERS_STATE), Wattson (TRAINER_WATTSON): FLAG_BADGE03_GET, TM34
+# Shock Wave, PETALBURG_GYM_STATE 5; the Rock Smash guy's HM06.
+# Start: Mauville (35,6) -> end: MAP_MAUVILLE_CITY outside house 1 (32,15).
+title = "Mauville Gym: Wattson's Dynamo Badge, then HM06 Rock Smash"
+priority = "P0"
+version = "both"
+estimate = 11465
+refs = [
+  "data/maps/MauvilleCity/map.json warp_events[0] (8,5) -> MAUVILLE_CITY_GYM (4,20)",
+  "data/maps/MauvilleCity/scripts.inc:9-10 (OnTransition: FLAG_MAUVILLE_GYM_BARRIERS_STATE clear, VAR_MAUVILLE_GYM_STATE 0)",
+  "data/maps/MauvilleCity_Gym/map.json coord_events (0,9)/(8,11)/(4,15) VAR_TEMP_0=0 Switch1..3",
+  "data/maps/MauvilleCity_Gym/scripts.inc:14-44 (SetAltBarriers: (4,7),(5,7),(4,8),(5,8) beams off)",
+  "data/maps/MauvilleCity_Gym/scripts.inc:109-148 (a switch: VAR_MAUVILLE_GYM_STATE n, PressFloorSwitch toggles the beams and the flag; the same switch twice does nothing)",
+  "src/field_specials.c:406-500 (MauvilleGymSpecial2: every beam metatile flipped)",
+  "data/maps/MauvilleCity_Gym/scripts.inc:68-102 (trainerbattle_single TRAINER_WATTSON; WattsonDefeated: FLAG_DEFEATED_MAUVILLE_GYM, FLAG_BADGE03_GET, addvar PETALBURG_GYM_STATE, puzzle off; TM34)",
+  "data/maps/MauvilleCity/map.json warp_events[4] (32,14) -> MAUVILLE_CITY_HOUSE1",
+  "data/maps/MauvilleCity_House1/scripts.inc:4-14 (ITEM_HM06_ROCK_SMASH, FLAG_RECEIVED_HM06)",
+]
+notes = "Wattson: TRAINER_WATTSON (267): MAGNEMITE 22, VOLTORB 20, MAGNETON 23 (Marshtomp's Ground typing is immune to Electric; Mud Shot hits x2). Trainers: TRAINER_SHAWN (194): VOLTORB 17 x3; TRAINER_BEN (323): ZIGZAGOON 19; TRAINER_KIRK (191): ELECTRIKE 18, MAGNEMITE 18; TRAINER_VIVIAN (649): MEDITITE 19. In the map.bin layout rows 7-8 at x 3..6 close Wattson's dais (gba_world_cli: no static route); one switch press flips to the alt layout that opens (4..5,7..8). Each switch toggles every beam (MauvilleGymSpecial2) unless it was the last one pressed (VAR_MAUVILLE_GYM_STATE): switch 3 (4,15) on the entrance row opens the dais row but closes row 11, switch 2 (8,11) is the only way past row 11 and closes the dais row again, switch 1 (0,9) reopens it (probe_map after each press)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 17200
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 5
+note = "gym door (Mauville warp 0) -> MAUVILLE_CITY_GYM (4,20); Wally no longer blocks it"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 15
+avoid = [[0, 9], [8, 11]]
+note = "switch 3 (coord event (4,15)) -> PressFloorSwitch: the beams flip to the alt layout (MauvilleCity_Gym/scripts.inc:129-148)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+note = "the beam metatiles redrawn (DrawWholeMapView); the probe re-reads its window after a second standing still"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 11
+avoid = [[0, 9]]
+note = "switch 2 (coord event (8,11)) flips the beams back: the alt layout closes row 11 (x 0..6) and Kirk stands on (7,11), so (8,11) is the only way north from row 12 (probe_map after switch 3); from it row 10 is open"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "walk_to"
+x = 0
+z = 9
+avoid = [[8, 11], [4, 15]]
+note = "switch 1 (coord event (0,9)) over row 10 and the west column (open in the first layout) -> the alt layout again, whose row 8 opens (4..5,8) below the dais"
+
+[[step]]
+do = "wait_frames"
+n = 90
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 4
+face = "up"
+interact = true
+avoid = [[0, 9], [8, 11], [4, 15]]
+note = "below Wattson (4,3) over row 9 and the opened (4..5,8); trainers fought on the way; another switch would flip the beams back"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_WATTSON (267): MAGNEMITE 22, VOLTORB 20, MAGNETON 23"
+
+[[step]]
+do = "advance_text"
+shot = "dynamo-badge"
+note = "WattsonDefeated + TM34 Shock Wave (MauvilleCity_Gym/scripts.inc:77-102)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 20
+note = "exit mat (warp 0) -> Mauville (8,5)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 14
+note = "house 1 door (warp 4) -> MAUVILLE_CITY_HOUSE1 (3,7)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY_HOUSE1"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Rock Smash guy (object 1 (4,4)) -> ITEM_HM06_ROCK_SMASH, FLAG_RECEIVED_HM06 (MauvilleCity_House1/scripts.inc:4-14)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 7
+note = "exit -> Mauville (32,14)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_MAUVILLE_CITY"
+
+[expect]
+map = "MAP_MAUVILLE_CITY"
+badges = 3
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_BADGE03_GET", "FLAG_DEFEATED_MAUVILLE_GYM", "FLAG_RECEIVED_TM_SHOCK_WAVE", "FLAG_RECEIVED_HM06"]
+battles = 1
+
+[expect.vars]
+VAR_PETALBURG_GYM_STATE = 5

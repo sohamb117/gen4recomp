@@ -1,0 +1,311 @@
+# Proves the Pokemon Storage System on a Pokemon Center PC (SOMEONE'S PC): DEPOSIT puts ZIGZAGOON (party slot 1) into
+# BOX 1 (the party drops to two: a save dump between PC sessions), MOVE POKEMON carries it from BOX 1 to BOX 2 (the
+# box title + RIGHT), WITHDRAW takes it back from BOX 2: it rejoins the party last (MUDKIP, WURMPLE, ZIGZAGOON).
+# The save dump has no PC boxes, so the box moves are proven by the shots.
+# Start: MAP_OLDALE_TOWN_POKEMON_CENTER_1F (10,2) below the PC -> end: same tile, PC off.
+title = "PC storage: deposit, move between boxes, withdraw"
+priority = "P1"
+version = "both"
+estimate = 3577
+refs = [
+  "include/constants/metatile_behaviors.h:135 (MB_PC 0x83: (10,1) of LAYOUT_POKEMON_CENTER_1F)",
+  "src/field_control_avatar.c:459-460 (MetatileBehavior_IsPC -> EventScript_PC)",
+  "data/scripts/pc.inc:1-25 (EventScript_PC: boot message, ScriptMenu_CreatePCMultichoice: SOMEONE'S PC, <player>'s PC, LOG OFF)",
+  "data/scripts/pc.inc:35-47 (EventScript_AccessPokemonStorage: FLAG_SYS_PC_LANETTE unset -> 'Accessed someone's PC.', ShowPokemonStorageSystem)",
+  "data/scripts/pc.inc:53-66 (EventScript_TurnOffPC; entry 2 -> EventScript_AccessHallOfFame turns the PC off without FLAG_SYS_GAME_CLEAR)",
+  "src/script_menu.c:931-953 (ScriptMenu_CreatePCMenu: 3 entries without FLAG_SYS_GAME_CLEAR, LOG OFF third)",
+  "src/pokemon_storage_system.c:28-33 (WITHDRAW POKeMON, DEPOSIT POKeMON, MOVE POKeMON, SEE YA!)",
+  "src/pokemon_storage_system.c:246-292,333-339 (Task_PokemonStorageSystem: cursor on WITHDRAW at each opening; B / SEE YA! back to the PC menu)",
+  "src/pokemon_storage_system_4.c:2268-2321 (A on a Pokemon: DEPOSIT / WITHDRAW / MOVE or PLACE first, then SUMMARY, MARK, RELEASE, CANCEL)",
+  "data/pokemon_storage_system.s:87-100 (the popup texts)",
+  "src/pokemon_storage_system_4.c:880-888 (a new box session: cursor on slot 0)",
+  "src/pokemon_storage_system_4.c:2090-2110 (the box title: DOWN -> slot 2; LEFT/RIGHT change the box)",
+]
+notes = "Without FLAG_SYS_GAME_CLEAR the PC multichoice is SOMEONE'S PC, <player>'s PC, LOG OFF (src/script_menu.c:931-953); LOG OFF returns VAR_RESULT 2, which pc.inc routes to EventScript_AccessHallOfFame, and that turns the PC off (pc.inc:60-61). 'Continue BOX operations?' opens on YES: DOWN, A answers NO and returns to the storage menu with the cursor on the last mode. The withdraw screen opens on the box last shown (BOX2) with the cursor on slot 0."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 5400
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 2
+face = "up"
+interact = true
+note = "the PC (10,1): EventScript_PC (pc.inc:1-7)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+shot = "pc-menu-someones"
+note = "'Which PC should be accessed?' SOMEONE'S PC (pc.inc:10-20)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "'Accessed someone's PC.' (pc.inc:45-47)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "'POKeMON Storage System opened.' -> the storage menu, cursor on WITHDRAW"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+shot = "storage-deposit"
+note = "DEPOSIT POKeMON"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "the deposit screen: the party, cursor on MUDKIP"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+note = "ZIGZAGOON (party slot 1)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+shot = "deposit-zigzagoon"
+note = "DEPOSIT / SUMMARY / MARK / RELEASE / CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "deposit-which-box"
+note = "'Deposit in which BOX?' BOX1 0/30"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "deposited"
+note = "BOX1: ZIGZAGOON deposited; the party is MUDKIP, WURMPLE"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+note = "'Continue BOX operations?' (YES/NO on YES)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "NO -> the storage menu"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+note = "SEE YA! -> 'Which PC should be accessed?'"
+
+[[step]]
+do = "menu"
+choose = 2
+count = 3
+note = "LOG OFF (pc.inc:24,60-61)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "dump"
+expr = '[m["species"] for m in s["party"]]'
+note = "after the deposit: MUDKIP, WURMPLE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 2
+face = "up"
+interact = true
+note = "the PC again"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "the storage menu, cursor on WITHDRAW again"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+times = 2
+shot = "storage-move"
+note = "MOVE POKeMON"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+shot = "move-box1"
+note = "BOX1 with ZIGZAGOON in slot 0, the cursor on it"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+shot = "move-zigzagoon"
+note = "MOVE / SUMMARY / WITHDRAW / MARK / RELEASE / CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "MOVE: the hand holds ZIGZAGOON"
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 30
+note = "the box title"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 60
+shot = "move-box2"
+note = "BOX2"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 30
+note = "into BOX2, slot 2 (pokemon_storage_system_4.c:2098-2103)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "PLACE / SUMMARY / WITHDRAW / MARK / RELEASE / CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "placed-box2"
+note = "PLACE: ZIGZAGOON in BOX2"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "NO -> the storage menu, cursor on MOVE"
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 20
+times = 2
+shot = "storage-withdraw"
+note = "WITHDRAW POKeMON"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "the withdraw screen: BOX2 (the box last shown), cursor on slot 0"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+times = 2
+shot = "withdraw-box2"
+note = "slot 2: ZIGZAGOON"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+shot = "withdraw-zigzagoon"
+note = "WITHDRAW / SUMMARY / MARK / RELEASE / CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+shot = "withdrawn"
+note = "ZIGZAGOON joins the party (slot 2)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "NO -> the storage menu"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 60
+note = "SEE YA!"
+
+[[step]]
+do = "menu"
+choose = 2
+count = 3
+note = "LOG OFF"
+
+[[step]]
+do = "wait_field"
+shot = "pc-off"
+
+[expect]
+map = "MAP_OLDALE_TOWN_POKEMON_CENTER_1F"
+position = [10, 2]
+party_size = 3
+log = ['dump: .* = \[283, 290\]$']
+save = [
+  '[m["species"] for m in s["party"]] == [283, 290, 288]',
+]

@@ -1,0 +1,355 @@
+# Proves the Battle Frontier's Battle Factory, Level 50 singles: the attendant's menus, the rental screen (three of six
+# rental Pokemon, src/battle_factory_screen.c), seven battles with the rentals, the heal / GO ON menu and the swap
+# question (NO) between them, and the lobby's Battle Points for the seven-win round.
+# Start: MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY (4,8) -> end: the lobby, the round won.
+title = "Battle Frontier: Battle Factory, a Level 50 round of seven wins with rentals"
+priority = "P1"
+estimate = 82966
+refs = [
+  "data/maps/BattleFrontier_BattleFactoryLobby/scripts.inc:108-172 (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, save, warp)",
+  "data/maps/BattleFrontier_BattleFactoryPreBattleRoom/scripts.inc:23-160 (rentals, heal, GO ON menu, swap YES/NO)",
+  "src/battle_factory_screen.c:302-307,1832-1855 (SUMMARY / RENT / OTHERS, the YES/NO)",
+  "data/maps/BattleFrontier_BattleFactoryBattleRoom/scripts.inc:62-110 (battles, warp back, WarpToLobbyWon)",
+]
+notes = "Rentals and opponents are random level-50 Factory sets (src/battle_factory.c); the first three rentals are taken as they come."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 124500
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the singles attendant (BattleFrontier_BattleFactoryLobby/map.json object_events[0] (4,7))"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_CHALLENGEINFO: CHALLENGE (BattleFrontier_BattleFactoryLobby/scripts.inc:126-136)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_LEVEL_MODE: LV. 50 (scripts.inc:137-144)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "'okay to save before the challenge?' YES (scripts.inc:145-150)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 60
+until = "map_id=6688"
+note = "the save dialog answered with A, then warp MAP_BATTLE_FRONTIER_BATTLE_FACTORY_PRE_BATTLE_ROOM (6688) (scripts.inc:151-172)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+note = "the pre-battle room's map load (field 0 while it loads) back into the overworld"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 60
+until = "field=0"
+note = "the walk in, the attendant's comments on the opponents' type and style and 'choose from this selection', then the fade to the rental screen (PreBattleRoom/scripts.inc:23-41: factory_rentmons)"
+
+[[step]]
+do = "wait_frames"
+n = 90
+shot = "factory-rentals"
+note = "the rental screen (src/battle_factory_screen.c: six Poke Balls, the cursor on the first)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "A on rental 1: the SUMMARY / RENT / OTHERS menu, its cursor on SUMMARY (Select_ShowMenuOptions)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "RENT (Select_OptionRentDeselect)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "the next rental"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "A on rental 2: the SUMMARY / RENT / OTHERS menu, its cursor on SUMMARY (Select_ShowMenuOptions)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "RENT (Select_OptionRentDeselect)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+gap = 20
+note = "the next rental"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "A on rental 3: the SUMMARY / RENT / OTHERS menu, its cursor on SUMMARY (Select_ShowMenuOptions)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "RENT (Select_OptionRentDeselect)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "factory-rented"
+note = "'Are these three OK?' YES (Select_ShowYesNoOptions: yesNoCursorPos 0)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_BATTLE_ROOM"
+note = "'right this way', the walk to the battle room (PreBattleRoom/scripts.inc:43-50)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 1 enters (BattleRoom/scripts.inc:62-84)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Factory trainer 1 of 7"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_PRE_BATTLE_ROOM"
+max = 3000
+note = "a win: back to the pre-battle room (BattleRoom/scripts.inc:91-106)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "the heal, then MULTI_GO_ON_RECORD_REST_RETIRE: GO ON (PreBattleRoom/scripts.inc:54-96)"
+
+[[step]]
+do = "menu"
+choose = 1
+count = 2
+note = "the next opponents' type and style, 'swap a Pokemon?' NO (AskSwapMon, :135-147)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_BATTLE_ROOM"
+note = "'right this way', the walk to the battle room (PreBattleRoom/scripts.inc:43-50)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 2 enters (BattleRoom/scripts.inc:62-84)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Factory trainer 2 of 7"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_PRE_BATTLE_ROOM"
+max = 3000
+note = "a win: back to the pre-battle room (BattleRoom/scripts.inc:91-106)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "the heal, then MULTI_GO_ON_RECORD_REST_RETIRE: GO ON (PreBattleRoom/scripts.inc:54-96)"
+
+[[step]]
+do = "menu"
+choose = 1
+count = 2
+note = "the next opponents' type and style, 'swap a Pokemon?' NO (AskSwapMon, :135-147)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_BATTLE_ROOM"
+note = "'right this way', the walk to the battle room (PreBattleRoom/scripts.inc:43-50)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 3 enters (BattleRoom/scripts.inc:62-84)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Factory trainer 3 of 7"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_PRE_BATTLE_ROOM"
+max = 3000
+note = "a win: back to the pre-battle room (BattleRoom/scripts.inc:91-106)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "the heal, then MULTI_GO_ON_RECORD_REST_RETIRE: GO ON (PreBattleRoom/scripts.inc:54-96)"
+
+[[step]]
+do = "menu"
+choose = 1
+count = 2
+note = "the next opponents' type and style, 'swap a Pokemon?' NO (AskSwapMon, :135-147)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_BATTLE_ROOM"
+note = "'right this way', the walk to the battle room (PreBattleRoom/scripts.inc:43-50)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 4 enters (BattleRoom/scripts.inc:62-84)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Factory trainer 4 of 7"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_PRE_BATTLE_ROOM"
+max = 3000
+note = "a win: back to the pre-battle room (BattleRoom/scripts.inc:91-106)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "the heal, then MULTI_GO_ON_RECORD_REST_RETIRE: GO ON (PreBattleRoom/scripts.inc:54-96)"
+
+[[step]]
+do = "menu"
+choose = 1
+count = 2
+note = "the next opponents' type and style, 'swap a Pokemon?' NO (AskSwapMon, :135-147)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_BATTLE_ROOM"
+note = "'right this way', the walk to the battle room (PreBattleRoom/scripts.inc:43-50)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 5 enters (BattleRoom/scripts.inc:62-84)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Factory trainer 5 of 7"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_PRE_BATTLE_ROOM"
+max = 3000
+note = "a win: back to the pre-battle room (BattleRoom/scripts.inc:91-106)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "the heal, then MULTI_GO_ON_RECORD_REST_RETIRE: GO ON (PreBattleRoom/scripts.inc:54-96)"
+
+[[step]]
+do = "menu"
+choose = 1
+count = 2
+note = "the next opponents' type and style, 'swap a Pokemon?' NO (AskSwapMon, :135-147)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_BATTLE_ROOM"
+note = "'right this way', the walk to the battle room (PreBattleRoom/scripts.inc:43-50)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 6 enters (BattleRoom/scripts.inc:62-84)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Factory trainer 6 of 7"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_PRE_BATTLE_ROOM"
+max = 3000
+note = "a win: back to the pre-battle room (BattleRoom/scripts.inc:91-106)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "the heal, then MULTI_GO_ON_RECORD_REST_RETIRE: GO ON (PreBattleRoom/scripts.inc:54-96)"
+
+[[step]]
+do = "menu"
+choose = 1
+count = 2
+note = "the next opponents' type and style, 'swap a Pokemon?' NO (AskSwapMon, :135-147)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_BATTLE_ROOM"
+note = "'right this way', the walk to the battle room (PreBattleRoom/scripts.inc:43-50)"
+
+[[step]]
+do = "advance_text"
+note = "opponent 7 enters (BattleRoom/scripts.inc:62-84)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Factory trainer 7 of 7"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY"
+max = 3000
+note = "the seventh win: WarpToLobbyWon (BattleRoom/scripts.inc:108-110)"
+
+[[step]]
+do = "advance_text"
+shot = "factory-seven-wins"
+note = "WonChallenge: Battle Points; the record YES/NO's default NO taken by A (Lobby/scripts.inc:40-92)"
+
+[expect]
+map = "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY"
+battles = 7

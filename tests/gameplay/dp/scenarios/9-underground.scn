@@ -1,0 +1,14 @@
+# Scenario 9 (Diamond/Pearl): the Underground and its touch-free menus.
+# The Underground Man's trap payout, the Explorer Kit descent (wireless
+# comms prompt and the forced save), Roark's first-visit talk, the UG menu,
+# TRAPS and a chosen trap's BURY/TRASH/CANCEL menu (the list select that
+# armrec's dropped Thumb bit on literal-pool function words turned into a
+# comm-error reset), then GO UP back to Eterna.
+# Shots: the payout, the comms prompt, Roark, the UG menu, the trap list,
+# the trap's menu, the field again, GO UP, Eterna.
+RECIPE=recipes/underground.recipe
+SCHEDULE=schedules/underground.press
+FRAMES=10000
+SHOTS=3122,4600,5872,8656,8780,8904,9096,9240,9990
+EXPECT_MAP=65
+EXPECT_LOG='stored 524288-byte save'

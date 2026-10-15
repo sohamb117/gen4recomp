@@ -1,0 +1,10 @@
+#include <nitro/fs/overlay.h>
+#pragma once
+.public GF_InitG2dRenderer
+.public sub_02025C54
+.public GF_SetG2dRendererSurface
+.public sub_02025C98
+.public NNS_G2dInitRenderer
+.public NNS_G2dAddRendererTargetSurface
+.public NNS_G2dInitRenderSurface
+.public _ll_mul

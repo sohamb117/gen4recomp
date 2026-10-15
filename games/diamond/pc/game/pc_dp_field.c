@@ -44,13 +44,17 @@
  * frames rather than mid-task.
  */
 #include <stdio.h>
+#include <string.h>
 
 #include "global.h"
+
+#include "constants/pokemon.h"
 
 #include "camera.h"
 #include "field_system.h"
 #include "fx.h"
 #include "map_header.h"
+#include "map_object.h"
 #include "nitro/NNS_g3d.h"
 #include "player_avatar.h"
 #include "save.h"
@@ -143,6 +147,237 @@ static void warp_frame(FieldSystem *fs, int ready) {
     sState = 2;
 }
 
+/*
+ * The end-to-end probe's field half (Platinum's pc/src/pc_np_field.c
+ * e2e_frame; pc/src/pc_e2e.c, core/include/np_e2e.h): the player's tile
+ * and facing, the other map objects, and, while the player is free, the
+ * terrain around them through the queries D's movement code makes:
+ * GetMetatileBehavior (0xFF off the loaded blocks; arm9/src/field_move.c
+ * declares it the same way) and sub_0204A6B4, the collision bit of the
+ * same tile attributes (arm9/asm/unk_0204A498.s; Platinum's
+ * TerrainCollisionManager_CheckCollision), both through fs+0x58, the
+ * terrain provider, which exists once a map is loaded.
+ *
+ * Only tiles on the map matrix are asked. The block-loader provider
+ * (UNK_020F4708: sub_0204A5F4 -> ov05_021EF844, on the loader at fs+0x24:
+ * the matrix is +0xC0 blocks wide and +0xC4 high, 32 tiles a block)
+ * GF_ASSERTs on a block index past the matrix, and while the link layer is
+ * up (the Underground) GF_AssertFail is the comm error screen and
+ * OS_ResetSystem (error_handling.c). A column past the right edge does not
+ * assert but reads the next block row's tile: also unknown, not that. The
+ * other provider (UNK_020F4710, sub_0204A640 on fs+0x28's matrix) is asked
+ * as before.
+ */
+extern u8 GetMetatileBehavior(FieldSystem *fieldSystem, s32 x, s32 z);
+extern BOOL sub_0204A6B4(FieldSystem *fieldSystem, s32 x, s32 z);
+extern const u32 UNK_020F4708[2];                /* arm9/asm/unk_0204A498.s */
+
+static int e2e_on_matrix(FieldSystem *fs, int x, int z) {
+    const u8 *loader;
+
+    if (x < 0 || z < 0) return 0;
+    if (FS_WORD(fs, 0x58) != (u32)UNK_020F4708) return 1;
+    loader = (const u8 *)FS_WORD(fs, 0x24);
+    return loader != NULL && (u32)x < *(const u32 *)(loader + 0xC0) * 32
+        && (u32)z < *(const u32 *)(loader + 0xC4) * 32;
+}
+
+static unsigned e2e_tile(void *ctx, int x, int z) {
+    FieldSystem *fs = ctx;
+    u8 behavior;
+
+    if (!e2e_on_matrix(fs, x, z)) return 0;
+    behavior = GetMetatileBehavior(fs, x, z);
+    if (behavior == 0xFF) return 0;
+    return PC_E2E_TILE_KNOWN | behavior | (sub_0204A6B4(fs, x, z) ? PC_E2E_TILE_COLLISION : 0);
+}
+
+/*
+ * The step layers (pc_e2e_steps): one step answered by the terrain half of
+ * the player's own collision check. sub_02056C0C (arm9/asm/unk_020557F4.s,
+ * Platinum's PlayerAvatar collision flags) asks sub_0204A7C8 for the step
+ * from the avatar's position vector to the next tile: Platinum's
+ * TerrainCollisionManager_WillPlayerCollide, i.e. the height the tile gives
+ * an object at the current height (sub_0204A708, the terrain provider's
+ * getHeight at fs+0x58: the plate nearest that height, which is how a
+ * bridge deck and the path beneath it are told apart) differing by 20 units
+ * or more, the dynamic map features (sub_0205CE00: gym floors, water
+ * levels), else the tile's collision bit. Behaviors that turn a step away
+ * (water without Surf, one-way tiles) and other objects are left to the
+ * planner, which reads them from the grid. A ledge (JUMP_* 0x38..0x3B, its
+ * direction) is jumped: two tiles, onto a tile without collision.
+ */
+extern fx32 sub_0204A708(FieldSystem *fieldSystem, fx32 y, fx32 x, fx32 z, u8 *heightSource);
+extern BOOL sub_0204A7C8(FieldSystem *fieldSystem, VecFx32 *pos, s32 x, s32 z, s8 *verticalDirection);
+
+static int e2e_step(void *ctx, int x, int z, int y, int dir, int *ty) {
+    static const s8 dx[4] = {0, 0, -1, 1}, dz[4] = {-1, 1, 0, 0};
+    static const u8 jump[4] = {0x3A, 0x3B, 0x39, 0x38}; /* JUMP_NORTH, _SOUTH, _WEST, _EAST */
+    FieldSystem *fs = ctx;
+    const int nx = x + dx[dir], nz = z + dz[dir];
+    VecFx32 pos;
+    u8 source, behavior;
+    s8 vertical;
+
+    if (!e2e_on_matrix(fs, nx, nz)) return 0;
+    behavior = GetMetatileBehavior(fs, nx, nz);
+    if (behavior == 0xFF) return 0;
+    if (behavior == jump[dir]) {
+        const int lx = nx + dx[dir], lz = nz + dz[dir];
+
+        if (!e2e_on_matrix(fs, lx, lz) || GetMetatileBehavior(fs, lx, lz) == 0xFF || sub_0204A6B4(fs, lx, lz)) return 0;
+        *ty = sub_0204A708(fs, y, lx * 16 * FX32_ONE + 8 * FX32_ONE, lz * 16 * FX32_ONE + 8 * FX32_ONE, &source);
+        return 2;
+    }
+    pos.x = x * 16 * FX32_ONE + 8 * FX32_ONE;
+    pos.y = y;
+    pos.z = z * 16 * FX32_ONE + 8 * FX32_ONE;
+    if (sub_0204A7C8(fs, &pos, nx, nz, &vertical)) return 0;
+    *ty = sub_0204A708(fs, y, nx * 16 * FX32_ONE + 8 * FX32_ONE, nz * 16 * FX32_ONE + 8 * FX32_ONE, &source);
+    return 1;
+}
+
+static void e2e_frame(FieldSystem *fs, int ready) {
+    LocalMapObject *player, *obj = NULL;
+    s32 i = 0;
+
+    if (!pc_e2e_on()) return;
+    if (fs == NULL || fs->unk00 == NULL || fs->location == NULL || fs->playerAvatar == NULL
+        || fs->mapObjectManager == NULL || FS_WORD(fs, 0x64) == 0) {
+        pc_e2e_field(0, 0, 0, 0, 0, 0, 0);
+        pc_e2e_end_frame();
+        return;
+    }
+    player = fs->playerAvatar->mapObject;
+    pc_e2e_field(1, (unsigned)fs->location->mapId, (int)PlayerAvatar_GetXCoord(fs->playerAvatar),
+                 (int)PlayerAvatar_GetZCoord(fs->playerAvatar), player != NULL ? (int)MapObject_GetYCoord(player) : 0,
+                 PlayerAvatar_GetFacingDirection(fs->playerAvatar), PlayerAvatar_GetUnk14(fs->playerAvatar));
+    if (ready && FS_WORD(fs, 0x58) != 0) {
+        if (player != NULL) {
+            const int px = (int)PlayerAvatar_GetXCoord(fs->playerAvatar), pz = (int)PlayerAvatar_GetZCoord(fs->playerAvatar);
+            u8 source;
+            const fx32 y = sub_0204A708(fs, MapObject_GetPositionVectorYCoord(player), px * 16 * FX32_ONE + 8 * FX32_ONE,
+                                        pz * 16 * FX32_ONE + 8 * FX32_ONE, &source);
+
+            pc_e2e_steps(e2e_step, fs, y);
+        }
+        pc_e2e_grid(e2e_tile, fs);
+    }
+    while (MapObjectManager_GetNextObjectWithFlagFromIndex(fs->mapObjectManager, &obj, &i, MAPOBJECTFLAG_ACTIVE)) {
+        if (obj == player) continue;
+        pc_e2e_object((int)MapObject_GetXCoord(obj), (int)MapObject_GetZCoord(obj), MapObject_GetID(obj),
+                      MapObject_GetSpriteID(obj));
+    }
+    pc_e2e_end_frame();
+}
+
+/* The battle's menu input (overlay 11's ov11_02258E74, Platinum's
+ * BattleSystem_MenuInput) and the battle party screen's two input checks
+ * (overlay 9's ov09_0221347C, the six slots, and ov09_022134F4, the chosen
+ * Pokemon's SHIFT page; Platinum's CheckPartyPokemonScreenButtonPressed /
+ * CheckSelectPokemonScreenButtonsPressed, found by the same touch-rect
+ * tables) run once per frame while the game waits on them. Their callers
+ * reach them through these instead (pc/patches/arm9/overlays/11/asm/
+ * ov11_0224D550.s.patch, 09/asm/overlay_09.s.patch), which report to the
+ * probe and then run the original. The menu config index is the s8 at
+ * +0x69F of D's battle subscreen, the index ov11_02258E74 asserts and
+ * scales by the 0x30-byte config table ov11_0225FAAC. */
+extern int ov11_02258E74(void *subscreen);
+extern BOOL ov09_0221347C(void *battleParty);
+extern int ov09_022134F4(void *battleParty);
+
+/* The probe's battle report (pc_np_options.h pc_e2e_battle), D's half of
+ * Platinum's pc_pl_e2e_battle, through overlay 11's BattleSystem getters
+ * (ov11_0222FF68.s, in Platinum battle_system.c's order: GetBattleType
+ * 0x2C, GetBattleContext 0x30, GetMaxBattlers 0x44, GetPartyCount,
+ * GetPartyPokemon; GetBattlerType is ov11_02230260) and the BattleContext
+ * layout ov11_02242B78 (Platinum's BattleSystem_InitBattleMon) writes:
+ * battleMons[] 0xC0 bytes each at 0x2D40, species +0, moves +0xC, types
+ * +0x24, the IV word with isEgg (bit 30) +0x14, ppCur +0x2C, level +0x34,
+ * curHP +0x4C, maxHP +0x50; partyOrder[battler][6] at 0x312C (as Platinum).
+ * D's Disable slot is not located: disabled_move stays 0 and the bot learns
+ * a refused move from the menu coming back. The subscreen holds the
+ * BattleSystem at +0 and the menu's battler type at +0x69E (the byte before
+ * the config index, as Platinum's battlerType / activeMenuConfigIndex). */
+extern u32 ov11_0222FF74(void *battleSys);                      /* BattleSystem_GetBattleType */
+extern u8 *ov11_0222FF78(void *battleSys);                      /* BattleSystem_GetBattleContext */
+extern int ov11_0222FF84(void *battleSys);                      /* BattleSystem_GetMaxBattlers */
+extern int ov11_0222FFC8(void *battleSys, int battler);         /* BattleSystem_GetPartyCount */
+extern void *ov11_02230014(void *battleSys, int battler, int slot); /* BattleSystem_GetPartyPokemon */
+extern u8 ov11_02230260(void *battleSys, int battler);          /* BattleSystem_GetBattlerType */
+extern u32 GetMonData(void *mon, int attr, void *ptr);
+
+#define DP_CTX_BATTLE_MONS 0x2D40
+#define DP_BATTLE_MON_SIZE 0xC0
+#define DP_CTX_PARTY_ORDER 0x312C
+
+static void e2e_battle(void *subscreen) {
+    void *bs = *(void **)subscreen;
+    const unsigned menuType = *((u8 *)subscreen + 0x69E);
+    pc_e2e_mon battlers[4], party[6];
+    u8 *ctx;
+    int n, i, j, menu = 0, count;
+
+    if (bs == NULL || (ctx = ov11_0222FF78(bs)) == NULL) return;
+    memset(battlers, 0, sizeof battlers);
+    memset(party, 0, sizeof party);
+    n = ov11_0222FF84(bs);
+    if (n > 4) n = 4;
+    for (i = 0; i < n; i++) {
+        const u8 *m = ctx + DP_CTX_BATTLE_MONS + i * DP_BATTLE_MON_SIZE;
+        const s32 hp = *(const s32 *)(m + 0x4C);
+
+        if (ov11_02230260(bs, i) == menuType) menu = i;
+        battlers[i].species = *(const u16 *)m;
+        battlers[i].egg = (unsigned char)(*(const u32 *)(m + 0x14) >> 30 & 1);
+        battlers[i].level = m[0x34];
+        battlers[i].hp = (unsigned short)(hp > 0 ? hp : 0);
+        battlers[i].max_hp = (unsigned short)*(const u32 *)(m + 0x50);
+        battlers[i].types[0] = m[0x24];
+        battlers[i].types[1] = m[0x25];
+        for (j = 0; j < 4; j++) {
+            battlers[i].moves[j] = *(const u16 *)(m + 0xC + 2 * j);
+            battlers[i].pp[j] = m[0x2C + j];
+        }
+    }
+    count = ov11_0222FFC8(bs, menu);
+    if (count > 6) count = 6;
+    for (i = 0; i < count; i++) {
+        void *mon = ov11_02230014(bs, menu, ctx[DP_CTX_PARTY_ORDER + menu * 6 + i]);
+
+        if (mon == NULL) continue;
+        party[i].species = (unsigned short)GetMonData(mon, MON_DATA_SPECIES, NULL);
+        party[i].egg = (unsigned char)GetMonData(mon, MON_DATA_IS_EGG, NULL);
+        party[i].level = (unsigned char)GetMonData(mon, MON_DATA_LEVEL, NULL);
+        party[i].hp = (unsigned short)GetMonData(mon, MON_DATA_HP, NULL);
+        party[i].max_hp = (unsigned short)GetMonData(mon, MON_DATA_MAX_HP, NULL);
+        for (j = 0; j < 4; j++) {
+            party[i].moves[j] = (unsigned short)GetMonData(mon, MON_DATA_MOVE1 + j, NULL);
+            party[i].pp[j] = (unsigned char)GetMonData(mon, MON_DATA_MOVE1_PP + j, NULL);
+        }
+        party[i].types[0] = party[i].types[1] = 0xFF;
+    }
+    pc_e2e_battle((unsigned)menu, ov11_0222FF74(bs), battlers, (unsigned)n, party, (unsigned)count);
+}
+
+int PcDp_E2eMenuInput(void *subscreen) {
+    if (pc_e2e_on()) {
+        pc_e2e_ui(PC_E2E_UI_BATTLE_MENU, (unsigned)*((s8 *)subscreen + 0x69F));
+        e2e_battle(subscreen);
+    }
+    return ov11_02258E74(subscreen);
+}
+
+BOOL PcDp_E2ePartySlots(void *battleParty) {
+    if (pc_e2e_on()) pc_e2e_ui(PC_E2E_UI_BATTLE_PARTY, 0);
+    return ov09_0221347C(battleParty);
+}
+
+int PcDp_E2ePartyShift(void *battleParty) {
+    if (pc_e2e_on()) pc_e2e_ui(PC_E2E_UI_BATTLE_PARTY, 1);
+    return ov09_022134F4(battleParty);
+}
+
 static void np_frame(void) {
     FieldSystem *fs = field_system();
     const int ready = pc_dp_field_ready(fs);
@@ -150,6 +385,7 @@ static void np_frame(void) {
     pc_np_stat.field_ready = (unsigned)ready;
     pc_np_stat.map_id = fs != NULL && fs->location != NULL ? (unsigned)fs->location->mapId : 0;
 
+    e2e_frame(fs, ready);
     pc_dp_rules_frame();
     warp_frame(fs, ready);
 

@@ -1,0 +1,19 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26092
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+item ITEM_EXPLORER_KIT 1
+register-item ITEM_EXPLORER_KIT
+# scripts_eterna_city_underground_man_house.s:29
+flag FLAG_RECEIVED_EXPLORER_KIT
+# bag stock, verbs pc_lab.c:950-985 (ug-stash.recipe)
+sphere SPHERE_PRISM 12
+sphere SPHERE_RED 4
+trap TRAP_SMOKE
+trap TRAP_DIGGER_DRILL
+good UG_GOOD_TV
+good-pc UG_GOOD_FEATHERY_BED
+# main-matrix map, not a bridge: CanUseExplorerKit allows it (item_use_functions.c:365-367)
+map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN

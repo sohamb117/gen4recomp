@@ -1,0 +1,3 @@
+# Castelia City (zone 34), one tile east of the house warp zone_event 34 warp 2 (7,32..34) -> zone 54; 34's end
+# is in the Poke Transfer Lab (zone 381).
+location 34 8 0 33

@@ -1,0 +1,126 @@
+# Proves Emerald's Berry Blender against the computer, where R/S's 68 is Slateport's: Emerald blends only in Lilycove's
+# Contest Lobby and its Pokeblock Case is the contest receptionist's (67, from whose end save this starts). The old
+# man at blender 1 gives a Pecha Berry once a day to a player without berries (FLAG_DAILY_CONTEST_LOBBY_RECEIVED_BERRY)
+# and blends it with the player; the Pokeblock goes in the case (GAME_STAT_POKEBLOCKS).
+# Start: 67's end save, MAP_LILYCOVE_CITY_CONTEST_LOBBY (14,4) -> end: below blender 1 (27,6).
+title = "Berry Blender: blend a Pokeblock with Lilycove's old man"
+priority = "P1"
+estimate = 11505
+refs = [
+  "data/maps/LilycoveCity_ContestLobby/events.inc:23,50 (the old man at (26,5), bg_sign_event (27,5) BerryBlender_EventScript_BerryBlender1)",
+  "data/maps/LilycoveCity_ContestLobby/scripts.inc:6-20 (TryShowBlendMaster: no POKENEWS_BLENDMASTER, so the old man, not the Blend Master)",
+  "data/scripts/berry_blender.inc:237-300 (BerryBlender1: 'make some POKEBLOCKS with this old-timer?' YES, TryUseBerryBlender1: the case checked, no berries -> Blender1GiveSpareBerry: ITEM_PECHA_BERRY, FLAG_DAILY_CONTEST_LOBBY_RECEIVED_BERRY; 'know how?' YES; DoBerryBlending)",
+  "src/berry_blender.c:1632 CB2_StartBlenderLocal, 1845 Task_HandleOpponent1 (the computer's hits)",
+  "src/berry_blender.c:3665 PrintBlendingRanking, 3455 PrintBlendingResults",
+  "src/berry_blender.c:2656-2658 (IncrementGameStat GAME_STAT_POKEBLOCKS)",
+  "include/constants/game_stat.h (GAME_STAT_POKEBLOCKS 33)",
+]
+notes = "The player never presses A during the spin: the old man finishes the blend alone. Emerald's blending screens are the same shape as R/S's (the berry pocket, CONFIRM, the ranking, the results, 'blend another?' NO)."
+
+[start]
+from = "67-contest-lilycove-normal-rank-win"
+
+[run]
+frames = 17300
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 6
+face = "up"
+interact = true
+note = "blender 1 (bg_sign_event (27,5) BerryBlender_EventScript_BerryBlender1), the old man beside it at (26,5)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "'make some POKEBLOCKS with this old-timer?' YES (berry_blender.inc:241)"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "no berries: the old man gives a PECHA BERRY (Blender1GiveSpareBerry); 'Do you know how to make a POKEBLOCK?' YES (UseBerryBlender1)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 30
+note = "'Let's get started, then! / Let's BERRY BLENDER!' (StartBlender1)"
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "blender"
+note = "the blender screen (CB2_StartBlenderLocal)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 30
+note = "'Starting up...' then 'Please select a BERRY from your BAG'; the second A opens the berry pocket"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "berry-pocket"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "confirm"
+note = "the Pecha Berry, first slot of the berry pocket: the popup opens"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "CONFIRM"
+
+[[step]]
+do = "wait_frames"
+n = 1500
+shot = "spin"
+note = "no A: the old man's hits (Task_HandleOpponent1) raise the RPM and fill the bar"
+
+[[step]]
+do = "wait_frames"
+n = 7500
+shot = "ranking"
+note = "the bar full with one partner's hits takes longer than R/S's two; then PrintBlendingRanking"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "results"
+note = "ranking -> results: max RPM, time (PrintBlendingResults)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "pokeblock"
+note = "results -> 'made a ... POKEBLOCK' (GAME_STAT_POKEBLOCKS, berry_blender.c:2658)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+times = 20
+until = "field_ready=1"
+note = "'Would you like to blend another BERRY?' B = NO -> the field; the script's releaseall"
+
+[[step]]
+do = "advance_text"
+shot = "end"
+
+[expect]
+map = "MAP_LILYCOVE_CITY_CONTEST_LOBBY"
+flags = ["FLAG_RECEIVED_POKEBLOCK_CASE", "FLAG_DAILY_CONTEST_LOBBY_RECEIVED_BERRY"]
+position = [27, 6]
+save = [
+  's["game_stats"][33] >= 1',
+  'not s["bag"]["berries"]',
+]

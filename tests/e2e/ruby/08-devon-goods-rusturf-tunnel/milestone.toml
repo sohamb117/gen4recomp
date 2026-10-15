@@ -1,0 +1,119 @@
+# Proves the stolen-goods chain: StolenGoodsTrigger (x=23), the Devon employee's HelpGetGoods trigger, Briney on
+# Route 116, the tunnel grunt (TRAINER_RUSTURF_TUNNEL_GRUNT) and FLAG_RECOVERED_DEVON_GOODS (RUSTBORO_STATE 4).
+# Start: Rustboro gym door (27,20) -> end: MAP_ROUTE116 outside the tunnel (47,9).
+title = "Stolen Devon Goods: the Rusturf Tunnel grunt and Peeko"
+priority = "P0"
+version = "both"
+estimate = 17448
+refs = [
+  "data/maps/RustboroCity/map.json coord_events (23,20..24) VAR_RUSTBORO_STATE=1",
+  "data/maps/RustboroCity/scripts.inc:122-187 (StolenGoodsScene: FLAG_DEVON_GOODS_STOLEN, RUSTBORO 2, RUSTURF_TUNNEL 2, ROUTE116 1)",
+  "data/maps/RustboroCity/map.json coord_events (30,9)/(29,10)/(30,11)/(30,12) VAR_RUSTBORO_STATE=2",
+  "data/maps/RustboroCity/scripts.inc:337-372 (EmployeeAskToGetGoods: RUSTBORO 3)",
+  "data/maps/Route116/map.json coord_events (47,9) VAR_ROUTE116_STATE=1",
+  "data/maps/Route116/scripts.inc:133-141 (Briney: ROUTE116_STATE 2)",
+  "data/maps/Route116/map.json warp_events[0] (47,8) -> RUSTURF_TUNNEL (4,10)",
+  "data/maps/RusturfTunnel/map.json coord_events (9,4)/(9,5) VAR_RUSTURF_TUNNEL_STATE=2",
+  "data/maps/RusturfTunnel/scripts.inc:279-290 (grunt backs up, RUSTURF_TUNNEL_STATE 3)",
+  "data/maps/RusturfTunnel/scripts.inc:308-349 (grunt object 6: trainerbattle_no_intro TRAINER_RUSTURF_TUNNEL_GRUNT, ITEM_DEVON_GOODS, FLAG_RECOVERED_DEVON_GOODS, RUSTBORO 4, BRINEY_HOUSE_STATE 1)",
+  "constants/version.inc (TRAINER_RUSTURF_TUNNEL_GRUNT: Ruby TRAINER_GRUNT_42, Sapphire TRAINER_GRUNT_15)",
+]
+notes = "Grunt: Ruby TRAINER_GRUNT_42 (581) / Sapphire TRAINER_GRUNT_15 (16): POOCHYENA 11 in both. Route 116 sight trainers between Rustboro and the tunnel: Joey (ZIGZAGOON 8, MACHOP 10), Jose, Janice (MARILL 10), Karen, Jerry, Clark (lv 8-10). The tunnel's east half stays blocked by rocks until Rock Smash (17)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 26200
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 20
+on_text = "stop"
+note = "west across x=23 from the gym: StolenGoodsTrigger0 -> grunt runs (RustboroCity/scripts.inc:122-187)"
+
+[[step]]
+do = "advance_text"
+shot = "goods-stolen"
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 11
+on_text = "stop"
+note = "HelpGetGoods coord (30,11) RUSTBORO 2 -> employee asks, RUSTBORO 3 (:337-372)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 47
+z = 9
+map = "MAP_ROUTE116"
+on_text = "stop"
+note = "east on Route 116 (trainers) to the tunnel; (47,9) Briney trigger ROUTE116 1 -> 2 (Route116/scripts.inc:133-141)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 47
+z = 8
+note = "tunnel mouth (Route 116 warp 0) -> MAP_RUSTURF_TUNNEL (4,10)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTURF_TUNNEL"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 4
+on_text = "stop"
+note = "coord (9,4) RUSTURF_TUNNEL_STATE 2 -> 3 (RusturfTunnel/scripts.inc:279-290)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 6
+note = "grunt (object 6) -> trainerbattle_no_intro TRAINER_RUSTURF_TUNNEL_GRUNT (:308-313)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Ruby TRAINER_GRUNT_42 / Sapphire TRAINER_GRUNT_15: POOCHYENA 11"
+
+[[step]]
+do = "advance_text"
+note = "ITEM_DEVON_GOODS, Briney + Peeko leave; FLAG_RECOVERED_DEVON_GOODS, RUSTBORO 4, BRINEY_HOUSE_STATE 1 (:315-349)"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 10
+note = "tunnel west exit (warp 0) -> Route 116 (47,8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE116"
+
+[expect]
+map = "MAP_ROUTE116"
+badges = 1
+flags = ["FLAG_BADGE01_GET", "FLAG_RECOVERED_DEVON_GOODS", "FLAG_HIDE_BRINEY_ROUTE116"]
+flags_clear = ["FLAG_DEVON_GOODS_STOLEN"]
+battles = 1
+
+[expect.vars]
+VAR_RUSTBORO_STATE = 4
+VAR_RUSTURF_TUNNEL_STATE = 3
+VAR_ROUTE116_STATE = 2
+VAR_BRINEY_HOUSE_STATE = 1

@@ -1,0 +1,5 @@
+# Boost on 93's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# Party: 0 TYPHLOSION (SolarBeam (93's boost), Earthquake, ThunderPunch, Focus Blast), 1 TOGEPI, 2 SCYTHER,
+# 3 AMPHAROS, 4 PELIPPER, 5 FERALIGATR. Erika's team is Grass; 93's boost had put SolarBeam in Lava Plume's slot, so
+# TYPHLOSION gets Lava Plume (its own level-up move) back there (the scouting run won in 16 turns without it).
+party-move 0 0 MOVE_LAVA_PLUME

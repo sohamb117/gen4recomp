@@ -1,0 +1,45 @@
+# Trophy Garden daily mon: Mr. Backlot (needs national dex), YES, YES -> AddTrophyGardenMon.
+# Start: POKEMON_MANSION_OFFICE (16,9) below Backlot. End: same, daily flag set.
+title = "Trophy Garden: Mr. Backlot's daily Pokemon"
+priority = "P2"
+estimate = 2145
+refs = [
+  "res/field/events/events_route_212_north.json",
+  "res/field/events/events_pokemon_mansion.json",
+  "res/field/events/events_pokemon_mansion_office.json",
+  "res/field/scripts/scripts_pokemon_mansion_office.s:31-95",
+  "src/overlay006/trophy_garden_daily_encounters.c:14-44",
+  "src/special_encounter.c:279",
+  "res/field/encounters/encounters_trophy_garden.json",
+  "src/overlay006/wild_encounters.c:209-227",
+  "src/overlay006/wild_encounters.c:336",
+  "pc/src/pc_lab.c:789-793",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 3300
+clock = "2009-03-22 21:00:00"   # daily flag FLAG_DAILY_ADDED_TROPHY_GARDEN_MON
+
+[[step]]
+do = "press"
+keys = "A"
+note = "talk to LOCALID_MR_BACKLOT (16,8), script 2"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "the two YES prompts take A (YES first); the old man leaves and Backlot names the species"
+shot = "backlot-species"
+
+[expect]
+map = 370
+flags = ["FLAG_DAILY_ADDED_TROPHY_GARDEN_MON"]
+# np_save4's trophy_garden: Backlot's mon is in the garden's first slot, an index into the 16-entry daily list
+# (encounters_trophy_garden.json; RNG, the text on the sheet names it)
+save = ['s["pokedex"]["national"] == True', 'len(s["trophy_garden"]) == 1 and 0 <= s["trophy_garden"][0] < 16']
+
+[[shots]]
+frames = [1760, 1860, 1960, 2060]   # Backlot's two questions and the species he names

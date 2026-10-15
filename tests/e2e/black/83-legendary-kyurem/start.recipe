@@ -1,0 +1,6 @@
+# On 34's end save (no Master Ball left: 32 threw it): the items pocket's first slot (set-item slots count from 1;
+# item 112) becomes a Master Ball (item 1), the first ball the battle bag lists.
+item 0 1 1 1
+# The Giant Chasm's crater forest (zone 232), one tile below the cave of Kyurem (zone_event 232 warp 1 (62,21));
+# set-location keeps the saved zone's objects, so the cave is entered by its warp.
+location 232 62 0 22

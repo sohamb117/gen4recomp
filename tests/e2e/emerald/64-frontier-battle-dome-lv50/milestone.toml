@@ -1,0 +1,374 @@
+# Proves the Battle Frontier's Battle Dome, Level 50: the attendant's menus, the choose-half party menu (three entries), the
+# save before the challenge, four tournament matches (two of the three chosen before each), and the lobby's Battle Points.
+# Start: MAP_BATTLE_FRONTIER_BATTLE_DOME_LOBBY (5,11) -> end: the lobby, the tournament won.
+title = "Battle Frontier: Battle Dome, a Level 50 tournament won (four matches)"
+priority = "P1"
+estimate = 19199
+refs = [
+  "data/maps/BattleFrontier_BattleDomeLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge)",
+  "data/maps/BattleFrontier_BattleDomeBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE)",
+  "data/maps/BattleFrontier_BattleDomePreBattleRoom/scripts.inc:14-160 (MULTI_TOURNEY_*: READY, choose two of the three, warp to the battle room)",
+  "data/maps/BattleFrontier_BattleDomeBattleRoom/scripts.inc (the match, the round results, the champion)",
+]
+notes = "A single-elimination tournament of 16: four matches; before each the player picks two of the three entered Pokemon (src/battle_dome.c)."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 28800
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the attendant (BattleFrontier_BattleDomeLobby/map.json object_events[0])"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_CHALLENGEINFO: CHALLENGE (BattleFrontier_BattleDomeLobby/scripts.inc)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_LEVEL_MODE: LV. 50"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'select three Pokemon', the fade to the choose-half party menu (special ChoosePartyForBattleFrontier)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 0: ENTER/SUMMARY/CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "ENTER"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 1 entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "entry-three"
+note = "slot 2 entered: the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "'okay to save?' YES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 60
+until = "map_id!=6674"
+note = "Common_EventScript_SaveGame's dialog answered with A, the walk out of the lobby"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_PRE_BATTLE_ROOM"
+max = 4000
+note = "the corridor's walk to the battle room"
+
+[[step]]
+do = "menu"
+choose = 2
+note = "round 1: MULTI_TOURNEY_WITH_RECORD / NO_RECORD: READY (BattleFrontier_BattleDomePreBattleRoom/scripts.inc:14-48)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'choose two Pokemon' (waitbuttonpress), the fade to the choose-half party menu for two (DOME_BATTLE_PARTY_SIZE)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the first entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "dome-pick-1"
+note = "the second entered: the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM"
+note = "dome_reduceparty, dome_setopponent, warp MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM (BattleFrontier_BattleDomePreBattleRoom/scripts.inc:141-156)"
+
+[[step]]
+do = "advance_text"
+note = "the announcer, the opponent (BattleFrontier_BattleDomeBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Dome match 1 of 4"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_PRE_BATTLE_ROOM"
+note = "the win, back to the pre-battle room (BattleFrontier_BattleDomeBattleRoom/scripts.inc:137-145)"
+
+[[step]]
+do = "menu"
+choose = 2
+note = "round 2: MULTI_TOURNEY_WITH_RECORD / NO_RECORD: READY (BattleFrontier_BattleDomePreBattleRoom/scripts.inc:14-48)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'choose two Pokemon' (waitbuttonpress), the fade to the choose-half party menu for two (DOME_BATTLE_PARTY_SIZE)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the first entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the second entered: the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM"
+note = "dome_reduceparty, dome_setopponent, warp MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM (BattleFrontier_BattleDomePreBattleRoom/scripts.inc:141-156)"
+
+[[step]]
+do = "advance_text"
+note = "the announcer, the opponent (BattleFrontier_BattleDomeBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Dome match 2 of 4"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_PRE_BATTLE_ROOM"
+note = "the win, back to the pre-battle room (BattleFrontier_BattleDomeBattleRoom/scripts.inc:137-145)"
+
+[[step]]
+do = "menu"
+choose = 2
+note = "round 3: MULTI_TOURNEY_WITH_RECORD / NO_RECORD: READY (BattleFrontier_BattleDomePreBattleRoom/scripts.inc:14-48)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'choose two Pokemon' (waitbuttonpress), the fade to the choose-half party menu for two (DOME_BATTLE_PARTY_SIZE)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the first entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the second entered: the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM"
+note = "dome_reduceparty, dome_setopponent, warp MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM (BattleFrontier_BattleDomePreBattleRoom/scripts.inc:141-156)"
+
+[[step]]
+do = "advance_text"
+note = "the announcer, the opponent (BattleFrontier_BattleDomeBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Dome match 3 of 4"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_PRE_BATTLE_ROOM"
+note = "the win, back to the pre-battle room (BattleFrontier_BattleDomeBattleRoom/scripts.inc:137-145)"
+
+[[step]]
+do = "menu"
+choose = 2
+note = "round 4: MULTI_TOURNEY_WITH_RECORD / NO_RECORD: READY (BattleFrontier_BattleDomePreBattleRoom/scripts.inc:14-48)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'choose two Pokemon' (waitbuttonpress), the fade to the choose-half party menu for two (DOME_BATTLE_PARTY_SIZE)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the first entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the second entered: the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM"
+note = "dome_reduceparty, dome_setopponent, warp MAP_BATTLE_FRONTIER_BATTLE_DOME_BATTLE_ROOM (BattleFrontier_BattleDomePreBattleRoom/scripts.inc:141-156)"
+
+[[step]]
+do = "advance_text"
+note = "the announcer, the opponent (BattleFrontier_BattleDomeBattleRoom/scripts.inc)"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "Battle Dome match 4 of 4"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_LOBBY"
+note = "the final won: the champion's confetti (DoDomeConfetti), back to the lobby (BattleFrontier_BattleDomeBattleRoom/scripts.inc:159-)"
+
+[[step]]
+do = "advance_text"
+note = "WonChallenge: Battle Points; the record YES/NO's default NO taken by A"
+
+[expect]
+map = "MAP_BATTLE_FRONTIER_BATTLE_DOME_LOBBY"
+battles = 4

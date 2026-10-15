@@ -1,0 +1,10 @@
+# CONTINUE, then Y (the registered Explorer Kit) and A every 200 frames: the
+# "DS Wireless Communications" box, the save Yes/No, the overwrite Yes, the
+# save, then Roark's first-visit intro ("Hey! GQ!", his name buffer is the
+# player's comm info) to its end.
+1250:start
+1400:a
+1500:a
+1600:a
+2000:y:24
+2200:a:24:200:22

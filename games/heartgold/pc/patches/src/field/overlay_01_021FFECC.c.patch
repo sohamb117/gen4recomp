@@ -1,0 +1,46 @@
+--- a/src/field/overlay_01_021FFECC.c
++++ b/src/field/overlay_01_021FFECC.c
+@@ -1,7 +1,15 @@
++/* nativeplat: ov01_021FFF5C and ov01_021F1620 return the field effect
++ * (see ov01_021FFF5C); the headers' void prototypes are renamed out of the
++ * way. */
++#define ov01_021FFF5C ov01_021FFF5C_header_void
++#define ov01_021F1620 ov01_021F1620_header_void
+ #include "overlay_01_021FFECC.h"
+ 
+ #include "map_object.h"
+ #include "overlay_01_021F1348.h"
++#undef ov01_021FFF5C
++#undef ov01_021F1620
++void *ov01_021F1620(FieldSystem *fieldSystem, const UnkOv01_02209280 *a1, VecFx32 *a2, int a3, UnkOv01_021FFF5C *a4, int a5);
+ #include "player_avatar.h"
+ #include "unk_0205FD20.h"
+ #include "unk_020658D4.h"
+@@ -50,7 +58,17 @@
+     return &a0->unk54[idx];
+ }
+ 
+-void ov01_021FFF5C(LocalMapObject *mapObject, int a1) {
++/* nativeplat: returns the field effect it creates, as on the ROM. mwcc
++ * compiled the void body's last call, ov01_021F1620 (assembly that returns
++ * the effect sub_02068B0C made), as `bl ov01_021F1620; add sp; pop {pc}`,
++ * so r0 still held the effect, and the assembly callers keep it:
++ * sub_020663B4 and sub_020663E4 store it in the map object's movement
++ * state (sub_02066420), sub_02066360 and MapObjectMovementCmd101_Step0
++ * delete it from there (sub_02068B48), and sub_020663E4 creates one only
++ * while none is stored. The wasm bridge returns 0 from a void C function:
++ * the effect was never deleted, and sub_020663E4 made a new one on every
++ * step it ran (found by games/diamond/pc/tools/dp_voidret_lint.py). */
++void *ov01_021FFF5C(LocalMapObject *mapObject, int a1) {
+     VecFx32 temp;
+     UnkOv01_021FFF5C temp2;
+ 
+@@ -72,7 +90,7 @@
+     temp2.unk10 = ov01_021FFF50(val1, a1);
+ 
+     int val3 = MapObject_GetPriorityPlusValue(mapObject, 2);
+-    ov01_021F1620(fieldSystem, &ov01_02209280, &temp, 0, &temp2, val3);
++    return ov01_021F1620(fieldSystem, &ov01_02209280, &temp, 0, &temp2, val3);
+ }
+ 
+ static BOOL ov01_021FFFCC(void *a0, UnkOv01_021FFFCD *a1) {

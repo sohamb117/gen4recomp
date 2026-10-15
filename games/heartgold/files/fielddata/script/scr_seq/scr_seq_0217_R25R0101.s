@@ -1,0 +1,310 @@
+#include "constants/scrcmd.h"
+#include "fielddata/script/scr_seq/event_R25R0101.h"
+#include "msgdata/msg/msg_0364_R25R0101.h"
+	.include "asm/macros/script.inc"
+
+	.rodata
+
+	ScrDef scr_seq_R25R0101_000
+	ScrDefEnd
+
+scr_seq_R25R0101_000:
+	PlaySE SEQ_SE_DP_SELECT
+	LockAll
+	FacePlayer
+	GoToIfSet FLAG_UNK_14E, _0020
+	NPCMsg msg_0364_R25R0101_00000
+	SetFlag FLAG_UNK_14E
+_0020:
+	GetGameVersion VAR_SPECIAL_x8002
+	Compare VAR_SPECIAL_x8002, 8
+	GoToIfNe _0037
+	GoTo _00B1
+
+_0037:
+	Compare VAR_UNK_412D, 0
+	GoToIfNe _004D
+	NPCMsg msg_0364_R25R0101_00001
+	GoTo _00AB
+
+_004D:
+	Compare VAR_UNK_412D, 1
+	GoToIfNe _0063
+	NPCMsg msg_0364_R25R0101_00002
+	GoTo _00AB
+
+_0063:
+	Compare VAR_UNK_412D, 2
+	GoToIfNe _0079
+	NPCMsg msg_0364_R25R0101_00003
+	GoTo _00AB
+
+_0079:
+	Compare VAR_UNK_412D, 3
+	GoToIfNe _008F
+	NPCMsg msg_0364_R25R0101_00004
+	GoTo _00AB
+
+_008F:
+	Compare VAR_UNK_412D, 4
+	GoToIfNe _00A5
+	NPCMsg msg_0364_R25R0101_00005
+	GoTo _00AB
+
+_00A5:
+	GoTo _0484
+
+_00AB:
+	GoTo _0125
+
+_00B1:
+	Compare VAR_UNK_412D, 0
+	GoToIfNe _00C7
+	NPCMsg msg_0364_R25R0101_00006
+	GoTo _0125
+
+_00C7:
+	Compare VAR_UNK_412D, 1
+	GoToIfNe _00DD
+	NPCMsg msg_0364_R25R0101_00007
+	GoTo _0125
+
+_00DD:
+	Compare VAR_UNK_412D, 2
+	GoToIfNe _00F3
+	NPCMsg msg_0364_R25R0101_00008
+	GoTo _0125
+
+_00F3:
+	Compare VAR_UNK_412D, 3
+	GoToIfNe _0109
+	NPCMsg msg_0364_R25R0101_00009
+	GoTo _0125
+
+_0109:
+	Compare VAR_UNK_412D, 4
+	GoToIfNe _011F
+	NPCMsg msg_0364_R25R0101_00010
+	GoTo _0125
+
+_011F:
+	GoTo _0484
+
+_0125:
+	NPCMsg msg_0364_R25R0101_00011
+	TouchscreenMenuHide
+	GetMenuChoice VAR_SPECIAL_RESULT
+	TouchscreenMenuShow
+	Compare VAR_SPECIAL_RESULT, 1
+	GoToIfEq _048D
+	NPCMsg msg_0364_R25R0101_00012
+	CloseMsg
+	FadeScreen 6, 1, 0, RGB_BLACK
+	WaitFade
+	PartySelectUI
+	GetPartySelection VAR_SPECIAL_x8000
+	RestoreOverworld
+	FadeScreen 6, 1, 1, RGB_BLACK
+	WaitFade
+	Compare VAR_SPECIAL_x8000, 255
+	GoToIfEq _048D
+	GetPartyMonSpecies VAR_SPECIAL_x8000, VAR_SPECIAL_x8001
+	Compare VAR_SPECIAL_x8002, 8
+	GoToIfNe _0188
+	GoTo _02F0
+
+_0188:
+	Switch VAR_UNK_412D
+	Case 0, _01C8
+	Case 1, _01E4
+	Case 2, _0200
+	Case 3, _021C
+	GoTo _0238
+
+_01C8:
+	Compare VAR_SPECIAL_x8001, 43
+	GoToIfEq _01DE
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_01DE:
+	GoTo _024E
+
+_01E4:
+	Compare VAR_SPECIAL_x8001, 58
+	GoToIfEq _01FA
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_01FA:
+	GoTo _024E
+
+_0200:
+	Compare VAR_SPECIAL_x8001, 39
+	GoToIfEq _0216
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_0216:
+	GoTo _024E
+
+_021C:
+	Compare VAR_SPECIAL_x8001, 172
+	GoToIfEq _0232
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_0232:
+	GoTo _024E
+
+_0238:
+	Compare VAR_SPECIAL_x8001, 183
+	GoToIfEq _024E
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_024E:
+	BufferMonSpeciesName 0, VAR_SPECIAL_x8000
+	NPCMsg msg_0364_R25R0101_00015
+	Switch VAR_UNK_412D
+	Case 0, _0296
+	Case 1, _02A8
+	Case 2, _02BA
+	Case 3, _02CC
+	GoTo _02DE
+
+_0296:
+	SetVar VAR_SPECIAL_x8004, 85
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_02A8:
+	SetVar VAR_SPECIAL_x8004, 82
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_02BA:
+	SetVar VAR_SPECIAL_x8004, 229
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_02CC:
+	SetVar VAR_SPECIAL_x8004, 83
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_02DE:
+	SetVar VAR_SPECIAL_x8004, 84
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_02F0:
+	Switch VAR_UNK_412D
+	Case 0, _0330
+	Case 1, _034C
+	Case 2, _0368
+	Case 3, _0384
+	GoTo _03A0
+
+_0330:
+	Compare VAR_SPECIAL_x8001, 108
+	GoToIfEq _0346
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_0346:
+	GoTo _03B6
+
+_034C:
+	Compare VAR_SPECIAL_x8001, 43
+	GoToIfEq _0362
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_0362:
+	GoTo _03B6
+
+_0368:
+	Compare VAR_SPECIAL_x8001, 120
+	GoToIfEq _037E
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_037E:
+	GoTo _03B6
+
+_0384:
+	Compare VAR_SPECIAL_x8001, 37
+	GoToIfEq _039A
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_039A:
+	GoTo _03B6
+
+_03A0:
+	Compare VAR_SPECIAL_x8001, 172
+	GoToIfEq _03B6
+	NPCMsg msg_0364_R25R0101_00014
+	GoTo _0490
+
+_03B6:
+	BufferMonSpeciesName 0, VAR_SPECIAL_x8000
+	NPCMsg msg_0364_R25R0101_00015
+	Switch VAR_UNK_412D
+	Case 0, _03FE
+	Case 1, _0410
+	Case 2, _0422
+	Case 3, _0434
+	GoTo _0446
+
+_03FE:
+	SetVar VAR_SPECIAL_x8004, 229
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_0410:
+	SetVar VAR_SPECIAL_x8004, 85
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_0422:
+	SetVar VAR_SPECIAL_x8004, 84
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_0434:
+	SetVar VAR_SPECIAL_x8004, 82
+	SetVar VAR_SPECIAL_x8005, 1
+	GoTo _0452
+
+_0446:
+	SetVar VAR_SPECIAL_x8004, 83
+	SetVar VAR_SPECIAL_x8005, 1
+_0452:
+	HasSpaceForItem VAR_SPECIAL_x8004, VAR_SPECIAL_x8005, VAR_SPECIAL_RESULT
+	Compare VAR_SPECIAL_RESULT, 0
+	GoToIfEq _047A
+	CallStd std_give_item_verbose
+	AddVar VAR_UNK_412D, 1
+	NPCMsg msg_0364_R25R0101_00016
+	GoTo _0490
+
+_047A:
+	CallStd std_bag_is_full
+	CloseMsg
+	ReleaseAll
+	End
+
+_0484:
+	NPCMsg msg_0364_R25R0101_00017
+	GoTo _0490
+
+_048D:
+	NPCMsg msg_0364_R25R0101_00013
+_0490:
+	WaitButton
+	CloseMsg
+	ReleaseAll
+	End
+	.balign 4, 0

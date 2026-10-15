@@ -81,12 +81,29 @@ void pc_dp_overlay_start(FSOverlayInfo *p_ovi)
         pc_wasm_fatalf("pc_dp_overlay: overlay %u started for the ARM7",
                        (unsigned)h->id);
     }
-    /* D's overlays are stored uncompressed (no table entry of either ROM
-     * has FS_OVERLAY_FLAG_COMP), and the SDK's own decompression would
-     * have to run before the image is made resident. */
+    /* An overlay stored BLZ-compressed (FS_OVERLAY_FLAG_COMP; D's never
+     * are, TWL-SDK games' mostly are) is decompressed in place before it is
+     * made resident, where the SDK's FS_StartOverlay does it: the image
+     * FS_LoadOverlayImage read ends `compressed` bytes above ram_address. */
     if (h->flag & 1u) {
-        pc_wasm_fatalf("pc_dp_overlay: overlay %u is compressed; this port "
-                       "loads D/P's uncompressed images only", (unsigned)h->id);
+        MIi_UncompressBackward((u8 *)h->ram_address + h->compressed);
+    }
+    /* PC_TRACE_OVERLAYS=1: one line per overlay made resident, so a run
+     * shows which overlays its path loads (Black: whether the opaque,
+     * self-modifying ov230 is among them). */
+    {
+        extern char *getenv(const char *);
+        extern unsigned long long pc_irq_frames(void);
+        static int sTrace = -1;
+
+        if (sTrace < 0) {
+            const char *e = getenv("PC_TRACE_OVERLAYS");
+            sTrace = e != NULL && e[0] != '\0' && e[0] != '0';
+        }
+        if (sTrace) {
+            fprintf(stderr, "pc_dp_overlay: frame %llu: overlay %u at 0x%08X\n",
+                    pc_irq_frames(), (unsigned)h->id, (unsigned)(uintptr_t)h->ram_address);
+        }
     }
     armrec_load_overlay((int)h->id, (uint32_t)(uintptr_t)h->ram_address,
                         h->ram_size + h->bss_size);

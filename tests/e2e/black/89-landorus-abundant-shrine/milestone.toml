@@ -1,0 +1,168 @@
+# Landorus at the Abundant Shrine (Black, post-game): with Tornadus (its own, caught in 85) and Thundurus (traded from
+# White in tests/link's bw_trade_landorus) in the party, the shrine calls Landorus, caught with the Master Ball.
+# Start: Route 14 below the shrine (88's end: the Black station back from the Union Room, + start.recipe) -> end: the
+# Abundant Shrine (zone 376), Landorus caught.
+title = "Landorus (Abundant Shrine): both roamers in the party, one by link trade (Black)"
+priority = "P1"
+version = "black"
+estimate = 20659
+refs = [
+  "zone_event 374 warp 0 (677,357) 2x1 -> zone 376 (Abundant Shrine) warp 0 (50,54)",
+  "zone 376 level script type 2 -> scr 0752 script 3: var 0x40CE == 0 or 1 -> GetVersion; Black: @0x0089 Cmd1BD 1 (Tornadus's roamer state) == 3 (caught) -> @0x00A2 SetVar 0x40CE 1, @0x00A8 ClearFlag 0x2ED (the three children)",
+  "zone_event 376 trigger 0 (21..23,17) var 0x40CE == 1 -> scr 0752 script 1: the children (msg 408 #0-#10, 'So if Tornadus and Thundurus come here again, Great Landorus may come back.'), @0x030A SetVar 0x40CE 2, @0x0310 SetFlag 0x2ED",
+  "zone_event 376 bg 0 (22,12) -> scr 0752 script 2: over the party (@0x049A Cmd103 the count, @0x04B3 Cmd0FE each species): 641 Tornadus sets 0x8024, 642 Thundurus 0x8025; on Black the Tornadus counts in 0x8028 only when @0x04E5 Cmd113 (the OT is the player's: the Name Rater's check, scr 0857 @0x00BE) is 1; needs 0x8024, 0x8025 and 0x8028 >= 1, flags 0x139 and 0x13D clear -> L_0619",
+  "scr 0752 L_0619: @0x0619 ClearFlag 0x2EE, AddObject 3, msg 408 #12-#13 'Tornadus and Thundurus are struggling inside their Poke Balls!', Landorus's cry and the scene, @0x069C SetVar 0x40CE 3, @0x06A2 SetFlag 0x13D",
+  "zone_event 376 object 3 gfx 0x78 hidden by flag 0x2EE -> scr 0752 script 5: @0x06DB WildBattle Landorus (645) lv 70; won/caught (Cmd17B 1) -> @0x06FA RemoveObject 3, @0x06FE SetFlag 0x2EE, @0x0702 SetVar 0x40CE 4; caught (Cmd17C 0) -> @0x0759 SetFlag 0x139",
+  "systems.txt's old exclusion (Landorus link-only): Cmd1BC (scr 0674 @0x0642 / @0x064C, by GetVersion) starts only the own version's roamer, so the other comes by a link trade",
+]
+notes = "Measured from the start save (CONTINUE included): Black 20659 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Black only: White's own roamer is Thundurus, and the link trade brings it to Black (tests/link/run_link_tests.py --game black:white bw_trade_landorus, then 88, which CONTINUEs the post-trade save back from the Union Room and saves in Striaton's Pokemon Center: the save the trade leaves CONTINUEs only there, 88's refs). start.recipe moves the player to Route 14 below the shrine (set-location; the route's river, Surf and Waterfall, is not walked) and stocks a Master Ball. Flags and vars stay the chain's: 0x40CE comes from the shrine's own level script on entering."
+
+[start]
+from = "88-link-trade-return"
+recipe = "start.recipe"
+
+[run]
+frames = 31000
+
+[[step]]
+do = "wait_field"
+shot = "route14"
+note = "Route 14 below the shrine's entrance (start.recipe)"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 374 warp 0 (677,357) -> the Abundant Shrine (zone 376): its level script shows the children (0x40CE 1: Tornadus caught)"
+
+[[step]]
+do = "wait_field"
+shot = "shrine-entrance"
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 18
+on_battle = "flee"
+note = "below the children's trigger (21..23,17); the shrine's grass on the way is fled"
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "onto trigger 0: scr 0752 script 1, the children's scene"
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "children"
+note = "the children's scene, its first line up (msg 408 #0)"
+
+[[step]]
+do = "advance_text"
+max = 9000
+
+[[step]]
+do = "walk_to"
+x = 22
+z = 13
+face = "up"
+on_battle = "flee"
+note = "below the shrine (bg 0 (22,12))"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 120
+shot = "shrine-message"
+note = "scr 0752 script 2 -> L_0619: msg 408 #12 'It's a small, weathered shrine.'"
+
+[[step]]
+do = "press"
+keys = "a"
+hold = 4
+gap = 150
+shot = "struggling"
+note = "msg 408 #13 'Tornadus and Thundurus are struggling inside their Poke Balls!'"
+
+[[step]]
+do = "advance_text"
+max = 9000
+shot = "landorus-appears"
+
+[[step]]
+do = "talk_to"
+id = 3
+note = "Landorus (object 3, scr 0752 script 5)"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "in_battle=1"
+times = 60
+note = "to its WildBattle (Landorus lv 70, @0x06DB)"
+
+[[step]]
+do = "wait_frames"
+n = 1800
+shot = "landorus-battle"
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 190
+y = 48
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 30
+gap = 60
+note = "the first ball, the Master Ball (start.recipe)"
+
+[[step]]
+do = "tap"
+x = 110
+y = 174
+gap = 60
+note = "USE"
+
+[[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the throw and the shakes run without input; then 'Landorus's data was added to the Pokedex.'"
+
+[[step]]
+do = "press"
+keys = "b"
+until = "in_battle=0"
+times = 80
+gap = 30
+note = "B declines the nickname; the full party sends Landorus to the Box"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "wait_field"
+shot = "end"
+
+[expect]
+map = 376
+flags = ["0x139", "0x13D", "0x2EE"]
+save = [
+  "any(m[\"species\"] == 645 for m in s[\"party\"]) or any(m[\"species\"] == 645 for b in s[\"boxes\"] for m in b[\"mons\"])",
+  "any(m[\"species\"] == 641 and m[\"tid\"] == s[\"trainer\"][\"tid\"] for m in s[\"party\"])",
+  "any(m[\"species\"] == 642 and m[\"tid\"] != s[\"trainer\"][\"tid\"] for m in s[\"party\"])",
+]
+
+[expect.vars]
+"0x40CE" = 4

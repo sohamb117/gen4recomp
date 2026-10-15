@@ -290,13 +290,16 @@ void *vram_extpal(int which, int slot) {
     switch (which) {
     case VRAM_EXTPAL_ABG:
         /* E covers all four slots with its first 32 KB; F and G are 16 KB and
-         * cover two, chosen by bit 0 of the placement field. */
+         * cover two, chosen by bit 0 of the placement field (ofs 0: slots 0
+         * and 1, ofs 1: 2 and 3; GX_VRAM_BGEXTPLTT_23_G writes G as 0x8C).
+         * mst is bits 0-2, so 0x87 picks "enabled at mst 4" and leaves the
+         * placement bits to the slot test. */
         CLAIM(4, (vram_cnt_live[4] & 0x87u) == 0x84u,
               (uint32_t)slot * 0x2000u, 0x7FFFu);
-        CLAIM(5, (vram_cnt_live[5] & 0x9Fu) == 0x84u &&
+        CLAIM(5, (vram_cnt_live[5] & 0x87u) == 0x84u &&
                  (slot >> 1) == (int)((vram_cnt_live[5] >> 3) & 1u),
               (uint32_t)slot * 0x2000u, 0x3FFFu);
-        CLAIM(6, (vram_cnt_live[6] & 0x9Fu) == 0x84u &&
+        CLAIM(6, (vram_cnt_live[6] & 0x87u) == 0x84u &&
                  (slot >> 1) == (int)((vram_cnt_live[6] >> 3) & 1u),
               (uint32_t)slot * 0x2000u, 0x3FFFu);
         break;
@@ -667,13 +670,11 @@ int vram_selftest(int *ranOut)
     }
 
     /*
-     * F is 16 KB and covers two of the four slots. Only ofs 0 is checked, and
-     * the reason is a defect in the model this file copies rather than a gap
-     * here: armrec's condition masks the placement bits into the comparison
-     * (`(cnt & 0x9F) == 0x84`), so the ofs-1 arrangement the SDK writes for
-     * GX_VRAM_BGEXTPLTT_23_G, 0x8C, and eight sites in this game ask for it:
-     * matches nothing and reads as an unmapped slot on both ports. Pinning
-     * that answer here would make the copy's job to keep it.
+     * F and G are 16 KB and cover two of the four slots, ofs 0 the first two
+     * and ofs 1 the last two. G at 0x8C is what the SDK writes for
+     * GX_VRAM_BGEXTPLTT_23_G (the Battle Frontier's rooms keep their
+     * palettes there); armrec once masked the placement bits into the mst
+     * test and read it as unmapped (tests/e2e/DEFECTS.md).
      */
     vram_set_cnt(4, 0x00u);
     vram_set_cnt(5, 0x84u); /* F, mst 4, ofs 0 -> slots 0 and 1 */
@@ -684,10 +685,19 @@ int vram_selftest(int *ranOut)
         CHECK(vram_extpal(VRAM_EXTPAL_ABG, 1) == f + 0x2000u);
         CHECK(vram_extpal(VRAM_EXTPAL_ABG, 2) == NULL);
     }
+    vram_set_cnt(5, 0x00u);
+    vram_set_cnt(6, 0x8Cu); /* G, mst 4, ofs 1 -> slots 2 and 3 */
+    {
+        uint8_t *g = (uint8_t *)vram_bank_ptr(6);
+
+        CHECK(vram_extpal(VRAM_EXTPAL_ABG, 1) == NULL);
+        CHECK(vram_extpal(VRAM_EXTPAL_ABG, 2) == g);
+        CHECK(vram_extpal(VRAM_EXTPAL_ABG, 3) == g + 0x2000u);
+    }
 
     /* C at mst 3 with ofs 2 is texture slot 2, and E at mst 3 covers texture
      * palette slots 0 to 3 with its 64 KB. Slots 6 and 7 have no bank. */
-    vram_set_cnt(5, 0x00u);
+    vram_set_cnt(6, 0x00u);
     vram_set_cnt(2, 0x93u); /* C, mst 3, ofs 2 */
     vram_set_cnt(4, 0x83u); /* E, mst 3 */
     {

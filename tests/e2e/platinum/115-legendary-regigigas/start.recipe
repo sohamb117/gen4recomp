@@ -1,0 +1,18 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26115
+money 3000
+# post-game: story-cleared only sets the trainer-info bit (pc_lab.c:798-800); every script gate
+# checks FLAG_GAME_COMPLETED (src/clear_game.c:204-206, scrcmd_system_flags.c:151, system_flags.c:69-71)
+story-cleared 1
+flag FLAG_GAME_COMPLETED
+national-dex 1
+# cleared at HoF only with the national dex (scripts_pokemon_league_hall_of_fame.s:129,165-170)
+clear-flag FLAG_HIDE_SNOWPOINT_TEMPLE_B5F_REGIGIGAS
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 0 0 MOVE_EARTHQUAKE
+# the titan check is species-only [INFERENCE: not fateful]
+party SPECIES_REGIROCK 30 ITEM_NONE
+party SPECIES_REGICE 30 ITEM_NONE
+party SPECIES_REGISTEEL 30 ITEM_NONE
+map MAP_HEADER_SNOWPOINT_TEMPLE_B5F 11 13 FACE_UP

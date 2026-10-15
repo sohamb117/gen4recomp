@@ -1,0 +1,4 @@
+# Boost on 18's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Barry's Hearthome battle, trdata.json #471: STARLY 19, BUIZEL 20, ROSELIA 20, MONFERNO 21 (a loss is a
+# Blackout, scr_seq 0090 @0x0145). Crunch (slot 0, 14's boost) is neutral on all four; level 55, HP full.
+party-level 0 55

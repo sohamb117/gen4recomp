@@ -1,0 +1,51 @@
+# Trophy Garden daily mon: Mr. Backlot in the Pokemon Mansion (Route 212), with the National Dex: YES, YES ->
+# AddTrophyGardenMon (Unk01EC), the butler's scene, Backlot names the species; daily flag 0xAA2 set.
+# Start: MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM (16,9) below Backlot. End: same tile, flag 0xAA2 set.
+title = "Trophy Garden: Mr. Backlot's daily Pokemon"
+priority = "P2"
+version = "both"
+estimate = 2145
+refs = [
+  "maps.h:374",
+  "zone_event 0355 object 1",
+  "zone_event 0355 warp 0",
+  "scr_seq 0421 @0x006F",
+  "scr_seq 0421 @0x0087",
+  "scr_seq 0421 @0x00AA-0x00DB",
+  "scr_seq 0421 @0x00FB-0x0109",
+  "scr_seq 0421 @0x013F-0x014B",
+  "scr_seq 0421 @0x0155-0x0161",
+  "msg 441 #3",
+  "msg 441 #6",
+  "msg 441 #10",
+  "games/diamond/arm9/src/scrcmd.c:3657-3666",
+  "games/diamond/pc/game/pc_dp_lab.c:299-307",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 3300
+clock = "2009-03-22 21:00:00"   # the daily flag 0xAA2 is a daily one (Backlot's story is once a day)
+
+[[step]]
+do = "press"
+keys = "A"
+note = "talk to Mr. Backlot (16,8), zone_event 0355 object 1 -> scr_seq 0421 script 2"
+
+[[step]]
+do = "advance_text"
+max = 3000
+note = "msg 441 #3 and #5 YES/NO prompts take A (YES first: VAR_RESULT 0 -> L_00D8, L_00FB); Unk01EC adds the daily mon, the butler leaves (RemoveEvent 2), SetVar 0x400B 1, SetFlag 0xAA2, msg 441 #10 names it"
+shot = "backlot-species"
+
+[expect]
+map = "MAP_ROUTE_212_POKEMON_MANSION_EAST_ROOM"
+position = [16, 9]
+flags = ["0xAA2"]   # scr_seq 0421 @0x014B
+vars = { "0x400B" = 1 }   # scr_seq 0421 @0x013F
+save = ['s["pokedex"]["national"] == True']
+
+[[shots]]
+frames = [1760, 1860, 1960, 2060]   # Backlot's two questions, the butler, and the species he names

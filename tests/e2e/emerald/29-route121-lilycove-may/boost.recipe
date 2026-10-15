@@ -1,0 +1,7 @@
+# May (TRAINER_MAY_LILYCOVE_MUDKIP, src/data/trainer_parties.h sParty_MayLilycoveMudkip: TROPIUS 31, SLUGMA 32,
+# PELIPPER 32, GROVYLE 34) has two Grass types that resist all the chained Swampert's Water and Ground moves:
+# TM14 Blizzard (LilycoveCity_DepartmentStore_4F/scripts.inc: the 4F TM clerk) over Cut, which the Lilycove Move
+# Deleter forgets, and a Linoone from the routes' grass to carry Cut from here on (walk_to hm = true).
+party-move 0 0 MOVE_BLIZZARD
+party SPECIES_LINOONE 30 ITEM_NONE
+party-move 2 0 MOVE_CUT

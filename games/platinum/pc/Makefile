@@ -89,7 +89,10 @@ THISMK   := $(abspath $(firstword $(MAKEFILE_LIST)))
 ifeq ($(origin CC),default)
 CC := gcc
 endif
-CCACHE := $(shell command -v ccache 2>/dev/null)
+# Compiles go through tools/ccache.sh, one cache for every worktree, when it
+# says so (--enabled: ccache present, no NP_NO_CCACHE=1, disk not short).
+# Not part of the flags stamp below, so it can come and go without a rebuild.
+CCACHE := $(shell $(ROOT)/../../tools/ccache.sh --enabled)
 ifneq ($(CCACHE),)
 ifeq (,$(findstring ccache,$(CC)))
 CC := $(CCACHE) $(CC)
@@ -101,7 +104,7 @@ endif
 # register shadows landed and every cached SDK object kept resolving the SDK
 # originals; the 3D engine then decoded a command stream missing every
 # macro-written register store. Preprocessor mode hashes what the compile
-# actually consumes, so shadowing is always seen.
+# actually consumes, so shadowing is always seen (tools/ccache.sh sets it too).
 export CCACHE_NODIRECT = 1
 PYTHON  ?= python3
 NM      ?= nm
@@ -671,7 +674,7 @@ $(PATCHSTAMP): FORCE
 # includes SANITIZE. A recipe-only edit still needs `make clean`.
 $(CFLAGSTAMP): FORCE
 	@mkdir -p $(BUILD)
-	@want="$(CC) $(ABI) $(OPT) $(HW_OPT) $(SANITIZE) $(GAME_SANITIZE) $(EXTRA_OPT) $(DEFINES) $(LDFLAGS)"; \
+	@want="$(filter-out $(CCACHE) %/ccache,$(CC)) $(ABI) $(OPT) $(HW_OPT) $(SANITIZE) $(GAME_SANITIZE) $(EXTRA_OPT) $(DEFINES) $(LDFLAGS)"; \
 	 if [ ! -f $@ ] || [ "$$(cat $@)" != "$$want" ]; then \
 	   printf '%s' "$$want" > $@; \
 	 fi

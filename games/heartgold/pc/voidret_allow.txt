@@ -1,0 +1,5 @@
+# Uses of r0 after a call that only returns what a void C function left in
+# it (games/diamond/pc/tools/dp_voidret_lint.py): `<callee> <caller>` or
+# `<callee> *`, each with why the value cannot matter. None: every use
+# found was a defect (pc/patches/src/field/overlay_01_02204004.c.patch,
+# overlay_01_021FFECC.c.patch).

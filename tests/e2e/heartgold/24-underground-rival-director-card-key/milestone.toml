@@ -1,0 +1,240 @@
+# Proves the Goldenrod Underground: the Kimono Girl's B1F coord (VAR_UNK_40E7 2 -> 3), the B2F rival
+# (TRAINER_RIVAL_SILVER_12), the shutter-switch puzzle, the warehouse grunts and the real director's Card Key.
+# Start: MAP_GOLDENROD_RADIO_TOWER_5F (5,14) -> end: MAP_GOLDENROD_TUNNEL_WAREHOUSE by the director (20,14), Card Key.
+title = "Goldenrod Underground: rival, shutters, the director's Card Key"
+priority = "P0"
+version = "both"
+estimate = 42580
+refs = [
+  "zone_event 192_D37R0102 coord 1 (16,31) h2 VAR_UNK_40E7 2 -> 011 (Kimono Girl, FLAG_HIDE_UNDERGROUND_KIMONO_GIRL, VAR_UNK_40E7 3, scr_seq_0094_D37R0102.s:1208-1242)",
+  "zone_event 192_D37R0102 object 11 obj_D37R0102_babyboy1_8 (25,30) FLAG_UNK_1C0 -> 010: the Basement Key door on B1F warp 4 (25,30) -> MAP_GOLDENROD_TUNNEL_1F 4 (25,9) (scr_seq_0094_D37R0102.s:1303-1329: with ITEM_BASEMENT_KEY it slides 2 east, SetFlag FLAG_UNK_1C0)",
+  "zone_event 115_D37R0101 warps 4 (25,9) and 5 (25,3): that part of Tunnel 1F holds only these two; warp 5 (25,3) -> MAP_GOLDENROD_TUNNEL_B2F 0 (27,4)",
+  "zone_event 194_D37R0104 coord 0 (19,5) VAR_UNK_40A0 0 -> 004 (rival: 155 -> TRAINER_RIVAL_SILVER_12 :432, VAR_UNK_40A0 1, scr_seq_0096_D37R0104.s:406-445)",
+  "TRAINER_RIVAL_SILVER_12 (271, include/constants/trainers.h:276): GOLBAT 30, MAGNEMITE 28, HAUNTER 30, SNEASEL 32, FERALIGATR 32",
+  "scr_seq_0096_D37R0104.s:3-23 (gate diagram: rooms r/g/b/p, gates 0-9), :41-56 (OnTransition: every map entry resets the gates: 2 and 9 closed, the rest open), :75-166 red (10,8) toggles 1,3,5,6,7,8; :168-259 green (9,8) toggles 0,2,4,6,8,9; :261-337 blue (8,8) toggles 2,3,4,5,7; :339-351 purple (23,14) FLAG_OPENED_GOLDENROD_PURPLE_GATE (once; :59-73 keeps that gate open on later entries)",
+  "zone_event 194_D37R0104 bgs 0-3 (8,8) blue, (9,8) green, (10,8) red, (23,14) purple",
+  "zone_event 194_D37R0104 warp 1 (26,14) -> MAP_GOLDENROD_TUNNEL_WAREHOUSE (3,18)",
+  "zone_event 195_D37R0105 objects 0-2 TRAINER_TEAM_ROCKET_GRUNT_13 (16,20), _14 (24,11), _22 (17,5); object 3 obj_D37R0105_gsgentleman (20,13) -> 001",
+  "scr_seq_0097_D37R0105.s:22-31 (FLAG_UNK_1C1, ITEM_CARD_KEY)",
+  "include/constants/items.h:896 (ITEM_CARD_KEY 475)",
+]
+notes = "The Basement Key opens B1F's door object (25,30), talked to from (25,31) facing up; behind it the warp to Tunnel 1F (25,9), whose only other exit is the stairs (25,3) to B2F (27,4). B2F shutters: from the start state (gates 2, 9 closed) pressing red, green and blue once each (gate n toggled by each switch of a room it borders) leaves 0, 1, 2 closed and 3-9 open, the only combination that joins the switch room (blue, x7-11 z9-11) to gate 9 and the purple room. Way: from the rival's coord down through gate 1 (14..16,8) into the red room, gate 3 (12,10) into the switch room; after the switches back through gate 3, gate 6 (14..16,14) into the green room, gate 9 (18,16) into the purple room; the purple switch (23,14) from (23,15) opens the purple gate for good (FLAG_OPENED_GOLDENROD_PURPLE_GATE, 25 walks back through it); then the warehouse door (26,14). walk_to plans round the gate objects where they stand (tools/hg_map.py MAP_GOLDENROD_TUNNEL_B2F). Rival lv32 Feraligatr: behind a fainted lead the best scorer is sent in (send = best)."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+
+[run]
+frames = 63900
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+note = "5F -> 4F -> 3F -> 2F -> 1F stairs, back out (walk_to per floor below)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_4F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_3F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_2F"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 5
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_RADIO_TOWER_1F"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 14
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD"
+
+[[step]]
+do = "heal"
+x = 352
+z = 368
+note = "Goldenrod's Pokemon Center (zone_event T25 warp 5) before the tunnel: its grunts, the rival and the warehouse grunts follow"
+
+[[step]]
+do = "walk_to"
+x = 347
+z = 374
+note = "south tunnel entrance (warp 11) -> Tunnel 1F (5,30)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_1F"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 24
+note = "-> B1F (warp 3) (4,36)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_B1F"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 31
+on_text = "stop"
+note = "coord 1 (16,31..32) VAR_UNK_40E7 2 -> the Kimono Girl (scr_seq_0094_D37R0102.s:1208-1242)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 31
+face = "up"
+interact = true
+note = "the Basement Key door, object 11 (25,30) (scr_seq_0094_D37R0102.s:1303-1324)"
+
+[[step]]
+do = "advance_text"
+note = "it slides 2 east (:1320, _11A4), FLAG_UNK_1C0"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 30
+note = "B1F warp 4 (25,30) -> Tunnel 1F (25,9)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_1F"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 3
+note = "Tunnel 1F (25,9) -> the stairs (25,3) (warp 5) -> B2F (27,4)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_B2F"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 5
+on_text = "stop"
+note = "coord 0 (19,5) VAR_UNK_40A0 0 -> rival"
+
+[[step]]
+do = "advance_text"
+shot = "rival-underground"
+
+[[step]]
+do = "auto_battle"
+snap = true
+send = "best"
+note = "TRAINER_RIVAL_SILVER_12: GOLBAT 30, MAGNEMITE 28, HAUNTER 30, SNEASEL 32, FERALIGATR 32"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 9
+via = [[15, 7], [15, 9], [13, 10], [11, 10]]
+face = "up"
+interact = true
+note = "through gate 1 (open at the start) into the red room, gate 3 (12,10) into the switch room; the red switch bg 2 (10,8): gates 1,3,5,6,7,8 toggle (scr_seq_0096_D37R0104.s:75-166)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 9
+face = "up"
+interact = true
+note = "the green switch bg 1 (9,8): gates 0,2,4,6,8,9 toggle (:168-259)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 9
+face = "up"
+interact = true
+note = "the blue switch bg 0 (8,8): gates 2,3,4,5,7 toggle (:261-337); now 0, 1, 2 closed, 3-9 open"
+
+[[step]]
+do = "advance_text"
+shot = "shutters"
+
+[[step]]
+do = "walk_to"
+x = 23
+z = 15
+via = [[11, 10], [13, 10], [15, 13], [15, 15], [17, 16], [19, 16]]
+face = "up"
+interact = true
+note = "back through gate 3, gate 6 (14..16,14) into the green room, gate 9 (18,16) into the purple room; the purple switch bg 3 (23,14): FLAG_OPENED_GOLDENROD_PURPLE_GATE (:339-351)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 14
+note = "B2F -> warehouse (warp 1 (26,14)) from the purple room"
+
+[[step]]
+do = "wait_map"
+map = "MAP_GOLDENROD_TUNNEL_WAREHOUSE"
+
+[[step]]
+do = "talk_to"
+id = 3
+note = "the director (20,13); grunts 13/14/22 fight on the way"
+
+[[step]]
+do = "advance_text"
+shot = "card-key"
+
+[expect]
+map = "MAP_GOLDENROD_TUNNEL_WAREHOUSE"
+badges = 7
+flags = ["FLAG_UNK_1C1", "FLAG_HIDE_UNDERGROUND_KIMONO_GIRL", "FLAG_UNK_1C0", "FLAG_OPENED_GOLDENROD_PURPLE_GATE"]
+battles = 1
+save = ['any(i["item"] == 475 for k, p in s["bag"].items() if k != "registered" for i in p)']
+
+[expect.vars]
+VAR_UNK_40E7 = 3
+VAR_UNK_40A0 = 1
+VAR_SCENE_ROCKET_TAKEOVER = 4

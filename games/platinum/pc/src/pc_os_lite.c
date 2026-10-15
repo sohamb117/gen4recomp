@@ -23,6 +23,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "armrec_rt.h"
+#if defined(__wasm__)
+#include <pc_wasm.h>
+#endif
+
 static void pc_trap(const char *name, const char *why) __attribute__((noreturn));
 static void pc_trap(const char *name, const char *why)
 {
@@ -208,8 +213,9 @@ s32 OS_UnLockCartridge(u16 lockID)
  *     Autoload DTCM { Address 0x027E0000 ... }
  *
  * so the identity-mapped guest keeps DTCM at that address and this returns
- * the constant the register would hold. */
-#define PC_DTCM_BASE 0x027E0000u
+ * the constant the register would hold. The DTCM is the start of armrec's
+ * shared region (0x02FE0000 for a TWL-SDK game, armrec_rt.h). */
+#define PC_DTCM_BASE ARM_SHARED_BASE
 
 u32 OS_GetDTCMAddress(void)
 {
@@ -229,12 +235,69 @@ void OS_SpinWait(u32 cycle)
     (void)cycle;
 }
 
+#if defined(ARMREC_TWL)
+/*
+ * TWL-SDK's OS_InitLock (Black 0x02084B90) synchronises with the ARM7
+ * through the four bytes at HW_INIT_LOCK_BUF before it touches a lock
+ * (OSi_SyncWithOtherProc, Black 0x02084AB0), twice: first as the side that
+ * leads (writes 0x80 | n to byte 0 until byte 1 echoes it or byte 2 is set,
+ * then sets byte 3), then as the side that follows (copies byte 0 to byte 1,
+ * summing, until the sum reaches 0x300; then clears byte 3, sets byte 2 and
+ * waits for byte 3). The ARM7 runs the complement, follow then lead. It is
+ * modelled here, one step each time the ARM9 pauses in SVC_WaitByLoop,
+ * which both of the ARM9's wait loops do.
+ */
+static void arm7_init_sync_step(void)
+{
+    static int state;
+    static u32 sum, n;
+    volatile u8 *b = (volatile u8 *)HW_INIT_LOCK_BUF;
+
+    switch (state) {
+    case 0: /* following the ARM9's lead */
+        if (b[1] != b[0]) {
+            b[1] = b[0];
+            sum += b[1];
+        }
+        if (sum >= 0x300u) {
+            b[3] = 0;
+            b[2] = 1;
+            state = 1;
+        }
+        break;
+    case 1: /* the ARM9 acknowledged; lead */
+        if (b[3] != 0) {
+            b[2] = 0;
+            n = 0;
+            b[0] = 0x80;
+            state = 2;
+        }
+        break;
+    case 2:
+        if (b[2] != 0) {
+            b[3] = 1;
+            state = 3;
+        } else if (b[1] == b[0]) {
+            n++;
+            b[0] = (u8)(0x80u | (n & 0xFu));
+        }
+        break;
+    default:
+        break;
+    }
+}
+#endif
+
 /* The BIOS routine is the same shape (`subs r0, #4` until exhausted), used by
  * the SDK's spinlocks as a polite pause between polls of a lock word the
- * ARM7 might hold. There is no ARM7, so there is nothing to wait for. */
+ * ARM7 might hold. There is no ARM7, so there is nothing to wait for, except
+ * TWL-SDK's start-up handshake above. */
 void SVC_WaitByLoop(s32 count)
 {
     (void)count;
+#if defined(ARMREC_TWL)
+    arm7_init_sync_step();
+#endif
 }
 
 /* ------------------------------------------------------------------ */
@@ -585,14 +648,65 @@ void OSi_WaitVCount0(void)
 {
 }
 
-/* "Return to the DS menu." A PC port must answer this differently, restart
- * the process, or exit, and that is a frontend decision, not something to
- * guess here. */
+#if defined(__wasm__)
+/* "Reboot the console": the game's own reset (the player's
+ * L+R+START+SELECT, NINTENDO WFC SETTINGS, the error-reset screens, the end
+ * of the credits). On hardware the ARM7 resets both CPUs and the cartridge
+ * boots again from its header; RAM is gone except the reset parameter word
+ * (HW_RESET_PARAMETER_BUF), the card keeps its backup chip, and the RTC
+ * chip keeps running. Here the runtime does the reboot (np_host_reset): a
+ * fresh instance of this module, the chip kept, and the carry below for
+ * pc_os_reset_boot() to put back. The game itself waited for its card
+ * writes (CARD_TryWaitBackupAsync) before calling this; the syncs only
+ * hand the settled images to the host now instead of after a settle that
+ * will never come. */
+typedef struct PcResetCarry {
+    u32 parameter;
+    s32 rtc[8];
+} PcResetCarry;
+
+void OS_ResetSystem(u32 parameter)
+{
+    extern void pc_card_backup_sync(void);
+    extern void pc_agb_slot_sync(void);
+    extern void pc_rtc_carry_out(s32 out[8]);
+    PcResetCarry carry;
+
+    /* the "pc_os_lite: OS_ResetSystem:" prefix is what tools grep for */
+    fprintf(stderr, "pc_os_lite: OS_ResetSystem: soft reset (parameter %u)\n", (unsigned)parameter);
+    pc_card_backup_sync();
+    pc_agb_slot_sync();
+    carry.parameter = parameter;
+    pc_rtc_carry_out(carry.rtc);
+    np_host_reset(&carry, sizeof carry);
+}
+
+/* Boot, before NitroMain: after a soft reset, what survived it. */
+void pc_os_reset_boot(void)
+{
+    extern void pc_rtc_carry_in(const s32 in[8]);
+    PcResetCarry carry;
+
+    if (np_host_reset_carry(&carry, sizeof carry) != sizeof carry) {
+        return; /* a cold boot: the parameter word reads 0, as on power-on */
+    }
+    *(volatile u32 *)HW_RESET_PARAMETER_BUF = carry.parameter;
+    pc_rtc_carry_in(carry.rtc);
+}
+#else
+/* "Return to the DS menu." The native hosts have no reboot of their own
+ * yet (the wasm runtime's np_host_reset is the model): restart the
+ * process, or exit, is a frontend decision not guessed here. */
 void OS_ResetSystem(u32 parameter)
 {
     (void)parameter;
-    pc_trap("OS_ResetSystem", "soft reset has no host meaning yet; decide restart-vs-exit in the frontend");
+    pc_trap("OS_ResetSystem", "soft reset has no host meaning on this host; decide restart-vs-exit in the frontend");
 }
+
+void pc_os_reset_boot(void)
+{
+}
+#endif
 
 /* Wait-for-interrupt. Correct once an IRQ/pacing layer can wake it; until
  * then a caller reaching it would spin forever on hardware and must be seen,
@@ -728,8 +842,36 @@ void OS_Halt(void)
                 "interrupt source could ever wake this");
     }
 
+    /* The scanline counter. Nothing counted lines, so REG_VCOUNT (plain RAM
+     * in the IO window) read 0 for the whole run, and a frame never reached
+     * VBlank by the only measure the game can take of it. Black/White's
+     * VBlank tasks, which the main loop runs right after its VBlank wait
+     * (sub_0200567C), transfer only while VCOUNT is still in 192..200, the
+     * start of VBlank (static sub_02016880 / sub_0201691C, the battle's
+     * ov94_021FE9BC); otherwise they wait a frame, so the first battle's
+     * send-out waited forever. The port's guest frame begins here, at line
+     * 192, and the frame's work (those tasks included) runs before the next
+     * halt without the port counting its cycles, so every read until then
+     * sees 192. DISPSTAT's VBlank flag (bit 0, set on lines 192..261) says
+     * the same, so it is set here too: Black's ov10_02166A6C updates the
+     * BG2 affine only while it reads 1. Guest writes to DISPSTAT are
+     * read-modify-writes that keep it. Before the first VBlank the line is
+     * 0 (crt0 waits for line 0). HBlank is not modeled, so the per-line
+     * handlers that read VCOUNT or the HBlank flag (D/P/Pt's window and
+     * scroll effects) do not run either way. */
+    reg_GX_VCOUNT = 192;
+    reg_GX_DISPSTAT |= 1;
     reg_OS_IF = OS_IE_V_BLANK;
     fn = OS_GetIrqFunction(OS_IE_V_BLANK);
+    /* The ARM7's half of the VBlank: its OSi_IrqVBlank counts every
+     * VBlank into the shared word HW_VBLANK_COUNT_BUF, which the ARM9's
+     * OS_GetVBlankCount reads (NitroSDK os_irqTable.c; TWL-SDK's shared
+     * page is 8 MB up, mmap_shared.h). Nothing counted it, so it read 0
+     * for the whole run: Black/White's Musical show (ov132_021F879C)
+     * advances its show scripts by the count's change since the last
+     * frame, and its curtain never opened. Counted here, as the ARM7's
+     * interrupt does at the same line the ARM9's handler below runs. */
+    (*(volatile u32 *)HW_VBLANK_COUNT_BUF)++;
     if (fn == NULL) {
         pc_trap("OS_Halt", "VBlank enabled but no handler is registered");
     }

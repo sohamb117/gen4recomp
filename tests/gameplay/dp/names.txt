@@ -1,0 +1,19 @@
+# Diamond/Pearl flag and var names for lab recipes (tests/gameplay/labc.py).
+#
+# pokediamond has no FLAG_/VAR_ names: its scripts and C use bare numbers.
+# One `NAME VALUE` per line (VALUE decimal or 0x hex); `#` starts a comment.
+# Each name says where its number came from, so the next reader can check it.
+
+# Coordinate-trigger state vars, read off the zone events and the values
+# their scripts leave behind (tests/gameplay/dp/recipes/sandgem.recipe):
+# zone event 327, scr_seq 0392: Route 201's Rowan/rival scenes (3 = done).
+VAR_DP_ROUTE201_STATE 0x4086
+# zone event 328, scr_seq 0393: Route 202's catching tutorial (1 = done).
+VAR_DP_ROUTE202_CATCH_TUTORIAL 0x4087
+# zone event 396, scr_seq 0985: Sandgem's lab escort (2 = done).
+VAR_DP_SANDGEM_LAB_ESCORT 0x4071
+
+# Trainer-defeated flags: 0x550 + the trainer id (TrainerFieldSystem_FlagCheck,
+# arm9/asm/unk_02038C78.s; trainer ids from include/constants/trainers.h).
+FLAG_DP_DEFEATED_TRAINER_1 0x551
+FLAG_DP_DEFEATED_TRAINER_ROARK 0x646

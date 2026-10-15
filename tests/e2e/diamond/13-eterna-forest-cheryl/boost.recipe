@@ -1,0 +1,9 @@
+# Boost on 12's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# With Cheryl every forest battle is a double (wild pairs and the facing trainer pairs), which single-target Bite
+# took 6-12 turns of 1000+ frames each to win (seen chained). Rock Slide hits both foes and never the partner
+# (Cheryl's CHANSEY 15, trdata.json #608), super effective on the forest's bugs and flyers (wild Wurmple,
+# Silcoon, Cascoon, Beautifly, Dustox, Budew, Hoothoot; Jack/Briana, Lindsey/Elijah, Kody/Rachael,
+# Phillip/Donald pairs). Bite stays in slot 3.
+party-level 0 36
+party-move 0 0 MOVE_ROCK_SLIDE
+party-move 0 3 MOVE_BITE

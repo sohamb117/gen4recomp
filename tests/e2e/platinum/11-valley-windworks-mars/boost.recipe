@@ -1,0 +1,6 @@
+# Boost on 10's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# There is no Pokemon Center between Floaroma and Mars, and the windworks grunts poison and wear the lead down
+# (seen at 25: Mars's battle entered poisoned at 22/72 HP and lost to TRAINER_COMMANDER_MARS_VALLEY_WINDWORKS:
+# ZUBAT 15, PURUGLY 17). party-level refills HP; the Lum Berry cures the first poison.
+party-level 0 30
+party-item 0 ITEM_LUM_BERRY

@@ -1,0 +1,32 @@
+--- a/src/text.c
++++ b/src/text.c
+@@ -1,4 +1,6 @@
+ #include "global.h"
++#include "np_guest_abi.h"
++unsigned int gba_option(unsigned int opt);
+ #include "battle.h"
+ #include "main.h"
+ #include "m4a.h"
+@@ -327,6 +329,22 @@
+             if (sTextPrinters[i].active)
+             {
+                 u16 renderCmd = RenderFont(&sTextPrinters[i]);
++                /* nativeplat: instant text (NP_OPT_TEXT_INSTANT) prints a
++                 * plain printer's characters up to its next wait at once */
++                if (renderCmd == RENDER_PRINT && sTextPrinters[i].callback == NULL && !gTextFlags.autoScroll
++                    && gba_option(NP_OPT_TEXT_INSTANT))
++                {
++                    int n = 0;
++                    do
++                    {
++                        sTextPrinters[i].delayCounter = 0;
++                        renderCmd = RenderFont(&sTextPrinters[i]);
++                    } while (renderCmd == RENDER_PRINT && ++n < 1024);
++                    CopyWindowToVram(sTextPrinters[i].printerTemplate.windowId, COPYWIN_GFX);
++                    if (renderCmd == RENDER_FINISH)
++                        sTextPrinters[i].active = FALSE;
++                    continue;
++                }
+                 switch (renderCmd)
+                 {
+                 case RENDER_PRINT:

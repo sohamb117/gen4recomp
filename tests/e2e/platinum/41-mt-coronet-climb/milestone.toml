@@ -1,0 +1,280 @@
+# Proves the Mt Coronet 2F Looker coord and the HM climb to the summit.
+# Out of the HQ, Fly to Hearthome, Route 208 to Mt Coronet 1F South and 2F (Strength boulder, Looker), then the climb:
+# tools/pt_warps.py MAP_HEADER_MT_CORONET_2F 14 49 MAP_HEADER_SPEAR_PILLAR 31 53 --maps MAP_HEADER_MT_CORONET_
+# MAP_HEADER_SPEAR_PILLAR --recipe <this lab.recipe> --hm (Rock Climb, Rock Smash, Surf on Bibarel).
+# Start: Galactic HQ control room (40's end) -> end: Spear Pillar (220) at (31,53).
+
+title = "Mt Coronet: Black Flute and the climb to Spear Pillar"
+priority = "P0"
+estimate = 48985
+refs = [
+  "scripts_mt_coronet_2f.s:20-56",
+  "scripts_mt_coronet_6f.s:8-63",
+  "scripts_mt_coronet_2f.s:23",
+  "scripts_mt_coronet_2f.s:27",
+  "scripts_mt_coronet_2f.s:42-45",
+  "scripts_mt_coronet_2f.s:52",
+  "scripts_spear_pillar.s:19",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+boost = "boost.recipe"
+
+[run]
+frames = 73500
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 8
+z = 13
+note = "MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM -> (8,13) -> MAP_HEADER_GALACTIC_HQ_LABORATORY"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 1
+z = 11
+note = "MAP_HEADER_GALACTIC_HQ_LABORATORY -> (1,11) -> MAP_HEADER_GALACTIC_HQ_4F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 21
+z = 17
+avoid = [[3, 15], [8, 3]]
+note = "MAP_HEADER_GALACTIC_HQ_4F -> (21,17) -> MAP_HEADER_GALACTIC_HQ_1F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+x = 42
+z = 22
+avoid = [[1, 8], [4, 3], [8, 22], [11, 3], [19, 14], [27, 3], [29, 22], [32, 3], [36, 8], [39, 3], [41, 3], [46, 3], [52, 21]]
+note = "MAP_HEADER_GALACTIC_HQ_1F -> (42,22) -> MAP_HEADER_VEILSTONE_CITY"
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_HEARTHOME_CITY"
+note = "lands at the Pokemon Center (465,698) (src/spawn_locations.c:38)"
+
+[[step]]
+do = "walk_to"
+via = [[465, 716], [485, 716], [485, 726]]
+x = 454
+z = 726
+max = 6000
+note = "Hearthome's west gate, events_hearthome_city warp 14 (tools/pt_route.py 465,699 454,726 HEARTHOME_CITY)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_208_GATE_TO_HEARTHOME_CITY"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 7
+note = "gate west door, warp 1 -> Route 208 (447,726)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_208"
+
+[[step]]
+do = "walk_to"
+via = [[440, 726], [440, 719], [427, 719], [427, 715], [422, 715], [422, 724], [419, 724], [409, 724], [405, 724], [395, 724]]
+x = 392
+z = 724
+max = 8000
+on_battle = "flee"
+note = "west over Route 208's bridge to Mt Coronet 1F South, warp 3 (tools/pt_route.py 446,726 392,725 ROUTE_208)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_MT_CORONET_1F_SOUTH"
+
+[[step]]
+do = "walk_to"
+x = 25
+z = 3
+max = 9000
+hm = true
+surf = true
+on_battle = "flee"
+note = "1F South warp 2 (25,3) -> 2F (27,48): row 11's ledges only go south, so round by the west: Rock Smash on row 23, Surf the north pool (x 7..16), row 10 east, Rock Climb (27,9..8) (land data 0x4B)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_MT_CORONET_2F"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 44
+face = "down"
+interact = true
+max = 4000
+on_battle = "flee"
+note = "above Strength boulder (14,45) (events_mt_coronet_2f obj 8), the only way west"
+
+[[step]]
+do = "advance_text"
+note = "Strength: YES (scripts_field_moves.s:187-226)"
+
+[[step]]
+do = "steps"
+route = [[14, 49]]
+note = "push it down to (14,50): row 49 leads west"
+
+[[step]]
+do = "walk_to"
+via = [[11, 49], [11, 38], [4, 38], [4, 40], [8, 40], [8, 32], [11, 32], [11, 30], [26, 30], [26, 33], [22, 33], [22, 27], [15, 27], [15, 26]]
+x = 11
+z = 26
+max = 6000
+on_battle = "flee"
+note = "via: tools/pt_route.py 14,49 11,26 MAP_HEADER_MT_CORONET_2F --matrix map_matrix_010 --heights (x 7..8 z 36..38 is a bridge at height 48 over the path at 16 that leads north); coord (11,24..26) at VAR_MT_CORONET_2F_STATE 1 -> Looker, the Black Flute (scripts_mt_coronet_2f.s:20-56)"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "looker_black_flute"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 7
+z = 24
+face = "up"
+hm = true
+avoid = [[2, 59], [7, 12], [11, 4], [21, 4], [27, 48]]
+note = "below the broken cave painting's hole, 2F warp 2 (7,23) (the painting hidden by 40's FLAG_HIDE_MT_CORONET_2F_CAVE_PAINTING)"
+
+[[step]]
+do = "press"
+keys = "up"
+hold = 20
+note = "through the hole: warp 2 -> warp 3 (7,12) of the same map, which walk_to cannot tell from arriving on the hole"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 11
+z = 4
+hm = true
+avoid = [[2, 59], [7, 23], [21, 4], [27, 48]]
+note = "MAP_HEADER_MT_CORONET_2F -> (11,4) -> MAP_HEADER_MT_CORONET_3F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 3
+z = 29
+hm = true
+avoid = [[18, 26]]
+note = "MAP_HEADER_MT_CORONET_3F -> (3,29) -> MAP_HEADER_MT_CORONET_OUTSIDE_SOUTH"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 11
+z = 17
+hm = true
+avoid = [[39, 18]]
+note = "MAP_HEADER_MT_CORONET_OUTSIDE_SOUTH -> (11,17) -> MAP_HEADER_MT_CORONET_4F_ROOMS_1_AND_2"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 40
+z = 10
+hm = true
+avoid = [[17, 6], [35, 24], [59, 6]]
+note = "MAP_HEADER_MT_CORONET_4F_ROOMS_1_AND_2 -> (40,10) -> MAP_HEADER_MT_CORONET_OUTSIDE_NORTH"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 45
+z = 28
+hm = true
+avoid = [[13, 19]]
+note = "MAP_HEADER_MT_CORONET_OUTSIDE_NORTH -> (45,28) -> MAP_HEADER_MT_CORONET_1F_TUNNEL_ROOM"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 2
+z = 58
+hm = true
+avoid = [[16, 13]]
+note = "MAP_HEADER_MT_CORONET_1F_TUNNEL_ROOM -> (2,58) -> MAP_HEADER_MT_CORONET_OUTSIDE_NORTH"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 13
+z = 19
+hm = true
+avoid = [[42, 40]]
+note = "MAP_HEADER_MT_CORONET_OUTSIDE_NORTH -> (13,19) -> MAP_HEADER_MT_CORONET_4F_ROOM_3"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 18
+z = 8
+hm = true
+note = "MAP_HEADER_MT_CORONET_4F_ROOM_3 -> (18,8) -> MAP_HEADER_MT_CORONET_5F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 13
+z = 24
+hm = true
+note = "MAP_HEADER_MT_CORONET_5F -> (13,24) -> MAP_HEADER_MT_CORONET_6F"
+
+[[step]]
+do = "walk_to"
+max = 8000
+surf = true
+on_battle = "flee"
+x = 7
+z = 5
+hm = true
+note = "MAP_HEADER_MT_CORONET_6F -> (7,5) -> MAP_HEADER_SPEAR_PILLAR"
+
+[[step]]
+do = "wait_field"
+shot = "spear_pillar"
+
+[expect]
+map = "MAP_HEADER_SPEAR_PILLAR"
+vars = { VAR_MT_CORONET_2F_STATE = 2 }
+flags = ["FLAG_RECEIVED_MT_CORONET_2F_BLACK_FLUTE", "FLAG_FIRST_ARRIVAL_SPEAR_PILLAR"]

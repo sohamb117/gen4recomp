@@ -43,6 +43,7 @@
 
 #include "battle/battle_context.h"
 #include "battle/battle_lib.h"
+#include "battle/battle_system.h"
 
 #include "camera.h"
 #include "field/field_system.h"
@@ -64,6 +65,19 @@
 
 #include "pc_np_options.h"
 
+#include "map_object.h"
+#include "terrain_collision_manager.h"
+#include "map_matrix.h"
+#include "overlay005/land_data.h"
+#include "struct_defs/map_load_mode.h"
+
+#include "constants/field/dynamic_map_features.h"
+#include "constants/field/map.h"
+#include "overlay008/gym_features.h"
+#include "persisted_map_features.h"
+#include "persisted_map_features_init.h"
+#include "savedata_misc.h"
+
 extern FieldSystem *pc_lab_field_system(void); /* pc/patches/src/field_system.c.patch */
 extern Camera *pc_np_active_camera(void);      /* pc/patches/src/camera.c.patch */
 
@@ -75,16 +89,19 @@ static int field_ready(FieldSystem *fs)
     if (fs->processManager->pause || !FieldSystem_IsRunningFieldMap(fs)) return 0;
     if (fs->task != NULL || FieldSystem_HasChildProcess(fs)) return 0;
     move = PlayerAvatar_GetPlayerMoveState(fs->playerAvatar);
-    if (move != PLAYER_MOVE_STATE_END && move != PLAYER_MOVE_STATE_NONE) return 0;
-    return FieldSystem_IsInValidLocation(fs);
+    return move == PLAYER_MOVE_STATE_END || move == PLAYER_MOVE_STATE_NONE;
 }
 
 /* Where the start menu hides SAVE (start_menu.c, StartMenu_Get*Hidden
- * Options) or would ask before overwriting another adventure's save. */
+ * Options) or would ask before overwriting another adventure's save. A
+ * Mystery Zone map (the Underground, the Union Room) has no start menu at
+ * all (field_control.c): X opens the Underground's own menu there, which
+ * has no SAVE, and the player walking free there is still free. */
 static int save_allowed(FieldSystem *fs)
 {
     VarsFlags *vf = SaveData_GetVarsFlags(fs->saveData);
 
+    if (!FieldSystem_IsInValidLocation(fs)) return 0;
     if (SystemFlag_CheckSafariGameActive(vf) || SystemFlag_CheckInPalPark(vf)) return 0;
     if (FieldSystem_IsInBattleTowerSalon(fs)) return 0;
     if (fs->mapLoadType == MAP_LOAD_TYPE_COLOSSEUM || fs->mapLoadType == MAP_LOAD_TYPE_UNION) return 0;
@@ -236,6 +253,160 @@ static void pc_np_rules_check(FieldSystem *fs)
     fprintf(stderr, "pc-np: rules check: %s\n", pass ? "PASS (bugs with the bit off, fixed with it on)" : "FAIL");
 }
 
+/*
+ * The end-to-end probe's field half (pc/src/pc_e2e.c, core/include/
+ * np_e2e.h): the player's tile and facing, the other map objects, and,
+ * while the player is free, the terrain around them as the movement code
+ * sees it (TerrainCollisionManager, the queries PlayerAvatar_CheckCollision
+ * makes). Tiles off the loaded map blocks are left unknown.
+ *
+ * Only tiles on the map matrix are asked (as D/P's probe, pc_dp_field.c
+ * e2e_on_matrix). The land-data provider (GetTileAttributes ->
+ * LandDataManager_GetRelativeLoadedMapsQuadrantOfTile, overlay005/
+ * land_data.c) takes a block index past the matrix as a fault: with the
+ * comm layer up (the Union Room, the Underground) it raises
+ * CommManager_SetCommError(COMM_ERROR_RESET_SAVEPOINT), the "communication
+ * error" screen and the reset to the save point, and otherwise it
+ * GF_ASSERTs. The probe's 64x64 window reaches past a small map such as
+ * the Union Room on every frame, so it put the game there in seconds. A
+ * column past the right edge does not fault but reads the next block row,
+ * and the simple provider (GetSimpleTileAttributes, the separate terrain
+ * attributes) indexes its block table without a check: both off the
+ * matrix too, unknown rather than that. The matrix is the field's
+ * (fs->mapMatrix), whose width and height the land data manager copies;
+ * the land data's tile offset applies to the land-data provider.
+ */
+static int e2e_on_matrix(FieldSystem *fs, int x, int z)
+{
+    int w, h;
+
+    if (x < 0 || z < 0 || fs->mapMatrix == NULL) return 0;
+    w = MapMatrix_GetWidth(fs->mapMatrix) * MAP_TILES_COUNT_X;
+    h = MapMatrix_GetHeight(fs->mapMatrix) * MAP_TILES_COUNT_Z;
+    if (!fs->mapLoadMode->useSimpleTerrainCollisions) {
+        if (fs->landDataMan == NULL) return 0;
+        x -= LandDataManager_GetOffsetTileX(fs->landDataMan);
+        z -= LandDataManager_GetOffsetTileZ(fs->landDataMan);
+    }
+    return x >= 0 && z >= 0 && x < w && z < h;
+}
+
+static unsigned e2e_tile(void *ctx, int x, int z)
+{
+    FieldSystem *fs = ctx;
+    u8 behavior;
+
+    if (!e2e_on_matrix(fs, x, z)) return 0;
+    behavior = TerrainCollisionManager_GetTileBehavior(fs, x, z);
+    /* 0xFF: terrain_collision_manager.c's INVALID_TILE_BEHAVIOR, off the loaded blocks */
+    if (behavior == 0xFF) return 0;
+    return PC_E2E_TILE_KNOWN | behavior | (TerrainCollisionManager_CheckCollision(fs, x, z) ? PC_E2E_TILE_COLLISION : 0);
+}
+
+/*
+ * The Hearthome Gym rolls its open door per trainer room on entry (MTRNG, gym_features.c:3817-3842) and shows it only
+ * as a clue symbol lit near the player; every other door warps back to the entrance. The e2e walk_to_door bot reads
+ * the roll from this log line (tests/e2e/README.md). Logged once per roll, only under PC_E2E.
+ */
+static void e2e_gym_log(FieldSystem *fs)
+{
+    static int last = -1;
+    int door = -1;
+
+    if (PersistedMapFeatures_IsCurrentDynamicMap(fs, DYNAMIC_MAP_FEATURES_HEARTHOME_GYM)) {
+        const HearthomeGymPersistedFeatures *f = PersistedMapFeatures_GetBuffer(
+            MiscSaveBlock_GetPersistedMapFeatures(FieldSystem_GetSaveData(fs)), DYNAMIC_MAP_FEATURES_HEARTHOME_GYM);
+        if (f->initialized) door = f->correctDoorID;
+    }
+    if (door != last && door >= 0) {
+        fprintf(stderr, "pc-e2e: hearthome gym map %u door %d\n", (unsigned)fs->location->mapHeaderID, door);
+    }
+    last = door;
+}
+
+static void e2e_frame(FieldSystem *fs, int ready)
+{
+    MapObject *player, *obj = NULL;
+    int i = 0;
+
+    if (!pc_e2e_on()) return;
+    if (fs == NULL || fs->location == NULL || fs->playerAvatar == NULL || fs->mapObjMan == NULL
+        || !FieldSystem_IsRunningFieldMap(fs)) {
+        pc_e2e_field(0, 0, 0, 0, 0, 0, 0);
+        pc_e2e_end_frame();
+        return;
+    }
+    player = PlayerAvatar_GetMapObject(fs->playerAvatar);
+    pc_e2e_field(1, (unsigned)fs->location->mapHeaderID, PlayerAvatar_GetXPos(fs->playerAvatar),
+                 PlayerAvatar_GetZPos(fs->playerAvatar), player != NULL ? MapObject_GetY(player) : 0,
+                 (unsigned)PlayerAvatar_GetFacingDir(fs->playerAvatar),
+                 (unsigned)PlayerAvatar_GetPlayerMoveState(fs->playerAvatar));
+    if (ready && fs->terrainCollisionMan != NULL) pc_e2e_grid(e2e_tile, fs);
+    while (MapObjectMan_FindObjectWithStatus(fs->mapObjMan, &obj, &i, MAP_OBJ_STATUS_0)) {
+        if (obj == player) continue;
+        pc_e2e_object(MapObject_GetX(obj), MapObject_GetZ(obj), MapObject_GetLocalID(obj), MapObject_GetGraphicsID(obj));
+    }
+    e2e_gym_log(fs);
+    pc_e2e_end_frame();
+}
+
+/* The probe's battle half, from the battle menu's input loop (pc_np_options.h): every battler as the battle has it
+ * (BattleMon: current HP, PP, types and Disable), and the menu battler's party in the order its party screen lists
+ * it (BattleContext.partyOrder, as battle_display.c builds the screen). */
+static void e2e_mon_from_party(pc_e2e_mon *out, Pokemon *mon)
+{
+    int i;
+
+    out->species = (unsigned short)Pokemon_GetValue(mon, MON_DATA_SPECIES, NULL);
+    out->egg = (unsigned char)Pokemon_GetValue(mon, MON_DATA_IS_EGG, NULL);
+    out->level = (unsigned char)Pokemon_GetValue(mon, MON_DATA_LEVEL, NULL);
+    out->hp = (unsigned short)Pokemon_GetValue(mon, MON_DATA_HP, NULL);
+    out->max_hp = (unsigned short)Pokemon_GetValue(mon, MON_DATA_MAX_HP, NULL);
+    for (i = 0; i < LEARNED_MOVES_MAX; i++) {
+        out->moves[i] = (unsigned short)Pokemon_GetValue(mon, MON_DATA_MOVE1 + i, NULL);
+        out->pp[i] = (unsigned char)Pokemon_GetValue(mon, MON_DATA_MOVE1_PP + i, NULL);
+    }
+    out->types[0] = out->types[1] = 0xFF;
+}
+
+void pc_pl_e2e_battle(BattleSystem *battleSys, unsigned battler_type)
+{
+    pc_e2e_mon battlers[MAX_BATTLERS], party[MAX_PARTY_SIZE];
+    BattleContext *battleCtx;
+    int n, i, j, menu = 0, count;
+
+    if (!pc_e2e_on() || battleSys == NULL || (battleCtx = BattleSystem_GetBattleContext(battleSys)) == NULL) return;
+    memset(battlers, 0, sizeof battlers);
+    memset(party, 0, sizeof party);
+    n = BattleSystem_GetMaxBattlers(battleSys);
+    if (n > MAX_BATTLERS) n = MAX_BATTLERS;
+    for (i = 0; i < n; i++) {
+        const BattleMon *m = &battleCtx->battleMons[i];
+
+        if (BattleSystem_GetBattlerType(battleSys, i) == battler_type) menu = i;
+        battlers[i].species = m->species;
+        battlers[i].egg = (unsigned char)m->isEgg;
+        battlers[i].level = m->level;
+        battlers[i].hp = (unsigned short)(m->curHP > 0 ? m->curHP : 0);
+        battlers[i].max_hp = (unsigned short)m->maxHP;
+        battlers[i].types[0] = m->type1;
+        battlers[i].types[1] = m->type2;
+        battlers[i].disabled_move = m->moveEffectsData.disabledMove;
+        for (j = 0; j < LEARNED_MOVES_MAX; j++) {
+            battlers[i].moves[j] = m->moves[j];
+            battlers[i].pp[j] = m->ppCur[j];
+        }
+    }
+    count = BattleSystem_GetPartyCount(battleSys, menu);
+    if (count > MAX_PARTY_SIZE) count = MAX_PARTY_SIZE;
+    for (i = 0; i < count; i++) {
+        Pokemon *mon = BattleSystem_GetPartyPokemon(battleSys, menu, battleCtx->partyOrder[menu][i]);
+
+        if (mon != NULL) e2e_mon_from_party(&party[i], mon);
+    }
+    pc_e2e_battle((unsigned)menu, BattleSystem_GetBattleType(battleSys), battlers, (unsigned)n, party, (unsigned)count);
+}
+
 void pc_np_frame(void)
 {
     FieldSystem *fs = pc_lab_field_system();
@@ -243,7 +414,7 @@ void pc_np_frame(void)
 
     pc_np_stat.field_ready = (unsigned)ready;
     pc_np_stat.map_id = fs != NULL && fs->location != NULL ? (unsigned)fs->location->mapHeaderID : 0;
-
+    e2e_frame(fs, ready);
     if (ready) pc_np_rules_check(fs);
     if (pc_np_opt.quicksave_seq == pc_np_stat.quicksave_seq) return;
     if (ready) {

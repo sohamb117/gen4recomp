@@ -1,0 +1,7 @@
+# Safari Zone: the gate's entry check needs the Pokeblock Case, 500 money and a party with room (or box space)
+# (data/maps/Route121_SafariZoneEntrance/scripts.inc:61-70, :89-101). One party member: the catch joins the party.
+flag FLAG_SYS_POKEMON_GET              # data/maps/Route101/scripts.inc:220 (the starter)
+party SPECIES_MUDKIP 10 ITEM_NONE      # the starter (data/maps/Route101/scripts.inc); a Safari battle never sends it out
+item ITEM_POKEBLOCK_CASE 1             # data/maps/SlateportCity_ContestLobby/scripts.inc:108 (giveitem); checked :62
+money 3000                             # checkmoney 500 (:66), removemoney 500 (:70)
+map MAP_ROUTE121_SAFARI_ZONE_ENTRANCE 14 12   # Route121_SafariZoneEntrance/map.json warp_events[2] (14,13): just inside the door

@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "np_core.h"
+#include "romdb.h"
 
 static int lower(int c) { return c >= 'A' && c <= 'Z' ? c - 'A' + 'a' : c; }
 
@@ -23,11 +24,7 @@ static int ieq_n(const char *a, const char *b, size_t n)
 
 int np_launch_game_from_name(const char *name)
 {
-    static const char *const ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum"};
-    for (int g = 0; g < NP_GAME_COUNT; g++)
-        if (strlen(name) == strlen(ids[g]) && ieq_n(name, ids[g], strlen(ids[g])))
-            return g;
-    return -1;
+    return np_game_from_id(name);
 }
 
 int np_launch_slot_number(const char *slot)
@@ -50,6 +47,7 @@ static void init(np_launch *out)
     out->force_launcher = 0;
     out->editor = 0;
     out->save[0] = '\0';
+    out->poke_transfer = 0;
 }
 
 static int set_game(np_launch *out, const char *v, char *err, size_t errn)
@@ -96,6 +94,15 @@ static int finish(np_launch *out, char *err, size_t errn)
         snprintf(err, errn, "A save slot was given without a game.");
         return -1;
     }
+    if (out->poke_transfer && (out->editor || out->force_launcher)) {
+        snprintf(err, errn, "--poke-transfer starts the child station; not with --editor or --launcher.");
+        return -1;
+    }
+    if (out->poke_transfer && !np_game_is_gen4((np_game)out->game)) {
+        snprintf(err, errn, "--poke-transfer takes the card's game: --game diamond, pearl, platinum, heartgold or "
+                            "soulsilver.");
+        return -1;
+    }
     return 0;
 }
 
@@ -121,6 +128,10 @@ int np_launch_parse_args(int argc, char *const *argv, np_launch *out, char *err,
         }
         if (!strcmp(a, "--editor")) {
             out->editor = 1;
+            continue;
+        }
+        if (!strcmp(a, "--poke-transfer")) {
+            out->poke_transfer = 1;
             continue;
         }
         if (!takes_value) {

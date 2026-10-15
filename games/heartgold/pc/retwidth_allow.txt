@@ -1,0 +1,20 @@
+# C -> assembly calls through a return type narrower than what the assembly
+# can leave in r0 (games/diamond/pc/tools/dp_retwidth_lint.py), where the
+# lint could not decide and the value provably fits: `<callee> <caller TU>`
+# or `<callee> *`, each with the reason.
+#
+# ov18_021F891C (u16, the Pokedex's current species number) returns either
+# an ldrh (narrow) or Pokedex_ConvertToCurrentDexNo(ldrb, ldrh), which is
+# SpeciesToJohtoDexNo((u16)species) (u16) or the ldrh species itself: every
+# path fits 16 bits.
+ov18_021F891C *
+# sub_02034870 (u8) tail-calls sub_0203A378 (C, s32), which returns a
+# friend-roster index 0..31 or 32: every value fits 8 bits.
+sub_02034870 *
+# CTRDG_WriteAgbFlashSector (u16, games/platinum/pc/src/pc_agb_slot.c's
+# PC_AGB_SELFTEST) calls through CTRDGi_WriteAgbFlashSector, which
+# CTRDG_IdentifyAgbBackup sets from the chip tables (lib/asm/nitro.s
+# _0210E204.. ): CTRDGi_WriteFlashSector{MX,MX5,LE,AT} or
+# CTRDGi_WriteFlash4KBAT, each of which returns its core's result after
+# lsl #16, lsr #16: every value fits 16 bits.
+CTRDG_WriteAgbFlashSector pc_agb_slot

@@ -1,0 +1,91 @@
+# Proves a Pokemon Contest won at Normal Rank: the Verdanturf receptionist gives the Contest Pass, Hitmonlee enters
+# the Normal Rank Cool contest, makes five appeals (a move chosen each turn: JUMP_KICK, FOCUS_ENERGY, MEGA_KICK,
+# HI_JUMP_KICK, JUMP_KICK) and wins: GAME_STAT_WON_CONTEST and the Cool Ribbon (FLAG_SYS_RIBBON_GET).
+# Start: MAP_VERDANTURF_TOWN_CONTEST_LOBBY (5,4) below the receptionist -> end: same tile, back from the contest.
+title = "Contest: win the Normal Rank Cool contest"
+priority = "P1"
+version = "both"
+estimate = 22642
+refs = [
+  "data/maps/VerdanturfTown_ContestLobby/map.json object_events[1] (5,2) receptionist",
+  "data/maps/VerdanturfTown_ContestLobby/scripts.inc:9-20 (VAR_CONTEST_RANK 0, VAR_CONTEST_LOCATION 1, warp MAP_LINK_CONTEST_ROOM1)",
+  "data/scripts/contest_hall.inc:1-46 (no pass at Normal Rank: YES/NO, giveitem ITEM_CONTEST_PASS, FLAG_RECEIVED_CONTEST_PASS)",
+  "data/scripts/contest_hall.inc:72-81 (multichoice 0: ENTER/INFO/QUIT), 133-142 (multichoice 4: the category, COOL 0)",
+  "data/scripts/contest_hall.inc:115-131,150-155,176-181 (choosecontestmon, ScrSpecial_CheckSelectedMonAndInitContest, confirm YES)",
+  "src/script_pokemon_util_80F99CC.c:158-177 (the contest party menu: A picks the slot)",
+  "data/maps/LinkContestRoom1/scripts.inc:65-68 (OnFrame: the contest), :384 (GAME_STAT_ENTERED_CONTEST), :385 (warp back to (5,4))",
+  "data/scripts/contest_hall.inc:759-777 (startcontest), 789-803 (showcontestresults)",
+  "data/scripts/contest_hall.inc:1106-1149 (winner index 3 = the player: GAME_STAT_WON_CONTEST, ScrSpecial_GiveContestRibbon, FLAG_SYS_RIBBON_GET, GAME_STAT_RECEIVED_RIBBONS)",
+  "src/contest.c:462-476 (Task_TryShowMoveSelectScreen: A opens the move list), 528-610 (Task_HandleMoveSelectInput: DOWN, A)",
+  "src/contest_2.c:937-973 (round 1 = condition + (two others + sheen)/2), 1616-1619 (round 2 = appeal total x 2)",
+  "src/data/contest_moves.h:30-31,121,141,362- (the moves' Cool appeal and the FOCUS_ENERGY -> MEGA_KICK combo)",
+  "src/data/contest_opponents.h (Normal Rank opponents: conditions 1-20, sheen 50-100)",
+  "include/constants/game_stat.h:40-41 (GAME_STAT_ENTERED_CONTEST 36, GAME_STAT_WON_CONTEST 37), :46 (GAME_STAT_RECEIVED_RIBBONS 42)",
+]
+notes = "Hitmonlee's conditions are 0 (no lab verb writes them), so round 1 gives it nothing; the five Cool appeals (60, 10, 40+combo, 60, 60, the applause meter) outscore the Normal Rank opponents (this run: TATAY/MADISON, POOCHY/JIMMY, RIKELEC/CHANCE). The contest screens are not in the probe: appeals.press plays them (DOWN/A alternating; its header). The run is deterministic for this start: the opponents and their AI rolls are the RNG's."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 34000
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 4
+face = "up"
+interact = true
+note = "the receptionist across the counter (map.json object_events[1] (5,2))"
+
+[[step]]
+do = "menu"
+choose = 0
+note = "no Contest Pass, Normal Rank: 'Would you like a CONTEST PASS?' YES (contest_hall.inc:30-36)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "the pass, the contest explanation, then ENTER (contest_hall.inc:38-46,72-81)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 6
+note = "COOL (contest_hall.inc:133-142; VAR_CONTEST_CATEGORY 0)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_LINK_CONTEST_ROOM1"
+shot = "room"
+note = "'Which POKEMON?' -> party slot 0 (A), 'enter HITMONLEE?' YES, the receptionist leads the player in (contest_hall.inc:115-181)"
+
+[[step]]
+do = "schedule"
+file = "appeals.press"
+frames = 20000
+note = "the entry presentation, round 1, five appeals (slots 1,2,3,0,1), the results, the ribbon (appeals.press)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_VERDANTURF_TOWN_CONTEST_LOBBY"
+note = "the MC's winner announcement, the ribbon text (A only), then LinkContestRoom1/scripts.inc:385 warps back to (5,4)"
+
+[[step]]
+do = "wait_field"
+shot = "lobby"
+
+[[shots]]
+frames = [3200, 10900, 20700, 21400, 22100]
+
+[expect]
+map = "MAP_VERDANTURF_TOWN_CONTEST_LOBBY"
+position = [5, 4]
+flags = ["FLAG_RECEIVED_CONTEST_PASS", "FLAG_SYS_RIBBON_GET"]
+save = [
+  's["game_stats"][36] >= 1',
+  's["game_stats"][37] >= 1',
+  's["game_stats"][42] >= 1',
+  'any(i["item"] == 266 for i in s["bag"]["key_items"])',
+]

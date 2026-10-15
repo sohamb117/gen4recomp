@@ -1,0 +1,45 @@
+{
+  "kind": "anim",
+  "graphics": [
+    {
+      "narc": "NARC_a_0_6_0",
+      "file": 6,
+      "compressed": false,
+      "id": 0,
+      "extra": [
+        60,
+        60
+      ]
+    },
+    {
+      "narc": "NARC_a_0_6_0",
+      "file": 9,
+      "compressed": false,
+      "id": 1,
+      "extra": [
+        60,
+        60
+      ]
+    },
+    {
+      "narc": "NARC_itemtool_itemdata_item_icon",
+      "file": 0,
+      "compressed": false,
+      "id": 2,
+      "extra": [
+        18,
+        18
+      ]
+    },
+    {
+      "narc": "NARC_a_0_6_0",
+      "file": 25,
+      "compressed": false,
+      "id": 3,
+      "extra": [
+        60,
+        60
+      ]
+    }
+  ]
+}

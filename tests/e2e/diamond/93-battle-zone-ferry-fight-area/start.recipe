@@ -1,0 +1,12 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31093
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# game completed: every script gate is CheckGameCompleted/CheckFlag 0x964 (scrcmd_flags.c:194-201 -> unk_0205EC84.c:55-56)
+flag 0x964
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# above the harbour sailor (356,247) (zone_event 0164 object 8), on the tile the return ferry lands on
+# (ShipAnimation 1, 0, 165, 356, 246, scr_seq 0195 @0x0364); facing him
+map MAP_SNOWPOINT 356 246 FACE_DOWN

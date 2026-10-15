@@ -1,0 +1,142 @@
+# Proves the four sea/sky HMs in Emerald's field: Fly from the party menu (start menu > POKEMON > Swellow > SUMMARY,
+# FLY > the region map's cursor from Mossdeep to Ever Grande > A), Surf (A + YES at Ever Grande's pond, then down its
+# falls), Dive (A + YES on Route 128's deep water into MAP_UNDERWATER_ROUTE128), the surfacing (B + YES) and Waterfall
+# (A + YES up Ever Grande's falls).
+# Start: Mossdeep City (28,17) -> end: MAP_EVER_GRANDE_CITY (19,59), surfing above the falls.
+title = "HMs in the field: Fly, Surf, Dive and Waterfall"
+priority = "P1"
+estimate = 15803
+refs = [
+  "src/start_menu.c:315-337 (BuildNormalStartMenu: no Pokedex -> POKEMON is the first entry)",
+  "src/party_menu.c:2607-2630 (SetPartyMonFieldSelectionActions: SUMMARY first, then the field moves in move order), :3725 (field move <= FIELD_MOVE_WATERFALL needs FLAG_BADGE01_GET + id: Fly 5 -> badge 6)",
+  "src/party_menu.c:3753,3877-3883 (FLY -> CB2_OpenFlyMap; SetUpFieldMove_Fly: outdoor maps)",
+  "src/data/region_map/region_map_entries.h:299-319 (MOSSDEEP (24,5) 2x1, EVER_GRANDE (27,8) 1x2: RIGHT x3, DOWN x3)",
+  "src/region_map.c:1212 (Ever Grande needs FLAG_VISITED_EVER_GRANDE_CITY), :1951-2010 (CB_HandleFlyMapInput: A flies at once; no FLAG_LANDMARK_POKEMON_LEAGUE -> HEAL_LOCATION_EVER_GRANDE_CITY)",
+  "src/data/heal_locations.h:67-72 (HEAL_LOCATION_EVER_GRANDE_CITY (27,49))",
+  "src/field_control_avatar.c:450-457 (Surf: FLAG_BADGE05_GET + a Surf user; Waterfall: FLAG_BADGE08_GET, surfing north)",
+  "src/field_control_avatar.c:465-476 (Dive down: FLAG_BADGE07_GET + deep water; emerge underwater)",
+  "data/maps/Route128/map.json connections (dive -> MAP_UNDERWATER_ROUTE128 (53); right -> MAP_EVER_GRANDE_CITY offset -40)",
+  "data/maps/EverGrandeCity/map.json (pond (17..25,56..59), falls (16..27,60..67))",
+]
+notes = "Ruby's dir (ruby/63) fails on Emerald at the party menu: R/S list a Pokemon's field moves first (FLY under the cursor), Emerald puts SUMMARY first (party_menu.c:2607-2630), so its A opened Swellow's summary and the fly map never came. Here DOWN, then A picks FLY. The map ids are R/S's (MOSSDEEP 6, EVER_GRANDE 8, ROUTE128 43, its underwater map 53). Party: Swampert 60 (Surf, Dive, Waterfall) leads, Swellow 45 (Fly) behind it. The region map opens with the cursor on Mossdeep's west block (the player stands at x 28 of the 2-block city). Route 128's wild Pokemon and an Ever Grande swimmer are fought by walk_to's battles."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 23800
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 3
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 90
+note = "POKEMON: the party menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 3
+gap = 20
+note = "slot 1: Swellow"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 30
+note = "SUMMARY / FLY / SWITCH / ITEM / CANCEL, the cursor on SUMMARY (party_menu.c:2607-2630)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 3
+gap = 20
+shot = "party-fly"
+note = "FLY"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 120
+shot = "fly-map-mossdeep"
+note = "FLY: the region map, cursor on Mossdeep (24,5)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 3
+gap = 20
+times = 3
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 3
+gap = 20
+times = 3
+shot = "fly-map-ever-grande"
+note = "Ever Grande (27,8)"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 20
+
+[[step]]
+do = "wait_map"
+map = "MAP_EVER_GRANDE_CITY"
+max = 900
+
+[[step]]
+do = "wait_field"
+shot = "fly-landed"
+note = "HEAL_LOCATION_EVER_GRANDE_CITY (27,49)"
+
+[[step]]
+do = "walk_to"
+x = 19
+z = 68
+surf = true
+shot = "surf-below-falls"
+note = "Surf (A + YES) onto the pond at (19,56), then down the falls (the current carries a surfer south)"
+
+[[step]]
+do = "walk_to"
+map = "MAP_UNDERWATER_ROUTE128"
+x = 75
+z = 20
+surf = true
+dive = true
+shot = "dive-underwater"
+note = "west into Route 128, Dive (A + YES) at (75,20)"
+
+[[step]]
+do = "walk_to"
+map = "MAP_EVER_GRANDE_CITY"
+x = 19
+z = 59
+surf = true
+dive = true
+shot = "waterfall-top"
+note = "surface (B + YES) at (80,22), back east and up the falls (Waterfall: A + YES facing north)"
+
+[expect]
+map = "MAP_EVER_GRANDE_CITY"
+position = [19, 59]
+log = [
+  "map_id 6 -> 8",
+  "walk_to: water ahead, using the field move",
+  "walk_to: dive from map 43 to 53",
+  "walk_to: emerge from map 53 to 43",
+  "walk_to: waterfall ahead, using the field move",
+]
+save = ['s["location"]["map"] == 8']

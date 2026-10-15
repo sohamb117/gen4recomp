@@ -1,0 +1,55 @@
+# Proves the blank-chip Ruby/Sapphire start: title, Birch speech (BOY, the default; name AAAAAAA), the moving truck,
+# Mom at the door and into the house (LittlerootTown OnFrame StepOffTruckMale -> warpsilent 1F (8,8)).
+# Start: power-on (no save) -> end: MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F, VAR_LITTLEROOT_INTRO_STATE 4.
+# Refs are pokeruby's (.cache/gba/pokeruby), the one source both versions build from.
+title = "New game: intro, Birch speech, truck ride, into the house"
+priority = "P0"
+version = "both"
+estimate = 10076
+refs = [
+  "tests/rse/littleroot.sched (same frames for Ruby, Sapphire and Emerald)",
+  "tests/rse/first_battle.sh:62-64 (quick save at 10000: map 256, field_ready 1, on ruby and sapphire)",
+  "src/main_menu.c:936 (gender menu starts on BOY)",
+  "data/maps/InsideOfTruck/scripts.inc:26-36 (male: INTRO_STATE 1, HOUSES_STATE_2 1, hide May's mom/truck, Brendan's mom/upstairs rival)",
+  "data/maps/LittlerootTown/scripts.inc:77-86 (StepOffTruckMale -> warpsilent BRENDANS_HOUSE_1F (8,8))",
+  "data/maps/LittlerootTown/scripts.inc:99-131 (GoInsideWithMom: FLAG_HIDE_MOM_LITTLEROOT, INTRO_STATE 3)",
+  "data/maps/LittlerootTown_BrendansHouse_1F/scripts.inc:52-53,76-80",
+  "data/scripts/players_house.inc:6-21 (EnterHouseMovingIn: INTRO_STATE 4)",
+  "include/constants/map_groups.h:65 (MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F = 0 | (1 << 8) -> id 256)",
+]
+notes = "Copy of Emerald 01 on pokeruby's scripts: littleroot.sched is the recorded boot -> house run shared by all three games (first_battle.sh quick saves it at 10000 on Ruby and Sapphire too and checks map_id 256). Player = Brendan, so the rival is May (her house is the east one, MAP_LITTLEROOT_TOWN_MAYS_HOUSE_*; InsideOfTruck leaves FLAG_HIDE_MAY_UPSTAIRS clear). R/S name the hide flags differently from Emerald (FLAG_HIDE_MOVING_TRUCK_BRENDAN, FLAG_HIDE_MOM_LITTLEROOT, ...)."
+
+[start]
+blank = true
+
+[run]
+frames = 15200
+options = ["text_instant=0"]
+
+[[step]]
+do = "schedule"
+file = "../../../rse/littleroot.sched"
+shot = "house-1f"
+note = "boot -> Birch speech -> truck -> Mom -> 1F; frames relative to this step (frame 0 of the blank chip)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F"
+note = "LittlerootTown_EventScript_StepOffTruckMale warpsilent 1F (8,8) (LittlerootTown/scripts.inc:83)"
+
+[[step]]
+do = "advance_text"
+note = "1F OnFrame INTRO_STATE 3 -> EnterHouseMovingIn: Mom's lines, INTRO_STATE 4 (LittlerootTown_BrendansHouse_1F/scripts.inc:53,76-80; players_house.inc:6-21); no-op when the schedule already finished it"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F"
+flags = ["FLAG_VISITED_LITTLEROOT_TOWN", "FLAG_HIDE_MOVING_TRUCK_BRENDAN", "FLAG_HIDE_MOVING_TRUCK_MAY", "FLAG_HIDE_MOM_LITTLEROOT", "FLAG_HIDE_MAY_MOM_DOWNSTAIRS", "FLAG_HIDE_BRENDAN_MOM", "FLAG_HIDE_BRENDAN_UPSTAIRS"]
+flags_clear = ["FLAG_HIDE_MAY_UPSTAIRS"]
+party_size = 0
+
+[expect.vars]
+VAR_LITTLEROOT_INTRO_STATE = 4
+VAR_LITTLEROOT_HOUSES_STATE_2 = 1

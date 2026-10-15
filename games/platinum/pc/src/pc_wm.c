@@ -60,7 +60,10 @@
  *    running, as a child that has not started MP is never polled. A link
  *    with no datagram for the MP lifetime (WM_SetLifeTime; 4 s default) is
  *    torn down with WM_DISCONNECT_REASON_MP_LIFETIME, which is what a
- *    console reports when its partner walks out of range.
+ *    console reports when its partner walks out of range. Data from a child
+ *    also appears in its parent's next MPEND_IND receive buffer, where the
+ *    multiboot parent (NitroSDK mb_parent.c) reads its children; every
+ *    other caller reads the port records (wmi_mp_indications).
  *
  *  - NP_STAT_LINK_ACTIVE is 1 while the radio is in a link state with
  *    networking on (and for two seconds after, so the union room's
@@ -294,6 +297,13 @@ static struct {
     wmi_bss bss[WMI_BSS_MAX];
     wmi_link link[WMI_LINKS];
     wmi_pend pend[WMI_PEND_MAX];
+    /* parent: what each child sent since the last MPEND_IND, the last message
+     * delivered from it (wmi_deliver), for that indication's receive buffer */
+    struct {
+        u16 len, header;
+        u16 data[WM_SIZE_MP_DATA_MAX / 2];
+    } cycle[WMI_LINKS];
+    u16 cycle_bitmap;
     int pend_head, pend_count;
 
     u32 lifetime; /* frames, 0 = never */
@@ -846,6 +856,12 @@ static void wmi_deliver(u16 aid, u16 port, const u16 *data, u16 len)
         payload = recvBuf->data;
     }
     memcpy(payload, data, len);
+    if (st->aid == 0 && aid < WMI_LINKS && len <= WM_SIZE_MP_DATA_MAX) {
+        W.cycle[aid].len = len;
+        W.cycle[aid].header = header;
+        memcpy(W.cycle[aid].data, data, len);
+        W.cycle_bitmap |= (u16)(1u << aid);
+    }
 
     {
         WMPortRecvCallback *cb = wmi_cb_begin();
@@ -1848,6 +1864,10 @@ static void wmi_run_request(const u32 *req)
         st->apiBusy = TRUE;
         st->BusyApiid = apiid;
     }
+    if (W.trace > 1) {
+        fprintf(stderr, "pc_wm: frame %lu: request api %u (state %u)\n", (unsigned long)W.frame, (unsigned)apiid,
+                st ? (unsigned)st->state : 0u);
+    }
     switch (apiid) {
     case WM_APIID_INITIALIZE:
         wmi_req_initialize(req, 1);
@@ -2300,7 +2320,13 @@ static void wmi_timers(void)
 
 /* The MP cycle's own indications, once per frame while MP runs: a parent
  * hears MPEND_IND after polling its children, a child MP_IND when polled.
- * They carry no port data here (that went out as PORT_RECV records). */
+ * Port data went out as PORT_RECV records as it arrived. A parent's
+ * MPEND_IND also carries, as the radio's receive buffer does, the data each
+ * child sent in the cycle: here the last message delivered from it since the
+ * previous indication, one WMMpRecvData per child at a common stride
+ * (WM_ReadMPData walks them by WMMpRecvHeader.length). The multiboot parent
+ * reads its children only there (NitroSDK mb_parent.c
+ * MBi_CommParentRecvData); games that read the port records are unaffected. */
 static void wmi_mp_indications(void)
 {
     WMStatus *st = W.st;
@@ -2316,9 +2342,40 @@ static void wmi_mp_indications(void)
     }
     if (st->aid == 0) {
         WMMpRecvHeader *h = (WMMpRecvHeader *)buf;
+        u16 bitmap = (u16)(W.cycle_bitmap & st->child_bitmap), stride = 0, n = 0;
+        int i;
 
+        for (i = 1; i < WMI_LINKS; i++) {
+            if (bitmap & (1u << i)) {
+                u16 need = (u16)(offsetof(WMMpRecvData, cdata) + ((W.cycle[i].len + 1u) & ~1u));
+
+                stride = need > stride ? need : stride;
+                n++;
+            }
+        }
+        if (bitmap != 0 && (u32)offsetof(WMMpRecvHeader, data) + (u32)stride * n > st->mp_recvBufSize) {
+            bitmap = 0; /* larger than the game's buffer: none, as an overrun cycle */
+        }
+        n = 0;
         memset(h, 0, sizeof(WMMpRecvHeader) - sizeof(WMMpRecvData));
-        h->length = (u16)offsetof(WMMpRecvData, cdata);
+        h->length = bitmap ? stride : (u16)offsetof(WMMpRecvData, cdata);
+        h->bitmap = bitmap;
+        for (i = 1; i < WMI_LINKS; i++) {
+            WMMpRecvData *d;
+
+            if (!(bitmap & (1u << i))) {
+                continue;
+            }
+            d = (WMMpRecvData *)((u8 *)h->data + (u32)stride * n);
+            memset(d, 0, stride);
+            d->length = W.cycle[i].len;
+            d->aid = (u16)i;
+            d->wmHeader = W.cycle[i].header;
+            memcpy(d->cdata, W.cycle[i].data, W.cycle[i].len);
+            n++;
+        }
+        h->count = n;
+        W.cycle_bitmap = 0;
     } else {
         memset(buf, 0, offsetof(WMMpRecvBuf, data));
     }
@@ -2414,7 +2471,8 @@ int pc_wm_init(void)
     u16 allowed;
 
     memset(&W, 0, sizeof W);
-    W.trace = trace != NULL && trace[0] != '\0' && trace[0] != '0';
+    /* PC_WM_TRACE=1: link events; =2: also every WM request the ARM9 makes. */
+    W.trace = trace != NULL && trace[0] != '\0' && trace[0] != '0' ? (trace[0] == '2' ? 2 : 1) : 0;
     W.self = wmi_net_self();
     if (W.self != 0) {
         W.mac[0] = 0x00;

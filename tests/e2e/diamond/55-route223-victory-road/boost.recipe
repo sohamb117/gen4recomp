@@ -1,0 +1,11 @@
+# Boost on 54's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# A Waterfall carrier for Route 223 (845,604) and Victory Road B1F (24,10) (HM07 is in the bag since 54, the Beacon
+# Badge since 53); Surf too. Route 223 swimmers lv 37-44 (zone_event 0446), Victory Road lv 43-49.
+party SPECIES_GYARADOS 80 ITEM_NONE
+# Slot 3: the chain's Torterra (0), Staraptor (1, 35's boost) and the Riolu egg (2, 37: an egg uses no field move)
+# come first. On a lab start (Garchomp, Salamence, Tyranitar, then Bibarel) slot 3 is Bibarel, the lab's field-move
+# carrier: the same four moves, so it keeps Strength and Rock Climb.
+party-move 3 0 MOVE_WATERFALL
+party-move 3 1 MOVE_SURF
+party-move 3 2 MOVE_STRENGTH
+party-move 3 3 MOVE_ROCK_CLIMB

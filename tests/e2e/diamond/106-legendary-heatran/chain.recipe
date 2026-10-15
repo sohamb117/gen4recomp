@@ -1,0 +1,7 @@
+# On 95b's end save (the Hall of Fame save + the Fight Area arrival + Buck and the Magma Stone + Buck talked to):
+# only the National Dex, which no chained milestone plays (110 is a lab station).
+# NationalDex 2 gate (scr_seq 0278 @0x0053): Pokedex_GetNatDexFlag (scrcmd.c:3872-3882); 110 sets it (scr_seq 0990 @0x058B)
+national-dex 1
+flag 0x2B2
+# below Heatran (7,6) (zone_event 0257 object 1); the rock (7,8) is gone (0x1FC)
+map MAP_STARK_MOUNTAIN_INTERIOR_3 7 7 FACE_UP

@@ -1,0 +1,21 @@
+# Gen 3 link trade (tests/link/run_gba_link_tests.py), station b (child).
+# The save CONTINUEs in Oldale's Pokemon Center 2F below the trade attendant
+# (R/S) or the Direct Corner attendant (Emerald, whose menu opens on TRADE
+# CENTER). Title, CONTINUE, face up, then A through the attendant, the save
+# and "Start link with 2 players" until both are in the Trade Center at
+# 3165; up 1, right 1, up 2 onto the chair: the trade screen at ~3800. Pick
+# the first Pokemon > TRADE, YES at "Is this trade okay?"; the trade
+# animation and the game's save end by ~6600.
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1150:up:4
+1200:a:5:80:24
+3300:up:12
+3340:right:12
+3380:up:28
+3900:a:5
+3940:down:3
+3970:a:5
+4150:a:5

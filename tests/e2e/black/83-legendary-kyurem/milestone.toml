@@ -1,0 +1,118 @@
+# Kyurem in the Giant Chasm (post-game: Route 13, east of the gate the clear opens): Kyurem in the crater's cave, caught
+# with a Master Ball.
+# Start: the crater forest (zone 232) below the cave's mouth (62,22), on 34's end save -> end: the Giant Chasm's cave
+# (zone 234), Kyurem caught.
+title = "Kyurem (Giant Chasm)"
+priority = "P1"
+version = "both"
+estimate = 10234   # measured from 34's end save + start.recipe (CONTINUE included): Black 10134, White 10234 (core-bwm2)
+refs = [
+  "zone 230 (Giant Chasm, outdoors, joined to Route 13): zone_event 230 warp 0 (684,152) -> zone 231 warp 0 (23,62); level type 2 -> scr 0460 script 1 (@0x0019 SetVar 0x40D8 0 unless flag 0x321)",
+  "zone_event 231 objects 0-3 (Strength boulders, script id 10000)",
+  "zone_event 232 trigger 0 (49,51) 2x1 var 0x40D8 == 0 -> scr 0464 script 1 (@0x0025 SetVar 0x40D8 1); zone_event 232 warp 1 (62,21) -> zone 234 warp 1 (16,30)",
+  "zone_event 234 object 0 gfx 0x79 (15,12) hidden by flag 0x321 -> scr 0468 script 1: @0x005E WildBattle Kyurem (646) lv 75; @0x007D SetFlag 0x321; caught -> @0x00D6 SetFlag 0x152; @0x00DA SetVar 0x40D8 2",
+  "scr 0866 @0x03F3-@0x0416 (game clear): flag 0x321 cleared unless 0x152 (an uncaught Kyurem returns after the next clear)",
+  "zone_event 133 object 0 (10,6) hidden by flag 0x2F8 (the Opelucid Gate to Route 11), set at the clear (scr 0866 @0x04A9)",
+]
+notes = "Measured from the start save (CONTINUE included): Black 10134, White 10234 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Post-game (east Unova opens at the clear). Chained from 34's end (the Poke Transfer Lab, after the post-credits scenes: Looker, Cedric Juniper), where set-location holds (the clear's flag 0x966 sends CONTINUE to the bedroom only from 32's end, 34's notes). The recipe starts in the crater forest below the cave: set-location keeps the saved zone's objects, so the cave is entered by its warp, which loads Kyurem (the chasm's outdoors, zone 231's boulders and the crater trigger (scr 0464, 0x40D8 = 1) are not played; the catch sets 0x40D8 to 2 either way). 32 threw the Master Ball; the recipe puts one in the first items slot. Kyurem's entrance runs past 900 frames, so the bag taps wait 1800. Measured on the core of 2026-10-10 (bw-script, core-bwm), instant text."
+
+[start]
+from = "34-postgame-poke-transfer-lab"
+recipe = "start.recipe"
+
+[run]
+frames = 15500
+
+[[step]]
+do = "moves"
+dirs = [["U", 1]]
+note = "zone_event 232 warp 1 (62,21) -> zone 234 warp 1 (16,30): the warp loads 234's own objects (Kyurem)"
+
+[[step]]
+do = "wait_field"
+shot = "kyurem-cave"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 13
+on_battle = "flee"
+note = "below Kyurem; wild battles on the way are fled"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "Kyurem (zone_event 234 object 0 (15,12)): scr 0468 script 1"
+
+[[step]]
+do = "press"
+keys = "a"
+until = "in_battle=1"
+times = 60
+note = "to its WildBattle (Kyurem lv 75, @0x005E)"
+
+[[step]]
+do = "wait_frames"
+n = 1800
+shot = "kyurem-battle"
+note = "Kyurem's entrance and Reshiram's send-out run past 900 frames (scouting: the action menu at ~f9800 with 900)"
+
+[[step]]
+do = "tap"
+x = 40
+y = 168
+gap = 60
+note = "BAG"
+
+[[step]]
+do = "tap"
+x = 190
+y = 48
+gap = 60
+note = "POKE BALLS"
+
+[[step]]
+do = "tap"
+x = 64
+y = 30
+gap = 60
+note = "the first ball, the Master Ball (start.recipe)"
+
+[[step]]
+do = "tap"
+x = 110
+y = 174
+gap = 60
+note = "USE"
+
+[[step]]
+do = "wait_frames"
+n = 1000
+shot = "caught"
+note = "the Master Ball's throw and shakes run without input; the catch message then waits"
+
+[[step]]
+do = "press"
+keys = "b"
+until = "in_battle=0"
+times = 80
+gap = 30
+note = "the catch; B declines the nickname; the full party sends it to the Box"
+
+[[step]]
+do = "advance_text"
+note = "scr 0468 after the catch: @0x00D6 0x152, @0x00DA 0x40D8 = 2"
+
+[[step]]
+do = "wait_field"
+shot = "end"
+
+[expect]
+map = 234
+flags = ["0x321", "0x152"]
+save = [
+  "any(m[\"species\"] == 646 for m in s[\"party\"]) or any(m[\"species\"] == 646 for b in s[\"boxes\"] for m in b[\"mons\"])",
+]
+
+[expect.vars]
+"0x40D8" = 2

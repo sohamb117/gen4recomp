@@ -1,0 +1,13 @@
+# Boost on 13's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Gardenia's gym is grass: trdata.json #324 CHERUBI 15 + ROSELIA 15, #259 BUDEW 14/13/15, #260 TURTWIG 17,
+# #348 ROSELIA 17, #315 CHERUBI 19 + TURTWIG 19 + ROSERADE 22 (SITRUS_BERRY, 2x SUPER_POTION). Seen chained: a
+# level-38 Torterra with Rock Slide (90% accurate) lost a 17-turn stall to her (Leech Seed, Stun Spore, two Super
+# Potions). Crunch (100% accurate, neutral on all of them) in slot 0, Rock Slide kept in slot 2; level 48 and the
+# lead's HP/Attack/Speed IVs at 31 with 252 Attack EVs; HP full for five battles in a row.
+party-level 0 48
+party-move 0 0 MOVE_CRUNCH
+party-move 0 2 MOVE_ROCK_SLIDE
+party-iv 0 0 31
+party-iv 0 1 31
+party-iv 0 3 31
+party-ev 0 1 252

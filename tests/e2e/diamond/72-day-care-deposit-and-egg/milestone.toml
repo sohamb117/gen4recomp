@@ -1,0 +1,170 @@
+# Day Care, played: the Day-Care Lady takes a male and a female BIBAREL through her own menus (YES, the party menu,
+# STORE, "raise another?" YES, the second pick), the player walks out and runs laps in Solaceon until the second
+# parent's step count rolls an egg (Daycare_Update ov05_021ED378: every 256 steps, compatibility 50 for the same
+# species and OT), and the Day-Care Man hands the egg over.
+# Start: MAP_SOLACEON_DAYCARE (9,10). End: MAP_SOLACEON (555,649) below the man, BIDOOF egg in party slot 4.
+title = "Day Care: deposit two parents with the lady and collect an egg"
+priority = "P1"
+version = "both"
+estimate = 15729
+refs = [
+  "maps.h:441",
+  "zone_event 0415 object 0",
+  "zone_event 0415 warp 0",
+  "zone_event 0411 object 3",
+  "scr_seq 0464 @0x0124-0x0170",
+  "scr_seq 0464 @0x017E-0x0231",
+  "scr_seq 0464 @0x024C-0x025D",
+  "scr_seq 0464 @0x028C-0x0299",
+  "scr_seq 0464 @0x004A-0x0057",
+  "scr_seq 0464 @0x0083-0x00BC",
+  "games/diamond/include/daycare.h:16-27",
+  "games/diamond/arm9/src/save_arrays.c:75-76",
+  "games/diamond/arm9/overlays/05/asm/ov05_021EC458.s:1918-2051",
+  "features/tools/np_save4.c dump_daycare (DP_DAYCARE_OFF)",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 23600
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 6
+face = "up"
+interact = true
+note = "across the counter from the lady (9,4) (zone_event 0415 object 0, std script 9501 -> scr_seq 0464 script 2): 'I'm the Day-Care Lady. ... Would you like us to raise your Pokemon?' (msg 492 #15, @0x015D)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "the text to the YES/NO (@0x0160)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "YES -> 'Which Pokemon should we raise for you?' (msg 492 #16, @0x01A0)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "fade to the party menu (Unk0290, @0x01B9)"
+shot = "party"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "slot 0 BIBAREL lv25: its submenu"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "STORE -> 'Fine, we'll raise your BIBAREL for a while.' (msg 492 #17, @0x0252)"
+shot = "stored-first"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "'We can raise two of your Pokemon. Would you like us to raise another?' YES/NO (msg 492 #18, @0x028C)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "YES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "the party menu again: BIBAREL lv26 .. lv29 (male), BIBAREL lv30 (female) in slot 4, the left column's bottom"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 10
+note = "slot 2"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 10
+note = "slot 4: BIBAREL lv30 (female)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "its submenu"
+shot = "second-pick"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "STORE -> 'Fine, we'll raise your BIBAREL for a while.' (msg 492 #36, @0x025D)"
+shot = "stored-second"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 11
+note = "the door mat (zone_event 0415 warp 0) -> MAP_SOLACEON"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SOLACEON"
+
+[[step]]
+do = "pace"
+x = 557
+z = 649
+until = 's["daycare"]["egg_waiting"]'
+every = 64
+note = "laps beside the Day-Care Man until the save shows the egg (np_save4 daycare.egg_waiting: egg_pid set by Daycare_Update)"
+shot = "egg-waiting"
+
+[[step]]
+do = "walk_to"
+x = 555
+z = 649
+face = "up"
+interact = true
+note = "the Day-Care Man (555,648) (zone_event 0411 object 3, std 9500 -> scr_seq 0464 script 1): 'Your Pokemon was holding an Egg! ... You do want it, don't you?' (msg 492 #1, @0x004A)"
+
+[[step]]
+do = "advance_text"
+max = 900
+note = "YES (A), 'GQ received the Egg from the Day-Care Man.' (msg 492 #5), 'You take good care of it.' (#6) -> GiveDaycareEgg (@0x009F-0x00BC)"
+shot = "egg-received"
+
+[expect]
+map = "MAP_SOLACEON"
+position = [555, 649]
+# 0xFE: set on the first deposit (scr_seq 0464 @0x0231); 0x73 cleared with the egg taken (@0x00B6)
+flags = ["0xFE"]
+flags_clear = ["0x73"]
+party_size = 5
+save = [
+  '[m["species"] for m in s["party"]] == [400, 400, 400, 400, 399]',   # BIBAREL lv26-29, the egg
+  's["party"][4]["is_egg"]',
+  # the parents: BIBAREL lv25 (male, PID 0xF4EB08E9) and lv30 (female, PID low byte 0x2F)
+  '[m["species"] for m in s["daycare"]["mons"]] == [400, 400]',
+  '[int(m["pid"], 16) & 0xFF < 127 for m in s["daycare"]["mons"]] == [False, True]',
+  'not s["daycare"]["egg_waiting"]',
+]
+
+[[shots]]
+frames = [15520, 15580, 15640, 15700]   # the man's egg question, YES, the received-egg jingle, "You take good care of it."

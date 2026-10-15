@@ -1,0 +1,29 @@
+# Boost on 50's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# The Elite Four and Cynthia are fought back to back with no Pokemon Center between them (the rooms and lifts of
+# events_pokemon_league_*_room.json), and auto_battle knows types, not levels: HP and PP are refilled here (levels set
+# again, moves set again) after Route 223, Victory Road and the rival.
+# Opponents (res/trainers): Aaron Yanmega 49, Scizor 49, Vespiquen 50, Heracross 51, Drapion 53; Bertha Whiscash 50,
+# Gliscor 53, Hippowdon 52, Golem 52, Rhyperior 55; Flint Houndoom 52, Flareon 55, Rapidash 53, Infernape 55, Magmortar 57;
+# Lucian Mr. Mime 53, Espeon 55, Bronzong 54, Alakazam 56, Gallade 59; Cynthia Spiritomb 58, Roserade 58, Gastrodon 60,
+# Lucario 60, Milotic 58, Garchomp 62. Torterra (Earthquake, Crunch, Seed Bomb, Stone Edge), Infernape (Flamethrower,
+# Close Combat, Ice Punch, ThunderPunch), Gyarados (Waterfall, Surf, Ice Fang, Crunch) cover them.
+party-level 0 100
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_STONE_EDGE
+party-level 3 100
+party-move 3 0 MOVE_FLY
+party-move 3 1 MOVE_TAKE_DOWN
+party-move 3 2 MOVE_CLOSE_COMBAT
+party-move 3 3 MOVE_AGILITY
+party-level 4 100
+party-move 4 0 MOVE_FLAMETHROWER
+party-move 4 1 MOVE_CLOSE_COMBAT
+party-move 4 2 MOVE_ICE_PUNCH
+party-move 4 3 MOVE_THUNDER_PUNCH
+party-level 5 100
+party-move 5 0 MOVE_WATERFALL
+party-move 5 1 MOVE_SURF
+party-move 5 2 MOVE_ICE_FANG
+party-move 5 3 MOVE_CRUNCH

@@ -1,0 +1,6 @@
+# On 93's end save (Fight Area reached by the ferry, arrival scene played): the National-Dex scene's flag
+# (scr_seq 0990 @0x058B SetFlag 0x2B2; 110 is a lab station), which hides the Fight Area blockers
+# (zone_event 0187 objects 22/23); the map line reloads the area without them.
+flag 0x2B2
+# south of the blockers (629,429)/(630,429)
+map MAP_FIGHT_AREA 630 430 FACE_UP

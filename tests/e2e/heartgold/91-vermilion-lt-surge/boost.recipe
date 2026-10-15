@@ -1,0 +1,6 @@
+# Boost on 90's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# Party: 0 TYPHLOSION (Lava Plume, Swift, Rock Slide, Focus Blast), 1 TOGEPI, 2 SCYTHER, 3 AMPHAROS, 4 PELIPPER,
+# 5 FERALIGATR. Lt. Surge's team is all Electric; without a Ground move auto_battle's Surge took 22-29 turns and one
+# HeartGold run ran out of its frame budget. TYPHLOSION learns TM26 Earthquake (files/poketool/personal/personal.json
+# tms), in Swift's place.
+party-move 0 1 MOVE_EARTHQUAKE

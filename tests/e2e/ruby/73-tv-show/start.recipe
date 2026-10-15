@@ -1,0 +1,12 @@
+# 73 TV: the house TV's emergency news. The Hall of Fame readies it: data/scripts/hall_of_fame.inc:32-34
+# (EverGrandeCity_HallOfFame_EventScript_ReadyLatiTVEvent: setflag FLAG_SYS_TV_LATI). With it the TV in the player's
+# own house 1F airs the news (src/tv.c:2115-2133 CheckForBigMovieOrEmergencyNewsOnTV -> 1).
+flag FLAG_SYS_TV_LATI                    # data/scripts/hall_of_fame.inc:33
+# the movers leave once the wall clock is set (data/scripts/players_house.inc:66-67); the base save is before that,
+# and MACHOKE_FACING_AWAY stands on (4,5), the only tile facing the TV (LittlerootTown_BrendansHouse_1F/map.json
+# object_events[2])
+flag FLAG_HIDE_MACHOKE_MOVER_1           # data/scripts/players_house.inc:66
+flag FLAG_HIDE_MACHOKE_MOVER_2           # data/scripts/players_house.inc:67
+# Brendan's house 1F (the base save's map), the tile below the TV (MB_TELEVISION 0x86 at (4,4)); the base's
+# VAR_LITTLEROOT_INTRO_STATE 4 runs no OnFrame script here (LittlerootTown_BrendansHouse_1F/scripts.inc:56-61)
+map MAP_LITTLEROOT_TOWN_BRENDANS_HOUSE_1F 4 5

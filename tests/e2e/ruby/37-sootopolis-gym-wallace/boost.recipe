@@ -1,0 +1,6 @@
+# Party strength for Wallace (pokeruby src/data/trainer_parties.h:3636-3665 gTrainerParty_Wallace: LUVDISC 40,
+# WHISCASH 42, SEALEO 40, SEAKING 42, MILOTIC 43 with Recover): the lead's Surf is resisted and Strength is its best
+# other move, and a lv61 Marshtomp lost to Milotic in a first run. TM26 Earthquake (Marshtomp's TM learnset,
+# src/data/pokemon/tmhm_learnsets.h:6299) in place of Strength, as a player teaches it, and a level.
+party-move 0 0 MOVE_EARTHQUAKE
+party-level 0 68

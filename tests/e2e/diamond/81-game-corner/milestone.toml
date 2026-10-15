@@ -1,0 +1,134 @@
+# Veilstone Game Corner: buy 50 coins from the clerk (1000 money), then play slot machine 0 once (the US D/P
+# slots: SlotMachine 0x8004 from the machine's bg script). Start: MAP_VEILSTONE_GAME_CORNER (11,6) facing
+# machine 0 at (12,6). End: same tile, money -1000, coins changed from 50 by the spin.
+# The slot app's bottom screen was white before armrec ef93d8d397 (DEFECTS.md).
+title = "Game Corner: play the slots"
+priority = "P2"
+version = "both"
+estimate = 3139
+refs = [
+  "maps.h:140",
+  "zone_event 0135 object 0",
+  "zone_event 0135 bg 0",
+  "scr_seq 0136 @0x0056-0x005C",
+  "scr_seq 0136 @0x00E6-0x012D",
+  "scr_seq 0136 @0x013A-0x0197",
+  "scr_seq 0136 @0x01A8-0x023C",
+  "scr_seq 0136 @0x02AF-0x02BC",
+  "scr_seq 0145 @0x00CA",
+  "msg 139 #2",
+  "msg 139 #3",
+  "games/diamond/arm9/src/scrcmd.c:4243-4247",
+  "games/diamond/arm9/asm/unk_020377F0.s:2453-2497",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 4800
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 6
+face = "up"
+interact = true
+note = "the coin clerk (2,4) across the counter (zone_event 0135 object 0, script 13)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 2
+gap = 40
+note = "msg 139 #0 'Welcome', then msg 139 #2 and the coin menu (Unk0040: 50 coins / 500 coins / no thanks)"
+shot = "coin-menu"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "50 coins for 1000 (TakeMoneyImmediate 0x3E8, GiveCoins 50, scr_seq 0136 @0x021D-0x0223); the thanks (msg 139 #3) takes no button (Wait 30), then GoTo L_01B4: msg 139 #2 again"
+shot = "bought"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "'Did you want some game Coins?' -> 'It's $1000 for 50 Coins' and the coin menu again"
+shot = "menu-again"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+times = 2
+gap = 12
+
+[[step]]
+do = "press"
+keys = "A"
+note = "no thanks -> L_02AF (msg 139 #6)"
+
+[[step]]
+do = "advance_text"
+max = 1200
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 6
+face = "right"
+interact = true
+note = "machine 0 bg event (12,6) (zone_event 0135 bg 0): Coin Case present -> SlotMachine 0x8004 (scr_seq 0136 @0x0119)"
+
+[[step]]
+do = "wait_frames"
+n = 120
+shot = "slots"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 40
+note = "insert coins"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 90
+note = "lever: the reels spin"
+shot = "spinning"
+
+[[step]]
+do = "press"
+keys = "Y"
+gap = 40
+note = "stop reel 1"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 40
+note = "stop reel 2"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 180
+note = "stop reel 3, payout"
+shot = "stopped"
+
+[[step]]
+do = "press"
+keys = "START"
+gap = 60
+note = "leave the machine"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[expect]
+map = "MAP_VEILSTONE_GAME_CORNER"
+position = [11, 6]
+save = ['s["trainer"]["money"] == 19000', 's["trainer"]["coins"] != 50']

@@ -1,0 +1,12 @@
+# 75 PokeNav Match Call: a starter strong enough for Youngster Calvin (TRAINER_CALVIN_1: POOCHYENA lv5,
+# src/data/trainer_parties.h:4206-4212), the PokeNav with Match Call, beside Calvin on Route 102.
+party SPECIES_MUDKIP 20 ITEM_NONE        # Mudkip lv20: Tackle, Growl, Mud-Slap, Water Gun (level-up moves)
+flag FLAG_SYS_POKEMON_GET                # data/maps/Route101/scripts.inc:217 (the start menu's POKEMON entry)
+flag FLAG_SYS_POKENAV_GET                # data/maps/RustboroCity_DevonCorp_3F/scripts.inc:53 (the start menu's POKENAV)
+# Rustboro's Devon scientist adds Match Call after the PokeNav (data/maps/RustboroCity/scripts.inc:44-69):
+# FLAG_HAS_MATCH_CALL lets trainers register after a battle (Route102/scripts.inc:31-42), and
+# FLAG_ADDED_MATCH_CALL_TO_POKENAV puts MATCH CALL in the PokeNav's main menu (src/pokenav_menu_handler.c:85-98)
+flag FLAG_HAS_MATCH_CALL                 # data/maps/RustboroCity/scripts.inc:46
+flag FLAG_ADDED_MATCH_CALL_TO_POKENAV    # data/maps/RustboroCity/scripts.inc:69
+# two tiles east of Calvin (Route102/map.json object_events[1] (33,14), facing down, sight 3): out of his sight
+map MAP_ROUTE102 35 14

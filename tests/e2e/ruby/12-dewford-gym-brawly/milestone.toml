@@ -1,0 +1,71 @@
+# Proves the dark gym (light grows per trainer beaten) and Brawly (TRAINER_BRAWLY): FLAG_BADGE02_GET, TM08 Bulk Up,
+# PETALBURG_GYM_STATE 4.
+# Start: Dewford (8,18) -> end: MAP_DEWFORD_TOWN at the gym door (8,18).
+title = "Dewford Gym: Brawly and the Knuckle Badge"
+priority = "P0"
+version = "both"
+estimate = 10280
+refs = [
+  "data/maps/DewfordTown/map.json warp_events[2] (8,17) -> DEWFORD_TOWN_GYM",
+  "data/maps/DewfordTown_Gym/map.json object_events[0] BRAWLY (14,4); Hideki (2,17), Tessa (1,10), Laura (12,24)",
+  "data/maps/DewfordTown_Gym/scripts.inc:5-95 (flash level from the trainers beaten)",
+  "data/maps/DewfordTown_Gym/scripts.inc:97-127 (trainerbattle_single TRAINER_BRAWLY; BrawlyDefeated: FLAG_DEFEATED_DEWFORD_GYM, FLAG_BADGE02_GET, addvar PETALBURG_GYM_STATE; TM08)",
+]
+notes = "Brawly: TRAINER_BRAWLY (266): MACHOP 17, MAKUHITA 18 (Fighting; Water Gun neutral; boost to ~20). Gym trainers: TRAINER_HIDEKI (179): MACHOP 14; TRAINER_TESSA (425): MEDITITE 12, MACHOP 12, MEDITITE 12; TRAINER_LAURA (426): MEDITITE 14. The gym is dark until trainers fall; walk_to plans on probe collision [INFERENCE: the dark palette does not hide collision]."
+
+[start]
+from = "prev"
+boost = "boost.recipe"
+
+[run]
+frames = 15500
+
+[[step]]
+do = "walk_to"
+x = 8
+z = 17
+note = "gym door (Dewford warp 2) -> MAP_DEWFORD_TOWN_GYM (5,27)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DEWFORD_TOWN_GYM"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 5
+face = "up"
+interact = true
+note = "below Brawly (14,4); sight trainers on the way are fought"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_BRAWLY (266): MACHOP 17, MAKUHITA 18"
+
+[[step]]
+do = "advance_text"
+shot = "knuckle-badge"
+note = "BrawlyDefeated + TM08 Bulk Up (DewfordTown_Gym/scripts.inc:104-127)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 27
+note = "exit mat (warp 0) -> Dewford (8,17)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_DEWFORD_TOWN"
+
+[expect]
+map = "MAP_DEWFORD_TOWN"
+badges = 2
+flags = ["FLAG_BADGE01_GET", "FLAG_BADGE02_GET", "FLAG_DEFEATED_DEWFORD_GYM", "FLAG_RECEIVED_TM_BULK_UP"]
+battles = 1
+
+[expect.vars]
+VAR_PETALBURG_GYM_STATE = 4

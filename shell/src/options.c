@@ -10,10 +10,10 @@
 #include <SDL3/SDL.h>
 #include <string.h>
 
+#include "romdb.h"
 #include "storage.h"
 
 const int np_speeds[NP_SPEED_COUNT] = {1, 2, 3, 4, 8, 0};
-static const char *const np_game_ids[NP_GAME_COUNT] = {"diamond", "pearl", "platinum"};
 const int np_fps_caps[NP_FPS_CAP_COUNT] = {0, 30, 60, 120, 144, 240};
 const char *const np_fx_ids[NP_FX_COUNT] = {"off", "lcd", "scanlines", "crt", "smooth"};
 const char *const np_perf_ids[NP_PERF_COUNT] = {"custom", "high", "balanced", "low", "auto"};
@@ -249,13 +249,12 @@ static void apply(np_options *o, const char *section, const char *key, char *val
         else if (!strcmp(key, "reduce_motion"))
             o->reduce_motion = iv != 0;
     } else if (!strcmp(section, "session")) {
-        const char *const *games = np_game_ids;
         if (!strcmp(key, "startup"))
             o->startup_continue = !SDL_strcasecmp(val, "continue");
         else if (!strcmp(key, "last_game"))
-            o->last_game = lookup(games, NP_GAME_COUNT, val);
+            o->last_game = np_game_from_id(val);
         else if (!strncmp(key, "last_slot_", 10)) {
-            int g = lookup(games, NP_GAME_COUNT, key + 10);
+            int g = np_game_from_id(key + 10);
             if (g >= 0 && !np_slot_name_problem(val))
                 SDL_strlcpy(o->last_slot[g], val, sizeof o->last_slot[g]);
         }
@@ -313,6 +312,8 @@ static void apply(np_options *o, const char *section, const char *key, char *val
             o->rumble = iv != 0;
         else if (!strcmp(key, "skin") && !np_slot_name_problem(val))
             SDL_strlcpy(o->skin, val, sizeof o->skin);
+        else if (!strcmp(key, "skin_gba") && !np_slot_name_problem(val))
+            SDL_strlcpy(o->skin_gba, val, sizeof o->skin_gba);
     } else if (!strcmp(section, "keys")) {
         int a = lookup(action_ids, NP_ACT_COUNT, key);
         if (a < 0)
@@ -406,19 +407,19 @@ int np_options_save(const np_options *o, const char *path)
     put(b, "camera_zoom = %d\ncamera_tilt = %d\ninstant_text = %d\nfix_bugs = %d\nrewind_seconds = %d\n\n",
         o->camera_zoom, o->camera_tilt, o->text_instant, o->fix_bugs, o->rewind_seconds);
     put(b, "[session]\nstartup = %s\n", o->startup_continue ? "continue" : "launcher");
-    if (o->last_game >= 0 && o->last_game < NP_GAME_COUNT)
-        put(b, "last_game = %s\n", np_game_ids[o->last_game]);
+    if (np_game_known((np_game)o->last_game))
+        put(b, "last_game = %s\n", np_game_id((np_game)o->last_game));
     for (int g = 0; g < NP_GAME_COUNT; g++)
-        if (o->last_slot[g][0])
-            put(b, "last_slot_%s = %s\n", np_game_ids[g], o->last_slot[g]);
+        if (np_game_known((np_game)g) && o->last_slot[g][0])
+            put(b, "last_slot_%s = %s\n", np_game_id((np_game)g), o->last_slot[g]);
     put(b, "\n[sync]\nfolder = %s\n", o->sync_folder);
     put(b, "\n[gba]\nrom = %s\nsave = %s\n", o->gba_rom, o->gba_save);
     if (o->update_repo[0] || o->update_api[0])
         put(b, "\n[updates]\nrepo = %s\napi = %s\n", o->update_repo, o->update_api);
     put(b, "\n[wireless]\nenabled = %d\nport = %d\npeer = %s\nrelay = %s\npin = %s\nstation_id = %06X\n",
         o->lan_enabled, o->lan_port, o->lan_peer, o->lan_relay, o->lan_pin, (unsigned)o->station_id);
-    put(b, "\n[input]\ntouch_controls = %s\nrumble = %d\nskin = %s\n\n[keys]\n", touch_ids[o->touch_controls],
-        o->rumble, o->skin);
+    put(b, "\n[input]\ntouch_controls = %s\nrumble = %d\nskin = %s\nskin_gba = %s\n\n[keys]\n",
+        touch_ids[o->touch_controls], o->rumble, o->skin, o->skin_gba);
     for (int a = 0; a < NP_ACT_COUNT; a++) {
         put(b, "%s =", action_ids[a]);
         int last = -1;

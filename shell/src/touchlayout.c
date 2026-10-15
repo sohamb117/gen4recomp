@@ -73,14 +73,15 @@ static int inside(const np_tc_item *it, int id, float W, float H, float x, float
     return x >= r[0] - slop && x < r[0] + r[2] + slop && y >= r[1] - slop && y < r[1] + r[3] + slop;
 }
 
-int np_tc_hit(const np_tc_layout *l, float W, float H, float x, float y, uint16_t *keys, int *ff, int *menu)
+int np_tc_hit(const np_tc_layout *l, unsigned hide, float W, float H, float x, float y, uint16_t *keys, int *ff,
+              int *menu)
 {
     int any = 0;
     *keys = 0;
     *ff = *menu = 0;
     for (int i = 0; i < NP_TC_COUNT; i++) {
         float dx, dy, rad;
-        if (!inside(&l->item[i], i, W, H, x, y, &dx, &dy, &rad))
+        if ((hide >> i & 1) || !inside(&l->item[i], i, W, H, x, y, &dx, &dy, &rad))
             continue;
         any = 1;
         if (i == NP_TC_DPAD) {
@@ -108,11 +109,13 @@ int np_tc_hit(const np_tc_layout *l, float W, float H, float x, float y, uint16_
     return any;
 }
 
-int np_tc_pick(const np_tc_layout *l, float W, float H, float x, float y)
+int np_tc_pick(const np_tc_layout *l, unsigned hide, float W, float H, float x, float y)
 {
     int best = -1;
     float best_area = 0;
     for (int i = 0; i < NP_TC_COUNT; i++) {
+        if (hide >> i & 1)
+            continue;
         float r[4];
         np_tc_rect(&l->item[i], W, H, r);
         if (x >= r[0] && x < r[0] + r[2] && y >= r[1] && y < r[1] + r[3] && (best < 0 || r[2] * r[3] < best_area)) {

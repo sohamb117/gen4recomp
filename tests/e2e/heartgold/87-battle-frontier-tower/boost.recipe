@@ -1,0 +1,7 @@
+# Boost on 38's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# The Tower's picks: 0 TYPHLOSION, 3 AMPHAROS, 5 FERALIGATR. The first draft lost its third battle to a Chinchou
+# (Water/Electric, Volt Absorb): AMPHAROS's Thunderbolt and Discharge did nothing, Focus Blast missed, FERALIGATR's
+# Dragon Pulse was all it had left. Earthquake (super effective on it, and on the Tower's Electric and Fire types)
+# goes on TYPHLOSION over its spent Earthquake slot (PP restored) and on FERALIGATR over Strength.
+party-move 0 1 MOVE_EARTHQUAKE
+party-move 5 0 MOVE_EARTHQUAKE

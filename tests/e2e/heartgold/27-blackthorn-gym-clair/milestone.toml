@@ -1,0 +1,185 @@
+# Proves the Blackthorn Gym: its lava-floor puzzle (BlackthornGymInit, the pit coords that warp a misstep back), the Ace
+# Trainers, Clair (TRAINER_LEADER_CLAIR_CLAIR) who withholds the badge and sends the player to the Dragon's Den
+# (FLAG_UNK_0D1, the den guard steps aside).
+# Start: MAP_BLACKTHORN (697,145) -> end: MAP_BLACKTHORN outside the gym (668,152), FLAG_UNK_0D1.
+title = "Blackthorn Gym: Clair (no badge yet)"
+priority = "P0"
+version = "both"
+estimate = 54843
+refs = [
+  "zone_event 086_T30 warp 1 (668,151) -> MAP_BLACKTHORN_GYM (13,87)",
+  "scr_seq_0034_D23R0106.s:144-145 (FLAG_HIDE_BLACKTHORN_GYM_GUARD_INFRONT set, _ASIDE cleared by the Radio Tower)",
+  "zone_event 137_T30GYM0101 coords 0-2 (5,9) (23,41) (3,62) VAR_UNK_4111 0 -> 002 (Warp MAP_BLACKTHORN_GYM (8,83), scr_seq_0943_T30GYM0101.s:147-155); coord 3 (12,82) w3 VAR_UNK_4120 0 -> 004",
+  "scr_seq_0943_T30GYM0101.s:16-18 (OnTransition BlackthornGymInit, VAR_UNK_4120 0)",
+  "zone_event 137_T30GYM0101 object 0 obj_T30GYM0101_gsleader8 (12,3); Ace Trainers Paulo (11,66), Lola (8,61), Cody (20,54), Fran (21,45), Mike (13,40)",
+  "scr_seq_0943_T30GYM0101.s:87-112 (TRAINER_LEADER_CLAIR_CLAIR, FLAG_UNK_0D1, FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT, ClearFlag FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE)",
+  "src/field/gymmick/blackthorn.c (BlackthornPlatform_Init, BlackthornGymmick_GetButtonAction, ov04_02255CBC, Task_BlackthornGymmick_MovePlatform), src/gymmick_init.c:104-121",
+  "TRAINER_LEADER_CLAIR_CLAIR (35, include/constants/trainers.h:40): GYARADOS 38, DRAGONAIR 38, DRAGONAIR 38, KINGDRA 41",
+]
+notes = "Kingdra (Water/Dragon) takes neutral damage from most types except Dragon: Ice/Dragon coverage, levels ~45. The floor puzzle is src/field/gymmick/blackthorn.c: three lava platforms (InitBlackthornGym, src/gymmick_init.c:104-121: (13,75) rot 0, (9,58) rot 1, (14,32) rot 0; reset on every entry by the OnTransition BlackthornGymInit, scr_seq_0943_T30GYM0101.s:16-18) whose 3x6 floors are walkable over the MAGMA 0x2C (GymmickCheckCollision_Blackthorn); stepping onto a platform's centre button rotates it a quarter turn about the player when its ring and sweep are lava (ov04_02255CBC), onto the side buttons moves it its width (5 or 4) carrying the player, all or nothing (Task_BlackthornGymmick_MovePlatform; triggered from FieldSystem_ProcessStep, src/field/field_control.c:633). The `steps` route below is a BFS over that model (player tile + the three platforms' x/z/rotation) on the decoded land data, splitting at every button tile and carry landing; it meets Paulo (14,66), Lola (7,61), Cody (20,57), Fran (21,49), Mike (15,40) as the plan around their approach tiles expects [INFERENCE: trainer sight crosses lava; Cody's movement 4 looks north/south]. From Clair's final platform layout no way back exists in the model, so the exit is pit coord 0 (5,9), whose script warps to (8,83) by the door (scr_seq_0943_T30GYM0101.s:147-159; VAR_UNK_4111 is never set). The whole model is untested in game [INFERENCE]."
+
+[start]
+from = "prev"
+# lab = "lab.recipe"  # HG/SS lab recipes: not written yet
+boost = "boost.recipe"
+
+[run]
+frames = 82300
+
+[[step]]
+do = "walk_to"
+x = 668
+z = 151
+note = "Blackthorn Gym (warp 1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN_GYM"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 82
+on_text = "stop"
+note = "coord 3 (12..14,82) VAR_UNK_4120 0 -> 004 (scr_seq_0943_T30GYM0101.s:205-254)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "steps"
+route = [[13, 75], [12, 75], [7, 75], [8, 75], [8, 76], [8, 75], [9, 75], [14, 75], [14, 62], [7, 62], [7, 57], [9, 57], [9, 53], [9, 54], [10, 54], [14, 54], [13, 54], [12, 54], [13, 54], [14, 54], [18, 54], [18, 57], [21, 57], [21, 49], [20, 49], [20, 40], [15, 40], [15, 33], [14, 33], [14, 32], [13, 32], [8, 32], [9, 32], [9, 31], [9, 32], [10, 32], [15, 32], [14, 32], [14, 31], [14, 26], [14, 27], [14, 26], [14, 21], [14, 22], [14, 21], [14, 16], [14, 17], [15, 17], [20, 17], [19, 17], [19, 16], [19, 11], [19, 12], [19, 11], [19, 6], [14, 6], [14, 4], [12, 4]]
+max = 20000
+note = "first pass along the platform route (see the second): the four trainers on it fight; the party reaches Clair worn down (the first chained run whited out to her), so the pit beside her takes it back out to heal"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+note = "pit coord 0 (VAR_UNK_4111 0): warps to the entrance (8,83) (scr_seq_0943_T30GYM0101.s:147-159)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 87
+note = "gym door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN"
+
+[[step]]
+do = "heal"
+x = 674
+z = 176
+note = "Blackthorn's Pokemon Center (zone_event T30 warp 6)"
+
+[[step]]
+do = "walk_to"
+x = 668
+z = 151
+note = "back into the gym (warp 1); the platforms reset on entry (BlackthornGymInit, OnTransition), so the same route works again"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN_GYM"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 82
+note = "where the route starts (coord 3 spent: VAR_UNK_4120 set by its scene)"
+
+[[step]]
+do = "steps"
+route = [[13, 75], [12, 75], [7, 75], [8, 75], [8, 76], [8, 75], [9, 75], [14, 75], [14, 62], [7, 62], [7, 57], [9, 57], [9, 53], [9, 54], [10, 54], [14, 54], [13, 54], [12, 54], [13, 54], [14, 54], [18, 54], [18, 57], [21, 57], [21, 49], [20, 49], [20, 40], [15, 40], [15, 33], [14, 33], [14, 32], [13, 32], [8, 32], [9, 32], [9, 31], [9, 32], [10, 32], [15, 32], [14, 32], [14, 31], [14, 26], [14, 27], [14, 26], [14, 21], [14, 22], [14, 21], [14, 16], [14, 17], [15, 17], [20, 17], [19, 17], [19, 16], [19, 11], [19, 12], [19, 11], [19, 6], [14, 6], [14, 4], [12, 4]]
+max = 20000
+note = "second pass, the same: five Ace Trainers stand on the route, three of them turning at random (mv 7/4/8), so one pass meets only some; a run that healed once met the fifth on its way to Clair and whited out to her"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+note = "pit coord 0 (VAR_UNK_4111 0): warps to the entrance (8,83) (scr_seq_0943_T30GYM0101.s:147-159)"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 87
+note = "gym door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN"
+
+[[step]]
+do = "heal"
+x = 674
+z = 176
+note = "Blackthorn's Pokemon Center (zone_event T30 warp 6)"
+
+[[step]]
+do = "walk_to"
+x = 668
+z = 151
+note = "back into the gym (warp 1); the platforms reset on entry (BlackthornGymInit, OnTransition), so the same route works again"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN_GYM"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 82
+note = "where the route starts (coord 3 spent: VAR_UNK_4120 set by its scene)"
+
+[[step]]
+do = "steps"
+route = [[13, 75], [12, 75], [7, 75], [8, 75], [8, 76], [8, 75], [9, 75], [14, 75], [14, 62], [7, 62], [7, 57], [9, 57], [9, 53], [9, 54], [10, 54], [14, 54], [13, 54], [12, 54], [13, 54], [14, 54], [18, 54], [18, 57], [21, 57], [21, 49], [20, 49], [20, 40], [15, 40], [15, 33], [14, 33], [14, 32], [13, 32], [8, 32], [9, 32], [9, 31], [9, 32], [10, 32], [15, 32], [14, 32], [14, 31], [14, 26], [14, 27], [14, 26], [14, 21], [14, 22], [14, 21], [14, 16], [14, 17], [15, 17], [20, 17], [19, 17], [19, 16], [19, 11], [19, 12], [19, 11], [19, 6], [14, 6], [14, 4], [12, 4]]
+face = "up"
+interact = true
+max = 20000
+note = "the platform route to Clair (12,3): button steps rotate/move platforms 0/2/1 (blackthorn.c model, see notes)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+send = "best"
+note = "TRAINER_LEADER_CLAIR_CLAIR: GYARADOS 38, DRAGONAIR 38 x2, KINGDRA 41"
+
+[[step]]
+do = "advance_text"
+shot = "clair"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 9
+note = "pit coord 0: warps to (8,83) (scr_seq_0943_T30GYM0101.s:147-159)"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 87
+note = "gym door (warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_BLACKTHORN"
+
+[expect]
+map = "MAP_BLACKTHORN"
+badges = 7
+flags = ["FLAG_UNK_0D1", "FLAG_HIDE_BLACKTHORN_DEN_GUARD_INFRONT"]
+flags_clear = ["FLAG_HIDE_BLACKTHRON_DEN_GUARD_ASIDE"]
+battles = 1

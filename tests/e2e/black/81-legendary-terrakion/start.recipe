@@ -1,0 +1,6 @@
+# On 80's end save: 80 threw the Master Ball; the items pocket's first slot (set-item slots count from 1; Black: item
+# 231, White: item 548) becomes a Master Ball (item 1), the first ball the battle bag lists.
+item 0 1 1 1
+# Victory Road (zone 226) on the rock's tile (zone_event 226 object 2 (5,12), hidden by 0x28C since 80), one below the
+# Trial Chamber's mouth (warp 3 (5,11)); set-location keeps the saved zone's objects, so the chamber is entered by its warp.
+location 226 5 0 12

@@ -1,0 +1,462 @@
+# Underground Man missions 1-2: entering pays three Traps (var 0x40B6 0->1), then descend with the
+# registered kit, dig a wall (flag 0x96F) and bury a Sphere (flag 0x970).
+# Start: MAP_ETERNA_UNDERGROUND_MAN_HOUSE door, mission 0 given and entered. End: MAP_UNDERGROUND.
+title = "Underground: trap reward, digging and burying Spheres"
+priority = "P2"
+version = "both"
+estimate = 9684
+refs = [
+  "maps.h:88",
+  "zone_event 0083 object 2",
+  "scr_seq 0089 @0x015E-0x0164",
+  "scr_seq 0089 @0x01D9-0x0235",
+  "scr_seq 0089 @0x01EF",
+  "scr_seq 0089 @0x01F5",
+  "scr_seq 0089 @0x01FC-0x0228",
+  "scr_seq 0089 @0x0237-0x0246",
+  "scr_seq 0089 @0x00C8",
+  "scr_seq 0089 @0x024D-0x0286",
+  "scr_seq 0205 @0x08CB",
+  "scr_seq 0205 @0x08ED",
+  "msg 0571 #1",
+  "msg 0571 #23",
+  "msg 0571 #28",
+  "msg 0097 #6",
+  "msg 0097 #8",
+  "games/diamond/arm9/src/unk_0205EC84.c:96",
+  "games/diamond/arm9/src/unk_0205EC84.c:100",
+  "games/diamond/arm9/src/unk_0205EC84.c:104",
+  "games/diamond/arm9/overlays/18/asm/overlay_18.s:2717",
+  "games/diamond/arm9/overlays/18/asm/overlay_18.s:7514",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 14600
+# no end quick save: the Underground refuses it; the second descent's forced save is the end save
+save = "game"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 6
+face = "up"
+interact = true
+note = "Underground Man (6,5); var 0x40B6==0, 0x111 and 0x96E set -> L_01D9 payout"
+
+[[step]]
+do = "advance_text"
+max = 2500
+note = "SetVar 0x40B6 1, ClearFlag 0x111 (@0x01EF/@0x01F5); GiveUndergroundTrap 1 Move Trap, 23 Bubble Trap, 28 Leaf Trap (std 2013, @0x01FC-0x0228; msg 0571 #1/#23/#28)"
+shot = "traps"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "talk again: var 0x40B6==1, 0x111 clear -> L_00C8 SetFlag 0x111 + mission text msg 97 #8 (dig Treasure/Spheres)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 8
+note = "door -> MAP_ETERNA warp 11"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "press"
+keys = "Y"
+gap = 120
+note = "registered Explorer Kit (recipe register-item): 'DS Wireless Communications will be launched.' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "YES -> the forced 'Would you like to save the game?' YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+note = "YES -> 'There is already a saved file. Is it OK to overwrite it?'"
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES: the save, the hole, MAP_UNDERGROUND"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERGROUND"
+max = 1500
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "roark"
+
+# Roark's first-visit talk plays here too (0x96E is not its gate). The Underground field never reports
+# field_ready, so advance_text cannot see its end: A at a spacing that covers every page.
+[[step]]
+do = "press"
+keys = "A"
+times = 60
+gap = 20
+
+# From the Eterna entry (168,264) to (148,262), facing the wall at (148,261): a mining spot (the condensed
+# table at guest 0x0227115B after the first arrival).
+[[step]]
+do = "press"
+keys = "UP"
+hold = 48
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 320
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 4
+gap = 30
+shot = "wall"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "'The wall is bulging slightly.' dig? YES/NO"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "YES: the mining minigame"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 10
+gap = 60
+note = "the tutorial pages"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "board"
+
+[[step]]
+do = "tap"
+times = 2
+x = 24
+y = 56
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 72
+y = 56
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 120
+y = 56
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 168
+y = 56
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 24
+y = 104
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 72
+y = 104
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 120
+y = 104
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 168
+y = 104
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 24
+y = 152
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 72
+y = 152
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 120
+y = 152
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 168
+y = 152
+gap = 20
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "lattice"
+
+[[step]]
+do = "tap"
+times = 2
+x = 184
+y = 152
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 168
+y = 168
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 184
+y = 168
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 104
+y = 56
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 104
+y = 72
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 120
+y = 72
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 152
+y = 40
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 168
+y = 40
+gap = 20
+
+[[step]]
+do = "tap"
+times = 2
+x = 152
+y = 56
+gap = 20
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "spheres"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "after0"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "after1"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "after2"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "after3"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 4
+gap = 30
+note = "face the open floor south"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 40
+shot = "ug-menu"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 10
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "spheres-list"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "sphere-chosen"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+shot = "bury"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+shot = "buried"
+note = "'The Red Sphere 10 was buried right in front of you.': SetFlag 0x970 (sub_0205EDCC); the sphere list stays open"
+
+[[step]]
+do = "press"
+keys = "B"
+times = 3
+gap = 40
+shot = "closed"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 40
+
+[[step]]
+do = "press"
+keys = "DOWN"
+times = 4
+gap = 10
+shot = "go-up"
+note = "the UG menu reopens on SPHERES: four down to GO UP"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ETERNA"
+max = 1500
+
+[[step]]
+do = "wait_field"
+shot = "surface"
+
+[[step]]
+do = "press"
+keys = "Y"
+gap = 120
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 150
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "wait_map"
+map = "MAP_UNDERGROUND"
+max = 1500
+
+[[step]]
+do = "wait_frames"
+n = 400
+shot = "underground"
+# Spheres to bury come only from digging here or from the mission-2 payout (var 0x40B6 1->2, spheres
+# 1/3/4 via std 2014, scr_seq 0089 @0x024D-0x0286) - no lab verb writes Underground goods.
+
+[expect]
+map = "MAP_UNDERGROUND"
+vars = { "0x40B6" = 1 }
+flags = ["0x111", "0x96E", "0x96F", "0x970"]
+# Traps and spheres are in the Underground save block, not in the np_save4 dump; the flags are the proof.
+# The board (13x10 cells, cell (c,r) at (16c+8, 32+16r+8) on the bottom screen) depends on every input before the
+# dig: after any change upstream, re-read it from the contact sheet (the lattice shot) and move the sphere taps.
+# The UG list select (ov18_02249684) needs armrec's Thumb bit on literal-pool function words; without it any
+# sphere/trap choice is GF_AssertFail -> comm error -> reset.

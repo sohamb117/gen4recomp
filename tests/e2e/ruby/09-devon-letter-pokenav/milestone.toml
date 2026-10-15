@@ -1,0 +1,87 @@
+# Proves the goods return (ReturnGoodsTrigger -> warp Devon 3F) and Mr. Stone's letter + PokeNav
+# (FLAG_RECEIVED_POKENAV, VAR_BRINEY_LOCATION 1), then out of Devon Corp.
+# Start: Route 116 (47,9) -> end: MAP_RUSTBORO_CITY outside Devon Corp (11,16).
+title = "Devon Corp: Mr. Stone, the letter and the PokeNav"
+priority = "P0"
+version = "both"
+estimate = 4278
+refs = [
+  "data/maps/RustboroCity/map.json coord_events (30,9)/(31,10)/(30,11)/(30,12) VAR_RUSTBORO_STATE=4",
+  "data/maps/RustboroCity/scripts.inc:431-476 (ReturnGoods: Great Ball, FLAG_RETURNED_DEVON_GOODS, RUSTBORO 5, warp DEVON_CORP_3F (2,2))",
+  "data/maps/RustboroCity_DevonCorp_3F/scripts.inc:25-77 (OnFrame DEVON_CORP_3F_STATE 0 -> MeetPresident: ITEM_LETTER, FLAG_SYS_POKENAV_GET, FLAG_RECEIVED_POKENAV, VAR_BRINEY_LOCATION 1, DEVON_CORP_3F_STATE 1)",
+  "data/maps/RustboroCity_DevonCorp_3F/map.json warp_events[0] (2,1) -> 2F (2,1)",
+  "data/maps/RustboroCity_DevonCorp_2F/map.json warp_events[0] (14,1) -> 1F (14,1)",
+  "data/maps/RustboroCity_DevonCorp_1F/map.json warp_events[0] (5,8) -> Rustboro (11,15)",
+]
+notes = "R/S have no Match Call tutorial and no Rustboro rival battle (Emerald 09's PokeNav menu and May fight are Emerald-only): the PokeNav comes with the letter in one scene. MeetPresident also clears the Rusturf Tunnel couple and puts Briney + Peeko back in the Route 104 cottage (FLAG_HIDE_MR_BRINEY_ROUTE104_HOUSE clear)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 6500
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 12
+map = "MAP_RUSTBORO_CITY"
+on_text = "stop"
+note = "ReturnGoodsTrigger3 (30,12) RUSTBORO 4 -> warp DEVON_CORP_3F (2,2) (RustboroCity/scripts.inc:449-476)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_RUSTBORO_CITY_DEVON_CORP_3F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY_DEVON_CORP_3F"
+
+[[step]]
+do = "advance_text"
+shot = "mr-stone"
+note = "3F OnFrame DEVON_CORP_3F_STATE 0 -> MeetPresident (RustboroCity_DevonCorp_3F/scripts.inc:25-77)"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 1
+note = "3F stairs (warp 0) -> 2F (2,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY_DEVON_CORP_2F"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 1
+note = "2F stairs (warp 0) -> 1F (14,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY_DEVON_CORP_1F"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 8
+note = "1F exit (warp 0) -> Rustboro (11,15)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_RUSTBORO_CITY"
+badges = 1
+flags = ["FLAG_BADGE01_GET", "FLAG_RETURNED_DEVON_GOODS", "FLAG_SYS_POKENAV_GET", "FLAG_RECEIVED_POKENAV"]
+flags_clear = ["FLAG_HIDE_MR_BRINEY_ROUTE104_HOUSE", "FLAG_HIDE_PEEKO_BRINEY_HOUSE"]
+
+[expect.vars]
+VAR_RUSTBORO_STATE = 5
+VAR_DEVON_CORP_3F_STATE = 1
+VAR_BRINEY_LOCATION = 1

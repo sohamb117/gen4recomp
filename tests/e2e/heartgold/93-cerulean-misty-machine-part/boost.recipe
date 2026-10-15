@@ -1,0 +1,8 @@
+# Boost on 92's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# Party: 0 TYPHLOSION (Lava Plume, Earthquake (91's boost), Rock Slide, Focus Blast), 1 TOGEPI, 2 SCYTHER, 3 AMPHAROS,
+# 4 PELIPPER, 5 FERALIGATR. Misty's team is Water (Golduck 49, Quagsire 49, Lapras 52, Starmie 54, three Full
+# Restores: trainers.json 254); the scouting run lost to her with the Fire lead. TYPHLOSION learns ThunderPunch (a
+# move tutor's) in Rock Slide's place and SolarBeam (TM22, files/poketool/personal/personal.json tms) in Lava Plume's:
+# Quagsire is immune to the first and takes four times the second.
+party-move 0 2 MOVE_THUNDER_PUNCH
+party-move 0 0 MOVE_SOLAR_BEAM

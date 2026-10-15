@@ -1,0 +1,12 @@
+#include <nitro/fs/overlay.h>
+#pragma once
+.public Sound_SetSceneAndPlayBGM
+.public Heap_AllocAtEnd
+.public Heap_Free
+.public TaskManager_Call
+.public TaskManager_GetFieldSystem
+.public TaskManager_GetEnvironment
+.public sub_02055218
+.public ov01_021EFB64
+.public ov01_021EFC04
+.public ov01_021EFC94

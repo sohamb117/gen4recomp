@@ -32,4 +32,10 @@ with `--wasm` (calls into C go to the bridge's `c2u$NAME` adapters; the bridge
 writes the externs), `--xmap` (the ROM link map places every function, data
 label and section, which Pearl needs because the `; 0x...` comments are
 Diamond's), `--classes` (the F/D/B/X file the bridge rewrites C against),
-`--host-override`, `--guest-libc` and `--undef DIAMOND --define PEARL`.
+`--host-override`, `--guest-libc`, `--overlay-dispatch` (a call into another
+overlay at an address other overlays can occupy is `armrec_dispatch()` of the
+address, resolved by residency as on the hardware, not a binding to the name
+the disassembly picked; decompiled C reached that way is registered at its
+guest address under its overlay; `tests/bridge` covers it) and
+`--undef DIAMOND --define PEARL`. HG/SS's build (`games/heartgold/pc/mk/armrec.mk`)
+passes the same.

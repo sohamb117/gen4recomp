@@ -1,0 +1,47 @@
+# SoulSilver side systems: HeartGold's shared dirs (version = "both") and SoulSilver-local ones where the scripts
+# branch on the version (GetGameVersion 8): the other mascot is Ho-Oh (100), the Embedded Tower holds Groudon (102).
+# Run standalone with --systems from SoulSilver's chain end saves (build/e2e/soulsilver/<chain dir>/end.sav); the
+# priorities are heartgold/systems.txt's.
+../heartgold/60-hm-cut
+../heartgold/61-hm-rock-smash
+../heartgold/62-hm-strength
+../heartgold/63-hm-surf
+../heartgold/64-hm-fly
+../heartgold/65-hm-whirlpool
+../heartgold/66-hm-waterfall
+../heartgold/67-hm-rock-climb
+../heartgold/68-hm-flash
+../heartgold/69-headbutt-tree
+../heartgold/70-fishing-old-rod
+../heartgold/71-fishing-good-rod
+../heartgold/72-fishing-super-rod
+../heartgold/73-day-care-deposit-and-egg
+../heartgold/74-egg-hatch
+../heartgold/75-level-up-evolution-after-battle
+../heartgold/76-trade-evolution
+../heartgold/77-pc-box-moves
+../heartgold/80-bug-catching-contest
+../heartgold/81-pokeathlon-speed-course
+../heartgold/82-safari-zone
+../heartgold/83-apricorn-kurt-balls
+../heartgold/84-ruins-of-alph-kabuto-puzzle
+../heartgold/85-walking-partner
+../heartgold/86-pokegear-phone-rematch
+../heartgold/87-battle-frontier-tower
+../heartgold/88-voltorb-flip
+../heartgold/90-ss-aqua-vermilion
+../heartgold/91-vermilion-lt-surge
+../heartgold/92-saffron-sabrina
+../heartgold/93-cerulean-misty-machine-part
+../heartgold/94-celadon-erika
+../heartgold/95-fuchsia-janine
+../heartgold/96-pewter-brock
+../heartgold/97-seafoam-blaine
+../heartgold/98-viridian-blue
+../heartgold/99-mt-silver-red
+100-ho-oh-rainbow-wing
+../heartgold/101-roaming-beasts
+102-embedded-tower-groudon
+../heartgold/103-lati
+../heartgold/106-pal-park
+../heartgold/107-pokewalker

@@ -1,0 +1,27 @@
+--- a/src/battle_sub_menus/battle_party.c
++++ b/src/battle_sub_menus/battle_party.c
+@@ -44,6 +44,8 @@
+ 
+ #include "res/text/bank/battle_party.h"
+ 
++#include "pc_np_options.h"
++
+ #define TASK_STATE_INITIALIZE                          0
+ #define TASK_STATE_PARTY_POKEMON_SCREEN                1
+ #define TASK_STATE_SELECT_POKEMON_SCREEN               2
+@@ -1298,6 +1300,7 @@
+ 
+ static BOOL CheckPartyPokemonScreenButtonPressed(BattleParty *battleParty)
+ {
++    pc_e2e_ui(PC_E2E_UI_BATTLE_PARTY, 0); /* pc port: tests/e2e probe */
+     enum BattlePokemonPartyScreenButton buttonPressed = CheckTouchRectIsPressed(battleParty, sPartyPokemonScreenTouchRects);
+ 
+     if (buttonPressed == TOUCHSCREEN_INPUT_NONE) {
+@@ -1327,6 +1330,7 @@
+ 
+ static enum BattleSelectPokemonScreenButton CheckSelectPokemonScreenButtonsPressed(BattleParty *battleParty)
+ {
++    pc_e2e_ui(PC_E2E_UI_BATTLE_PARTY, 1); /* pc port: tests/e2e probe */
+     int buttonPressed = CheckTouchRectIsPressed(battleParty, sSelectPokemonScreenTouchRects);
+ 
+     if (buttonPressed == TOUCHSCREEN_INPUT_NONE) {

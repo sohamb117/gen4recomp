@@ -1,0 +1,4 @@
+# tests/e2e/lab_check.py: the `warp` verb on Diamond/Pearl (by warp index;
+# the game resolves the tile), on its own because a recipe's last map/warp
+# line is the one that loads.
+warp MAP_OREBURGH_GATE_1F 0

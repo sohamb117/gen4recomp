@@ -1,0 +1,10 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26113
+money 3000
+# set at new game (scripts_init_new_game.s:17-18), cleared at Sandgem after the Distortion World (:113-114)
+clear-flag FLAG_HIDE_ACUITY_CAVERN_UXIE
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# Dark 2x vs Psychic (~272 vs ~150 HP) [INFERENCE: hand calc]
+party-move 0 0 MOVE_CRUNCH
+map MAP_HEADER_ACUITY_CAVERN 14 11 FACE_UP

@@ -155,13 +155,14 @@ void np_fx_upload(np_app *app)
 {
     fit_screen_textures(app);
     for (int i = 0; i < 2; i++)
-        if (app->screen_tex[i]->w == (int)app->frame.width)
+        if (app->frame.screen[i] && app->screen_tex[i]->w == (int)app->frame.width)
             SDL_UpdateTexture(app->screen_tex[i], NULL, app->frame.screen[i], (int)(app->frame.stride * 4));
     np_fx_state *s = app->fx;
     np_present p;
     np_fx_resolve(app, &p);
     s->smooth_valid = 0;
-    if (!wants_smooth(&p) || app->frame.width != NP_SCREEN_W || app->frame.height != NP_SCREEN_H)
+    if (!wants_smooth(&p) || app->frame.width != NP_SCREEN_W || app->frame.height != NP_SCREEN_H ||
+        !app->frame.screen[1])
         return;
     for (int i = 0; i < 2; i++) {
         np_scale2x(app->frame.screen[i], NP_SCREEN_W, NP_SCREEN_H, app->frame.stride, s->buf);

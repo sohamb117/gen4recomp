@@ -34,6 +34,12 @@ int asm_call_var(void);
 int asm_call_structs(int *);
 int asm_call_u8(void);
 int asm_ldm_self(const int *);
+uint32_t asm_thumb_lit(void);
+int asm_call_typed(int);
+int asm_rt_neg(int);
+int asm_rt_twice(int);
+int asm_call_ovl(int);
+int asm_call_ovl3(int);
 extern int asm_table[];
 extern uint32_t asm_cptrs[];
 
@@ -139,6 +145,21 @@ int main(void) {
           asm_cptrs[1], (uint32_t)(uintptr_t)c_data);
     CHECK("call through asm .word", ((int (*)(int))(uintptr_t)asm_cptrs[0])(7), 22);
 
+    /* The address of a Thumb function, by every route: asm literal pool,
+     * asm .word in data, C &F (the static tab[0] above). */
+    CHECK("asm literal =asm_thumb_mul is the Thumb address", asm_thumb_lit(), 0x02000021u);
+    CHECK("asm .word asm_thumb_mul is the Thumb address", asm_cptrs[2], 0x02000021u);
+    CHECK("asm literal == C &asm_thumb_mul",
+          asm_thumb_lit(), (uint32_t)(uintptr_t)&asm_thumb_mul);
+    CHECK("call through the asm literal",
+          ((int (*)(int, int))(uintptr_t)asm_thumb_lit())(6, 9), 54);
+
+    /* A `.type NAME, @function` routine inside an unended start macro is a
+     * function of its own: a BL to it returns to the caller. */
+    CHECK("bl to a .type @function routine returns", asm_call_typed(5), 11);
+    CHECK("unended start macro stops at the next .type @function", asm_rt_neg(5), -5);
+    CHECK(".type @function routine callable from C", asm_rt_twice(21), 42);
+
     /* runtime entry points for C function pointers */
     CHECK("armrec_call_code(c_target)",
           (uint32_t)armrec_call_code((uint32_t)(uintptr_t)c_target, 4, 0, 0, 0), 13);
@@ -149,6 +170,19 @@ int main(void) {
     CHECK("armrec_resolve_code(c_target)",
           (uintptr_t)armrec_resolve_code((uint32_t)(uintptr_t)c_target),
           (uintptr_t)c_target);
+
+    /* A call into a window three overlays share follows residency
+     * (armrec --overlay-dispatch; bridge.xMAP): overlay 1's and 2's
+     * recompiled functions and overlay 3's decompiled C, whichever is loaded,
+     * whatever the call site's name says. */
+    armrec_load_overlay(1, 0x02100000u, 0x100u);
+    CHECK("ov01_02100000 call, overlay 1 resident", asm_call_ovl(5), 105);
+    armrec_load_overlay(2, 0x02100000u, 0x100u);
+    CHECK("ov01_02100000 call, overlay 2 resident", asm_call_ovl(5), 205);
+    CHECK("ov03_02100000 call, overlay 2 resident", asm_call_ovl3(5), 205);
+    armrec_load_overlay(3, 0x02100000u, 0x100u);
+    CHECK("ov01_02100000 call, overlay 3 (C) resident", asm_call_ovl(5), 305);
+    CHECK("ov03_02100000 call, overlay 3 (C) resident", asm_call_ovl3(5), 305);
     CHECK("armrec_sp restored", armrec_sp, ARM_STACK_TOP);
 
     printf("bridge test: %d/%d checks passed\n", checks - failures, checks);

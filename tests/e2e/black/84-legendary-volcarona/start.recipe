@@ -1,0 +1,4 @@
+# On 28's end save (bag: the Master Ball first): the Relic Castle's last room above the depths, zone 176, one tile east
+# of its west door (zone_event 176 warp 1 (0,7) -> zone 181 warp 1); set-location keeps the saved zone's objects, so
+# zone 181 (Ryoku on the stairs) is entered by its warp.
+location 176 1 0 7

@@ -1,0 +1,25 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31106
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# game completed: every script gate is CheckGameCompleted/CheckFlag 0x964 (scrcmd_flags.c:194-201 -> unk_0205EC84.c:55-56)
+flag 0x964
+# NationalDex 2 gate (scr_seq 0278 @0x0053): Pokedex_GetNatDexFlag (scrcmd.c:3872-3882); lab verb sets both bits
+pokedex 1
+national-dex 1
+flag 0x2B2
+# Stark story done (scr_seq 0278 @0x00C5-0x0108) and Buck talked to in the Survival Area (scr_seq 1027 @0x0051-0x0082)
+flag 0x1FC
+flag 0x1F9
+var 0x409E 1
+flag 0xD6
+flag 0x125
+flag 0xE7
+flag 0x1F4
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# Fire/Steel takes 4x from Ground
+party-move 0 0 MOVE_EARTHQUAKE
+# below Heatran (7,6) (zone_event 0257 object 1); the rock (7,8) is gone (0x1FC)
+map MAP_STARK_MOUNTAIN_INTERIOR_3 7 7 FACE_UP

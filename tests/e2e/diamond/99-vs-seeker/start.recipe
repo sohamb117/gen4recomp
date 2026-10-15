@@ -1,0 +1,18 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31099
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# Vs. Seeker as Route 207 gives it (scr_seq 0403 @0x0295-0x02A5): level-1 flag 0x97F + ITEM_VS__SEEKER
+flag 0x97F
+item ITEM_VS__SEEKER 1
+register-item ITEM_VS__SEEKER
+# charge: +1 per step while 443 is in the bag, cap 100, var 0x4033 (ov05_021E1374.s:386-412, unk_0205F314.s:170-183)
+var 0x4033 100
+# Tristan (trdata.json #1, STARLY lv5) beaten: trainer flag 0x550+1
+flag 0x551
+party SPECIES_EMPOLEON 40 ITEM_NONE
+party-move 0 0 MOVE_SURF
+# 3 tiles below Tristan (166,813) facing S, sight 5 (zone_event 0328 object 0)
+map MAP_ROUTE_202 166 816 FACE_UP

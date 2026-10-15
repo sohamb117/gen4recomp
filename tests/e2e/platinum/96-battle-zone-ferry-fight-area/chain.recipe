@@ -1,0 +1,3 @@
+# On 56-hall-of-fame-credits' end save (the league clear set FLAG_GAME_COMPLETED): only the station, one tile
+# north of the SS Spiral sailor (356,247) on the town side (events_snowpoint_city.json)
+map MAP_HEADER_SNOWPOINT_CITY 356 246 FACE_DOWN

@@ -1,0 +1,11 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31097
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# the GTS needs two non-egg party mons (scr_seq 0028 @0x01C1, msg 41 #9) and party/box space (@0x02DE-0x0310)
+party SPECIES_TURTWIG 15 ITEM_NONE
+party SPECIES_STARLY 12 ITEM_NONE
+# below the receptionist (11,3) (zone_event 0027 object 0); door (12,13) <- MAP_JUBLIFE warp 1 (149,778)
+map MAP_JUBLIFE_GLOBAL_TRADE_STATION 11 4 FACE_UP

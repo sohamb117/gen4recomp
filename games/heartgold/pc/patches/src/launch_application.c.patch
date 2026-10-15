@@ -1,0 +1,30 @@
+--- a/src/launch_application.c
++++ b/src/launch_application.c
+@@ -85,6 +85,8 @@
+ #include "unk_02092BE8.h"
+ #include "unk_02097B78.h"
+ 
++#include "pc_np_options.h"
++
+ FS_EXTERN_OVERLAY(certificates_app);
+ FS_EXTERN_OVERLAY(credits);
+ FS_EXTERN_OVERLAY(trainer_card);
+@@ -160,7 +162,10 @@
+ static BOOL Task_NamingScreen(TaskManager *taskman);
+ static void SetName(TaskManager *taskman);
+ 
++/* pc port: NP_STAT_IN_BATTLE while the battle application runs (all a
++ * Battle Frontier battle has; a field battle is also inside its encounter). */
+ BOOL Battle_Init(OverlayManager *man, int *state) {
++    pc_np_stat.in_battle_app = 1;
+     return TRUE;
+ }
+ 
+@@ -172,6 +177,7 @@
+ }
+ 
+ BOOL Battle_Exit(OverlayManager *man, int *state) {
++    pc_np_stat.in_battle_app = 0;
+     return TRUE;
+ }
+ 

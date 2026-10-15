@@ -23,7 +23,12 @@ static const SDL_Color white = {235, 238, 245, 255};
 static const SDL_Color dim = {150, 158, 175, 255};
 static const SDL_Color accent = {255, 205, 80, 255};
 static const SDL_Color warn = {255, 140, 120, 255};
-static const SDL_Color game_colors[NP_GAME_COUNT] = {{64, 110, 210, 255}, {200, 104, 150, 255}, {150, 140, 120, 255}};
+static const SDL_Color game_colors[NP_GAME_COUNT] = {
+    [NP_GAME_DIAMOND] = {64, 110, 210, 255}, [NP_GAME_PEARL] = {200, 104, 150, 255},
+    [NP_GAME_PLATINUM] = {150, 140, 120, 255}, [NP_GAME_BLACK] = {70, 70, 80, 255},
+    [NP_GAME_WHITE] = {200, 200, 205, 255}, [NP_GAME_RUBY] = {190, 50, 60, 255},
+    [NP_GAME_HEARTGOLD] = {200, 160, 40, 255}, [NP_GAME_SOULSILVER] = {150, 160, 175, 255},
+    [NP_GAME_SAPPHIRE] = {50, 80, 190, 255}, [NP_GAME_EMERALD] = {40, 150, 90, 255}};
 
 /* ---- drawing primitives ---------------------------------------------- */
 
@@ -667,8 +672,8 @@ static int launcher_buttons(void)
 
 static void launcher_activate(np_app *app, int id)
 {
-    if (id >= 0 && id < NP_GAME_COUNT) {
-        np_game g = (np_game)id;
+    if (id >= 0 && id < np_launcher_game_count) {
+        np_game g = np_launcher_games[id];
         if (!np_core_available(g))
             SDL_snprintf(app->status, sizeof app->status, "The %s core is not included in this build.",
                          np_game_title(g));
@@ -695,12 +700,13 @@ static void launcher_command(np_app *app, np_menu_cmd cmd)
 {
     int sel = app->launcher_sel;
     int nb = launcher_buttons();
-    int on_cards = sel < NP_GAME_COUNT;
+    int n = np_launcher_game_count;
+    int on_cards = sel < n;
     switch (cmd) {
-    case NP_CMD_LEFT: sel = on_cards ? wrapi(sel - 1, NP_GAME_COUNT) : LB_IMPORT + wrapi(sel - LB_IMPORT - 1, nb); break;
-    case NP_CMD_RIGHT: sel = on_cards ? wrapi(sel + 1, NP_GAME_COUNT) : LB_IMPORT + wrapi(sel - LB_IMPORT + 1, nb); break;
+    case NP_CMD_LEFT: sel = on_cards ? wrapi(sel - 1, n) : LB_IMPORT + wrapi(sel - LB_IMPORT - 1, nb); break;
+    case NP_CMD_RIGHT: sel = on_cards ? wrapi(sel + 1, n) : LB_IMPORT + wrapi(sel - LB_IMPORT + 1, nb); break;
     case NP_CMD_UP:
-    case NP_CMD_DOWN: sel = on_cards ? LB_IMPORT + SDL_min(sel, nb - 1) : SDL_min(sel - LB_IMPORT, NP_GAME_COUNT - 1); break;
+    case NP_CMD_DOWN: sel = on_cards ? LB_IMPORT + SDL_min(sel, nb - 1) : SDL_min(sel - LB_IMPORT, n - 1); break;
     case NP_CMD_CONFIRM:
     case NP_CMD_CLOSE: launcher_activate(app, sel); return;
     default: return;
@@ -718,17 +724,20 @@ static void draw_launcher(np_app *app)
     np_ui_text(app, m, y, 3 * s, "nativeplat", white);
     y += 3 * 8 * s + lh * 0.5f;
     y += lh * (float)np_ui_text_wrap(app, m, y, s, lh, (int)((W - 2 * m) / cw),
-                               "Pokemon Diamond, Pearl and Platinum. Bring your own cartridge.", dim, 1);
+                               "Pokemon Diamond, Pearl and Platinum; Ruby, Sapphire and Emerald. Bring your own "
+                               "cartridge.", dim, 1);
     y += lh;
 
     int wide = W >= H;
     float gap = cw;
-    float card_w = wide ? (W - 2 * m - 2 * gap) / 3 : W - 2 * m;
+    int ncards = np_launcher_game_count;
+    float card_w = wide ? (W - 2 * m - (float)(ncards - 1) * gap) / (float)ncards : W - 2 * m;
     float card_h = wide ? 9 * lh : 5 * lh;
-    for (int g = 0; g < NP_GAME_COUNT; g++) {
-        SDL_FRect r = wide ? (SDL_FRect){m + (float)g * (card_w + gap), y, card_w, card_h}
-                           : (SDL_FRect){m, y + (float)g * (card_h + gap), card_w, card_h};
-        int selected = app->launcher_sel == g;
+    for (int ci = 0; ci < ncards; ci++) {
+        int g = (int)np_launcher_games[ci];
+        SDL_FRect r = wide ? (SDL_FRect){m + (float)ci * (card_w + gap), y, card_w, card_h}
+                           : (SDL_FRect){m, y + (float)ci * (card_h + gap), card_w, card_h};
+        int selected = app->launcher_sel == ci;
         SDL_Color c = game_colors[g];
         np_ui_fill(app, r, (SDL_Color){(Uint8)(c.r / 4), (Uint8)(c.g / 4), (Uint8)(c.b / 4), 255});
         np_ui_fill(app, (SDL_FRect){r.x, r.y, r.w, 2.2f * lh}, c);
@@ -767,9 +776,9 @@ static void draw_launcher(np_app *app)
             SDL_strlcpy(hint, avail && present ? "Choose a save slot" : avail ? "Import..." : "", sizeof hint);
         if (hint[0])
             np_ui_text_clip(app, r.x + cw, r.y + r.h - 1.5f * lh, s, hint, cols, selected ? accent : dim);
-        np_ui_hit(app, r, g);
+        np_ui_hit(app, r, ci);
     }
-    y += wide ? card_h + 1.5f * lh : 3 * (card_h + gap) + 0.5f * lh;
+    y += wide ? card_h + 1.5f * lh : (float)ncards * (card_h + gap) + 0.5f * lh;
 
     static const char *const labels[4] = {"Import ROM", "Options", "About", "Quit"};
     int nb = launcher_buttons();
@@ -783,7 +792,7 @@ static void draw_launcher(np_app *app)
     if (app->status[0])
         y += lh * (float)np_ui_text_wrap(app, m, y, s, lh, cols, app->status, accent, 1) + 0.5f * lh;
     if (y < H - 3 * lh) {
-        np_ui_text_clip(app, m, H - m - 2 * lh, s, "Drop a .nds file on this window to import it.", cols, dim);
+        np_ui_text_clip(app, m, H - m - 2 * lh, s, "Drop a .nds or .gba file on this window to import it.", cols, dim);
         char where[1200];
         SDL_snprintf(where, sizeof where, "%s data: %s", np_storage_is_portable() ? "Portable" : "User",
                      np_storage_root());
@@ -1108,7 +1117,19 @@ static void draw_slots(np_app *app)
     np_ui_end_page(app, &f, "Enter/A: open  Esc/B: back  Drop .sav: import", n);
 }
 
-enum { SM_PLAY, SM_EDIT, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_CART, SM_DELETE, SM_COUNT };
+enum { SM_PLAY, SM_EDIT, SM_RENAME, SM_DUPLICATE, SM_EXPORT, SM_CART, SM_TRANSFER, SM_DELETE, SM_COUNT };
+
+/* The slot menu's items for the game shown: Poké Transfer's child station
+ * (this window as the second DS, the slot's game as its card) only for the
+ * Gen 4 games. */
+static int slot_menu_items(const np_app *app, int *items)
+{
+    int n = 0;
+    for (int i = 0; i < SM_COUNT; i++)
+        if (i != SM_TRANSFER || np_game_is_gen4(app->slots_game))
+            items[n++] = i;
+    return n;
+}
 
 /* The slot menu's cart line, reread only when another slot is shown or the
  * binding changes (not every frame). */
@@ -1162,6 +1183,7 @@ static void slot_menu_activate(np_app *app, int item)
     np_game g = app->slots_game;
     switch (item) {
     case SM_PLAY: np_app_start_game(app, g, name); break;
+    case SM_TRANSFER: np_app_start_poke_transfer(app, g, name); break;
     case SM_EDIT:
         if (!s->size)
             np_app_toast(app, "\"%s\" has no save yet", name);
@@ -1206,8 +1228,10 @@ static void draw_slot_menu(np_app *app)
     }
     np_page_frame f;
     np_ui_begin_page(app, &f, s->name);
-    static const char *const labels[SM_COUNT] = {"Play",           "Edit save...", "Rename...", "Duplicate",
-                                                 "Export .sav...", "",             "Delete..."};
+    static const char *const labels[SM_COUNT] = {"Play",           "Edit save...", "Rename...",
+                                                 "Duplicate",      "Export .sav...", "",
+                                                 "Poke Transfer station", "Delete..."};
+    int items[SM_COUNT], n = slot_menu_items(app, items);
     char cart_label[64];
     const char *cart = bound_cart(app->slots_game, s->name);
     SDL_snprintf(cart_label, sizeof cart_label, "Cart: %s", cart[0] ? cart : "none");
@@ -1218,14 +1242,14 @@ static void draw_slot_menu(np_app *app)
     else
         SDL_snprintf(info, sizeof info, "%s, not saved yet", np_game_title(app->slots_game));
     np_ui_text_clip(app, f.panel.x + 2 * f.cw, f.list_y, f.s, info, f.cols, dim);
-    app->sel = SDL_clamp(app->sel, 0, SM_COUNT - 1);
-    for (int i = 0; i < SM_COUNT; i++) {
+    app->sel = SDL_clamp(app->sel, 0, n - 1);
+    for (int i = 0; i < n; i++) {
         float y = f.list_y + (float)(i + 2) * f.lh;
         SDL_FRect row = {f.panel.x + f.cw, y - 2 * f.s, f.panel.w - 2 * f.cw, f.lh};
         if (i == app->sel)
             np_ui_fill(app, row, (SDL_Color){255, 205, 80, 40});
-        np_ui_text(app, f.panel.x + 2 * f.cw, y, f.s, i == SM_CART ? cart_label : labels[i],
-                   i == app->sel ? (i == SM_DELETE ? warn : accent) : white);
+        np_ui_text(app, f.panel.x + 2 * f.cw, y, f.s, items[i] == SM_CART ? cart_label : labels[items[i]],
+                   i == app->sel ? (items[i] == SM_DELETE ? warn : accent) : white);
         np_ui_hit(app, row, i);
     }
     np_ui_end_page(app, &f, "Enter/A: select  Esc/B: back", 0);
@@ -1236,7 +1260,8 @@ static void confirm_activate(np_app *app, int yes)
     const np_slot_info *s = cur_slot(app);
     if (!yes || !s) {
         np_app_open_page(app, NP_PAGE_SLOT_MENU);
-        app->sel = SM_DELETE;
+        int items[SM_COUNT];
+        app->sel = slot_menu_items(app, items) - 1; /* Delete..., the last item */
         return;
     }
     char name[NP_SLOT_NAME_MAX + 1];
@@ -1557,12 +1582,14 @@ static void slot_pages_command(np_app *app, np_menu_cmd cmd)
             slots_activate(app, app->sel);
         break;
     }
-    case NP_PAGE_SLOT_MENU:
+    case NP_PAGE_SLOT_MENU: {
+        int items[SM_COUNT], n = slot_menu_items(app, items);
         if (cmd == NP_CMD_UP || cmd == NP_CMD_DOWN)
-            app->sel = wrapi(app->sel + (cmd == NP_CMD_UP ? -1 : 1), SM_COUNT);
-        else if (cmd == NP_CMD_CONFIRM)
-            slot_menu_activate(app, app->sel);
+            app->sel = wrapi(app->sel + (cmd == NP_CMD_UP ? -1 : 1), n);
+        else if (cmd == NP_CMD_CONFIRM && app->sel < n)
+            slot_menu_activate(app, items[app->sel]);
         break;
+    }
     case NP_PAGE_CONFIRM:
         if (cmd == NP_CMD_LEFT || cmd == NP_CMD_RIGHT || cmd == NP_CMD_UP || cmd == NP_CMD_DOWN)
             app->sel = !app->sel;
@@ -1746,7 +1773,9 @@ static void activate_hit(np_app *app, int id, int dir)
     } else if (app->page == NP_PAGE_SLOTS) {
         slots_activate(app, id);
     } else if (app->page == NP_PAGE_SLOT_MENU) {
-        slot_menu_activate(app, id);
+        int items[SM_COUNT], n = slot_menu_items(app, items);
+        if (id < n)
+            slot_menu_activate(app, items[id]);
     } else if (app->page == NP_PAGE_CONFIRM) {
         confirm_activate(app, id == 1);
     } else if (app->page == NP_PAGE_OPTIONS) {

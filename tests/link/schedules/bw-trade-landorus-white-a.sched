@@ -1,0 +1,55 @@
+# Black (A) <-> White (B) post-game Union Room trade, the sides swapped (bw_trade_landorus_white), station A (Black),
+# recorded by tests/link/linkbot.py from scenarios/bw-trade-landorus-white.json (PC_E2E, text_instant) on
+# linkpair.mint_bw(..., 'landorus-white'): CONTINUE, the Union Room (save), Trade with B's avatar; offer BOX 1's
+# Tornadus, take B's party slot 4 (Tepig); TRADE; the animation (the game saves both).
+5000:start:4
+5150:a:4
+5250:a:4
+5350:a:4
+14028:up:4
+14053:a:4
+14133:a:4
+14213:a:4
+14293:a:4
+14373:a:4
+14453:a:4
+14533:a:4
+14613:a:4
+14693:a:4
+14773:a:4
+14853:a:4
+14933:a:4
+15013:a:4
+15093:a:4
+15173:a:4
+15253:a:4
+15333:a:4
+15413:a:4
+15493:a:4
+15573:a:4
+15653:a:4
+15733:a:4
+17891:up+b:2
+17899:up+b:2
+17907:up+b:2
+17915:up+b:2
+17923:right+b:2
+17931:right+b:2
+17955:up:2
+17967:a:4
+18067:a:4
+18167:a:4
+18627:a:4
+18751:down:4
+18791:down:4
+18831:a:4
+20781:tap:108:58:4
+21021:tap:216:40:4
+21261:tap:200:157:4
+21669:tap:216:179:4
+22077:tap:200:61:4
+22685:tap:200:61:4
+23293:tap:60:55:4
+23541:tap:60:45:4
+23849:tap:200:133:4
+24457:tap:200:157:4

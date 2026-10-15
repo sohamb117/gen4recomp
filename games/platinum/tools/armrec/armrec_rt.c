@@ -173,6 +173,10 @@ uint32_t armrec_vram_cnt_addr(int b) {
  * sub-BG blocks with 32 KB, and rederiving it invites getting that wrong. */
 static uint8_t vram_map[VW_COUNT][VW_MAXBLK];
 static uint32_t vram_off[VW_COUNT][VW_MAXBLK];
+/* The other banks in a block vram_map already holds one of (vram_place):
+ * bit b set means bank b is mapped there too, at vram_ovl_off[..][b]. */
+static uint16_t vram_ovl[VW_COUNT][VW_MAXBLK];
+static uint32_t vram_ovl_off[VW_COUNT][VW_MAXBLK][ARM_VRAM_BANKS];
 static uint8_t vram_cnt_live[ARM_VRAM_BANKS];   /* what vram_map was built from */
 static int vram_mapped;                          /* vram_map/vram_cnt_live valid */
 static void *vram_store;                         /* the nine banks, 0xA4000 */
@@ -186,41 +190,53 @@ void *armrec_vram_bank_ptr(int b) {
 }
 
 /*
- * Two banks in one window block is what hardware answers by ORing the reads
- * and writing to both, and it is the one part of this that aliasing cannot
- * express: a page is backed by one object. It TRAPS rather than picking a
- * winner. The SDK makes it unreachable by construction, GX_SetBankFor*
- * clears a bank out of its previous role before assigning the new one, and
- * OSi_TryLockVram guards the rest, so a firing means either that reasoning
- * is wrong or the game does something this port has never seen, and both are
- * worth stopping for.
+ * Two banks in one window block is a state the console allows: reads OR the
+ * banks and a write goes to both. The SDK passes through it on an ordinary
+ * hand-over. GxSetBankForSubOBJ (NitroSDK gx_vramcnt.c; every role's setter
+ * has the same shape) stores the new bank first, GX_VRAMCNT_SetSubOBJ_(D),
+ * and only then moves the old one out, GX_VRAMCNT_SetLCDC_(~new & (lcdc |
+ * old)), so between those two stores D and I are both sub OBJ. The ports'
+ * decompiled C never showed it, its hook runs at the setter's return
+ * (__cyg_profile_func_exit below); the recompiled SDK's per-store hook
+ * (ARMREC_VRAM_HOOK) does, and Black's and White's N's Castle, whose throne
+ * room hands sub OBJ from I to the 128 KB D (scr 0556 script 3), stopped on
+ * the trap this used to be.
+ *
+ * So an extra bank is recorded, not refused. The copying model (wasm and
+ * Windows: every core the port ships) is exact: the block's window shows the
+ * OR of its banks and a byte the guest changes there goes back to every one
+ * (vram_push_block, vram_pull_ovl_block). The aliasing model cannot back one
+ * page with two objects: it leaves the block inaccessible, so the hand-over
+ * passes, a CPU access while it stands faults, and a frame rendered with an
+ * overlap still standing stops (armrec_vram_render_begin).
  */
-static void vram_overlap(int win, int blk, int had, int want) {
-    fprintf(stderr,
-            "armrec: VRAM banks %c and %c are both mapped at 0x%08X.\n"
-            "  Hardware ORs reads there and writes to both; this port aliases\n"
-            "  each window onto one bank's storage and cannot do that, so it\n"
-            "  stops rather than silently choosing one.\n"
-            "  VRAMCNT = %02X %02X %02X %02X %02X %02X %02X %02X %02X,"
-            " window %s block %d.\n",
-            'A' + had, 'A' + want,
-            vram_win[win].base + (uint32_t)blk * ARM_VRAM_BLK,
-            vram_cnt_live[0], vram_cnt_live[1], vram_cnt_live[2],
-            vram_cnt_live[3], vram_cnt_live[4], vram_cnt_live[5],
-            vram_cnt_live[6], vram_cnt_live[7], vram_cnt_live[8],
-            vram_win[win].name, blk);
-    abort();
-}
-
 static void vram_place(int win, int bank, const uint8_t *blks, int n) {
     uint32_t wrap = armrec_vram_bank_size(bank) - 1;
     int i;
     for (i = 0; i < n; i++) {
         int b = blks[i];
-        if (vram_map[win][b]) vram_overlap(win, b, vram_map[win][b] - 1, bank);
+        uint32_t off = ((uint32_t)i * ARM_VRAM_BLK) & wrap;
+        if (vram_map[win][b]) {
+            vram_ovl[win][b] |= (uint16_t)(1u << bank);
+            vram_ovl_off[win][b][bank] = off;
+            continue;
+        }
         vram_map[win][b] = (uint8_t)(bank + 1);
-        vram_off[win][b] = ((uint32_t)i * ARM_VRAM_BLK) & wrap;
+        vram_off[win][b] = off;
     }
+}
+
+/* Window block (w, i)'s placement against a saved one: the remaps redo only
+ * the blocks whose banks or offsets moved. */
+static int vram_block_same(int w, int i, uint8_t map, uint32_t off,
+                           uint16_t ovl, const uint32_t *ovl_off) {
+    int b;
+    if (vram_map[w][i] != map || vram_ovl[w][i] != ovl) return 0;
+    if (!map) return 1;
+    if (vram_off[w][i] != off) return 0;
+    for (b = 0; b < ARM_VRAM_BANKS; b++)
+        if ((ovl & (1u << b)) && vram_ovl_off[w][i][b] != ovl_off[b]) return 0;
+    return 1;
 }
 
 /* A run of n consecutive window blocks starting at first. */
@@ -353,13 +369,16 @@ void *armrec_vram_extpal(int which, int slot) {
     switch (which) {
     case ARMREC_EXTPAL_ABG:
         /* E covers all four slots with its first 32 KB; F and G are 16 KB and
-         * cover two, chosen by bit 0 of the placement field. */
+         * cover two, chosen by bit 0 of the placement field (ofs 0: slots 0
+         * and 1, ofs 1: 2 and 3; GX_VRAM_BGEXTPLTT_23_G writes G as 0x8C).
+         * mst is bits 0-2, so 0x87 picks "enabled at mst 4" and leaves the
+         * placement bits to the slot test. */
         CLAIM(4, (vram_cnt_live[4] & 0x87u) == 0x84u,
               (uint32_t)slot * 0x2000u, 0x7FFFu);
-        CLAIM(5, (vram_cnt_live[5] & 0x9Fu) == 0x84u &&
+        CLAIM(5, (vram_cnt_live[5] & 0x87u) == 0x84u &&
                  (slot >> 1) == (int)((vram_cnt_live[5] >> 3) & 1u),
               (uint32_t)slot * 0x2000u, 0x3FFFu);
-        CLAIM(6, (vram_cnt_live[6] & 0x9Fu) == 0x84u &&
+        CLAIM(6, (vram_cnt_live[6] & 0x87u) == 0x84u &&
                  (slot >> 1) == (int)((vram_cnt_live[6] >> 3) & 1u),
               (uint32_t)slot * 0x2000u, 0x3FFFu);
         break;
@@ -619,10 +638,11 @@ static int vram_backing(void) {
  * So the windows and the store are separate memory, reconciled by copying at
  * the only moments ownership changes hands in a single-threaded port: a
  * VRAMCNT remap, and the frame's render. Sequential execution makes that exact
- * for every access pattern except one bank read through two views inside one
- * frame slice with no remap between, and writes through a mirror other than
- * the first, which propagate only at the next remap. Both are recorded here
- * rather than solved; the Linux build with its true aliasing is the oracle.
+ * for every access pattern except one bank read through two views (two
+ * windows, or two mirrors of one window) inside one frame slice with no remap
+ * between: the second view sees the write at the next reconcile. That is
+ * recorded here rather than solved; the Linux build with its true aliasing is
+ * the oracle. Writes through every mirror reach the bank (vram_pull below).
  *
  * wasm32 takes the same model unchanged, for a stronger reason: a guest
  * address is a linear-memory offset and there is nothing to map, so no view
@@ -640,70 +660,381 @@ static int vram_backing(void) {
  * address at all (vram_place_bank()'s fall-through). The store is the one
  * place every bank always is, and armrec_vram_bank_ptr() names it.
  */
-static void vram_copy(int to_windows, int all_mirrors) {
+static char *vram_sto(int bank, uint32_t off) {
+    return (char *)vram_store + (size_t)vram_lcdc_blk[bank] * ARM_VRAM_BLK +
+           off;
+}
+
+/*
+ * An overlapped block's window as of its last push, the same in every mirror
+ * (vram_push pushes them all): the OR of its banks, which is what a pull
+ * compares each mirror against to find the bytes the guest wrote since.
+ * Allocated while the overlap stands and freed when it goes (vram_remap), so
+ * the usual one-bank map costs nothing.
+ */
+static uint8_t *vram_ovl_snap[VW_COUNT][VW_MAXBLK];
+
+/* Store -> window for one block: its bank, ORed with any other bank there
+ * (vram_place). */
+static void vram_push_block(int w, int i, char *win, int first_mirror) {
+    uint8_t *d = (uint8_t *)win;
+    int b;
+
+    memcpy(win, vram_sto(vram_map[w][i] - 1, vram_off[w][i]), ARM_VRAM_BLK);
+    if (!vram_ovl[w][i]) return;
+    for (b = 0; b < ARM_VRAM_BANKS; b++) {
+        const uint8_t *s;
+        uint32_t k;
+        if (!(vram_ovl[w][i] & (1u << b))) continue;
+        s = (const uint8_t *)vram_sto(b, vram_ovl_off[w][i][b]);
+        for (k = 0; k < ARM_VRAM_BLK; k++) d[k] |= s[k];
+    }
+    if (!first_mirror) return;
+    if (!vram_ovl_snap[w][i] &&
+        !(vram_ovl_snap[w][i] = (uint8_t *)malloc(ARM_VRAM_BLK))) {
+        fprintf(stderr, "armrec: no memory for an overlapped VRAM block\n");
+        abort();
+    }
+    memcpy(vram_ovl_snap[w][i], win, ARM_VRAM_BLK);
+}
+
+/*
+ * Mirror coherence. On the console a window's mirrors are one memory: engine
+ * B's BG window is bank C's 128 KB repeated sixteen times over 2 MB, so the
+ * slot machine's tile upload to char base 0x20000 (0x06220000, the second
+ * mirror) is the tiles its layer reads at 0x06200000 (Diamond, Pearl and
+ * Platinum's Game Corner; tests/e2e/DEFECTS.md). Here every mirror is its own
+ * linear memory, so a reconcile (vram_pull) reads every alias of a bank block
+ * (each window block that maps it, in each mirror) and merges what the guest
+ * changed through any of them into the store, byte by byte against the store
+ * as it was before the pass: distinct bytes written through different aliases
+ * all land, as in one memory (the same byte written through two aliases in one
+ * slice keeps one of them). Then every store block the pass changed is pushed
+ * to all of its aliases (vram_push). That keeps the invariant the merge
+ * stands on: after a reconcile every alias of a mapped block holds the store's
+ * bytes (an overlapped block the OR in vram_ovl_snap), so an alias that differs
+ * later is one the guest wrote.
+ */
+typedef uint64_t vram_u64 __attribute__((may_alias));
+
+#define VRAM_NSTO (ARM_VRAM_STORE / ARM_VRAM_BLK)
+
+/* The pass's copy of each store block as it was before the pass changed it. */
+static uint8_t *vram_old;
+
+/*
+ * PC_VRAM_MIRROR_STATS=1 (a PC_* variable, so np_gp and np_headless pass it to
+ * the guest) counts the window blocks a pull found written through a mirror
+ * other than the first, per window: which games ever use one. The count is
+ * taken where the pull has already found a difference, so it costs nothing
+ * until such a write. stderr gets one line when counting starts, one at the
+ * first such write, and the running totals at most once every 3600 renders
+ * while they grow: np_gp frees the instance without running the guest's exit
+ * handlers, so there is no end-of-run line.
+ */
+static int vram_mstats = -1; /* -1: the variable not read yet */
+static unsigned long vram_mstats_n[VW_COUNT];
+static unsigned long vram_mstats_renders, vram_mstats_logged_at,
+    vram_mstats_logged;
+
+static unsigned long vram_mstats_total(void) {
+    unsigned long t = 0;
+    int w;
+    for (w = 0; w < VW_COUNT; w++) t += vram_mstats_n[w];
+    return t;
+}
+
+static void vram_mstats_log(const char *why) {
+    fprintf(stderr,
+            "armrec: vram mirror stats (%s, render %lu): blocks written"
+            " through a non-primary mirror: main BG %lu, sub BG %lu,"
+            " main OBJ %lu, sub OBJ %lu, LCDC %lu\n",
+            why, vram_mstats_renders, vram_mstats_n[VW_ABG],
+            vram_mstats_n[VW_BBG], vram_mstats_n[VW_AOBJ],
+            vram_mstats_n[VW_BOBJ], vram_mstats_n[VW_LCDC]);
+}
+
+static int vram_mstats_on(void) {
+    if (vram_mstats < 0) {
+        const char *e = getenv("PC_VRAM_MIRROR_STATS");
+        vram_mstats = e != NULL && *e != '\0' && strcmp(e, "0") != 0;
+        if (vram_mstats) vram_mstats_log("counting");
+    }
+    return vram_mstats;
+}
+
+/* A pull found window w's block i written through mirror m (m > 0). */
+static void vram_mstats_note(int w, uint32_t m, int i) {
+    if (!vram_mstats_on()) return;
+    if (vram_mstats_total() == 0)
+        fprintf(stderr,
+                "armrec: vram mirror stats: first write through a non-primary"
+                " mirror: %s mirror %u block %d (0x%08X), render %lu\n",
+                vram_win[w].name, (unsigned)m, i,
+                vram_win[w].base + m * vram_win[w].period +
+                    (uint32_t)i * ARM_VRAM_BLK,
+                vram_mstats_renders);
+    vram_mstats_n[w]++;
+}
+
+/* Once per render, from armrec_vram_render_begin. */
+static void vram_mstats_render(void) {
+    unsigned long t;
+    if (!vram_mstats_on()) return;
+    vram_mstats_renders++;
+    t = vram_mstats_total();
+    if (t != vram_mstats_logged &&
+        vram_mstats_renders - vram_mstats_logged_at >= 3600) {
+        vram_mstats_log("totals");
+        vram_mstats_logged = t;
+        vram_mstats_logged_at = vram_mstats_renders;
+    }
+}
+
+static size_t vram_sto_idx(const char *sto) {
+    return (size_t)(sto - (char *)vram_store) / ARM_VRAM_BLK;
+}
+
+/* Keeps store block idx's pre-pass bytes, the first time the pass changes it;
+ * returns them. */
+static const uint8_t *vram_keep_old(size_t idx, uint8_t *changed) {
+    uint8_t *old;
+
+    if (!vram_old && !(vram_old = (uint8_t *)malloc(ARM_VRAM_STORE))) {
+        fprintf(stderr, "armrec: no memory for the VRAM reconcile\n");
+        abort();
+    }
+    old = vram_old + idx * ARM_VRAM_BLK;
+    if (!changed[idx]) {
+        memcpy(old, (char *)vram_store + idx * ARM_VRAM_BLK, ARM_VRAM_BLK);
+        changed[idx] = 1;
+    }
+    return old;
+}
+
+/* The bytes in which `now` differs from `old`, written into `dst`. */
+static void vram_merge(uint8_t *dst, const uint8_t *now, const uint8_t *old) {
+    vram_u64 *d = (vram_u64 *)dst;
+    const vram_u64 *n = (const vram_u64 *)now, *o = (const vram_u64 *)old;
+    uint32_t k;
+
+    for (k = 0; k < ARM_VRAM_BLK / 8; k++) {
+        uint64_t x = n[k] ^ o[k], m;
+        if (!x) continue;
+        /* bit 0 of each byte: any bit of that byte set; then 0xFF per byte */
+        m = x | (x >> 4);
+        m |= m >> 2;
+        m |= m >> 1;
+        m = (m & 0x0101010101010101ull) * 0xFFu;
+        d[k] = (d[k] & ~m) | (n[k] & m);
+    }
+}
+
+/* One alias of a one-bank block: what the guest changed through it. */
+static void vram_pull_one(int w, int i, uint32_t m, const uint8_t *win,
+                          uint8_t *changed) {
+    uint8_t *sto = (uint8_t *)vram_sto(vram_map[w][i] - 1, vram_off[w][i]);
+    size_t idx = vram_sto_idx((char *)sto);
+    const uint8_t *ref = changed[idx] ? vram_old + idx * ARM_VRAM_BLK : sto;
+
+    if (memcmp(ref, win, ARM_VRAM_BLK) == 0) return;
+    if (m) vram_mstats_note(w, m, i);
+    if (!changed[idx]) {
+        /* the first alias the pass finds changed: the whole block */
+        vram_keep_old(idx, changed);
+        memcpy(sto, win, ARM_VRAM_BLK);
+        return;
+    }
+    vram_merge(sto, win, ref);
+}
+
+/*
+ * One alias of an overlapped block: every byte the guest changed since the
+ * push (the window against vram_ovl_snap) is written to each of the block's
+ * banks, as the console's write is. A byte rewritten with the value the OR
+ * already showed is not seen; on the console it would have left both banks
+ * holding it.
+ */
+static void vram_pull_ovl(int w, int i, uint32_t m, const uint8_t *win,
+                          uint8_t *changed) {
+    const uint8_t *snap = vram_ovl_snap[w][i];
+    uint16_t banks = (uint16_t)(vram_ovl[w][i] | (1u << (vram_map[w][i] - 1)));
+    int b;
+
+    if (!snap || memcmp(snap, win, ARM_VRAM_BLK) == 0) return;
+    if (m) vram_mstats_note(w, m, i);
+    for (b = 0; b < ARM_VRAM_BANKS; b++) {
+        char *sto;
+        if (!(banks & (1u << b))) continue;
+        sto = vram_sto(b, b == vram_map[w][i] - 1 ? vram_off[w][i]
+                                                  : vram_ovl_off[w][i][b]);
+        vram_keep_old(vram_sto_idx(sto), changed);
+        vram_merge((uint8_t *)sto, win, snap);
+    }
+}
+
+/* Did the pass change a store block window w's block i shows? */
+static int vram_block_changed(int w, int i, const uint8_t *changed) {
+    int b;
+
+    if (changed[vram_sto_idx(vram_sto(vram_map[w][i] - 1, vram_off[w][i]))])
+        return 1;
+    for (b = 0; b < ARM_VRAM_BANKS; b++)
+        if ((vram_ovl[w][i] & (1u << b)) &&
+            changed[vram_sto_idx(vram_sto(b, vram_ovl_off[w][i][b]))])
+            return 1;
+    return 0;
+}
+
+static void vram_pull_mirrors(int w, int i, uint32_t m0, uint32_t m1,
+                              uint8_t *changed) {
+    uint32_t m;
+
+    for (m = m0; m < m1; m++) {
+        const uint8_t *win = (const uint8_t *)(uintptr_t)(
+            vram_win[w].base + m * vram_win[w].period +
+            (uint32_t)i * ARM_VRAM_BLK);
+        if (vram_ovl[w][i])
+            vram_pull_ovl(w, i, m, win, changed);
+        else
+            vram_pull_one(w, i, m, win, changed);
+    }
+}
+
+/*
+ * Windows -> store, marking in `changed` the store blocks it changed. `all`:
+ * every mirror of every block (the render). Else (a remap) mirror 0 of every
+ * block and every mirror of the blocks `deep` marks, the ones whose window
+ * bytes the remap is about to replace; then the other mirrors of any block
+ * whose store block the pass has changed, until no more change, since the
+ * push that follows rewrites all of its aliases.
+ */
+static void vram_pull(int all, const uint8_t (*deep)[VW_MAXBLK],
+                      uint8_t *changed) {
+    static uint8_t done[VW_COUNT][VW_MAXBLK]; /* every mirror read */
+    int w, i, again;
+
+    memset(done, 0, sizeof done);
+    for (w = 0; w < VW_COUNT; w++) {
+        uint32_t mirrors = vram_win[w].span / vram_win[w].period;
+
+        for (i = 0; i < vram_win[w].blocks; i++) {
+            if (!vram_map[w][i]) continue;
+            done[w][i] = (uint8_t)(all || (deep && deep[w][i]));
+            vram_pull_mirrors(w, i, 0, done[w][i] ? mirrors : 1u, changed);
+        }
+    }
+    do {
+        again = 0;
+        for (w = 0; w < VW_COUNT; w++)
+            for (i = 0; i < vram_win[w].blocks; i++) {
+                if (!vram_map[w][i] || done[w][i] ||
+                    !vram_block_changed(w, i, changed))
+                    continue;
+                vram_pull_mirrors(w, i, 1,
+                                  vram_win[w].span / vram_win[w].period,
+                                  changed);
+                done[w][i] = 1;
+                again = 1;
+            }
+    } while (again);
+}
+
+/*
+ * Store -> windows, in every mirror: the blocks showing a store block
+ * `changed` marks (all of them when it is NULL), and every overlapped block
+ * too when `ovl_always` (its OR moves with any of its banks).
+ */
+static void vram_push(const uint8_t *changed, int ovl_always) {
     int w, i;
-    /* One flag per 16 KB store block, for the windows->store direction: the
-     * first alias that differs claims the block, and the later aliases,
-     * which now differ only because the store moved under them, must not
-     * write it back. Cleared per pass; the store is 41 blocks. */
-    uint8_t claimed[ARM_VRAM_STORE / ARM_VRAM_BLK] = { 0 };
 
     for (w = 0; w < VW_COUNT; w++) {
-        uint32_t mirrors =
-            all_mirrors ? vram_win[w].span / vram_win[w].period : 1u;
-        uint32_t m;
+        uint32_t mirrors = vram_win[w].span / vram_win[w].period, m;
 
-        for (m = 0; m < mirrors; m++) {
-            uint32_t at = vram_win[w].base + m * vram_win[w].period;
-
-            for (i = 0; i < vram_win[w].blocks; i++) {
-                int bank = vram_map[w][i] - 1;
-                char *win, *sto;
-
-                if (!vram_map[w][i]) continue;
-                win = (char *)(uintptr_t)(at + (uint32_t)i * ARM_VRAM_BLK);
-                sto = (char *)vram_store +
-                      (size_t)vram_lcdc_blk[bank] * ARM_VRAM_BLK +
-                      vram_off[w][i];
-                if (to_windows) {
-                    memcpy(win, sto, ARM_VRAM_BLK);
-                } else if (!claimed[((size_t)vram_lcdc_blk[bank] * ARM_VRAM_BLK +
-                                     vram_off[w][i]) / ARM_VRAM_BLK] &&
-                           memcmp(sto, win, ARM_VRAM_BLK) != 0) {
-                    /*
-                     * Only a block that changed, because a bank can be
-                     * smaller than its window. Bank I is 16 KB and mst 2
-                     * lays it over eight window blocks by wrapping, so here
-                     * they are eight pages aliasing one store block. Copying
-                     * all eight unconditionally let the seven the guest never
-                     * wrote clobber the one it did.
-                     *
-                     * Every store to windows push leaves all aliases equal to
-                     * the store, so at reconcile time a block that differs is
-                     * one the guest wrote since. Two aliases both written
-                     * differently in one slice is the shape this cannot
-                     * arbitrate; the first one this loop meets wins.
-                     */
-                    memcpy(sto, win, ARM_VRAM_BLK);
-                    claimed[((size_t)vram_lcdc_blk[bank] * ARM_VRAM_BLK +
-                             vram_off[w][i]) / ARM_VRAM_BLK] = 1;
-                }
-            }
+        for (i = 0; i < vram_win[w].blocks; i++) {
+            if (!vram_map[w][i]) continue;
+            if (changed && !(ovl_always && vram_ovl[w][i]) &&
+                !vram_block_changed(w, i, changed))
+                continue;
+            for (m = 0; m < mirrors; m++)
+                vram_push_block(w, i,
+                                (char *)(uintptr_t)(vram_win[w].base +
+                                                    m * vram_win[w].period +
+                                                    (uint32_t)i * ARM_VRAM_BLK),
+                                m == 0);
         }
     }
 }
+
+/* A reconcile: what the guest wrote through any alias reaches the store and
+ * every other alias. `deep` as vram_pull's (NULL with all). */
+static void vram_reconcile(int all, const uint8_t (*deep)[VW_MAXBLK]) {
+    uint8_t changed[VRAM_NSTO] = { 0 };
+
+    vram_pull(all, deep, changed);
+    vram_push(changed, 0);
+}
+
+/* After the render: it may have written banks itself (display capture,
+ * pc_gpu2d.c), so a block whose first mirror no longer shows its store goes
+ * to every mirror, and so does every overlapped block. */
+static void vram_after_render(void) {
+    uint8_t changed[VRAM_NSTO] = { 0 };
+    int w, i;
+
+    for (w = 0; w < VW_COUNT; w++)
+        for (i = 0; i < vram_win[w].blocks; i++) {
+            char *sto;
+            if (!vram_map[w][i] || vram_ovl[w][i]) continue;
+            sto = vram_sto(vram_map[w][i] - 1, vram_off[w][i]);
+            if (memcmp(sto,
+                       (const void *)(uintptr_t)(vram_win[w].base +
+                                                 (uint32_t)i * ARM_VRAM_BLK),
+                       ARM_VRAM_BLK) != 0)
+                changed[vram_sto_idx(sto)] = 1;
+        }
+    vram_push(changed, 1);
+}
 #endif
 
-/* The frame's render, bracketed, no-ops where the views alias for real. */
+/* The frame's render, bracketed, no-ops where the views alias for real; there
+ * a block two banks share is inaccessible (vram_place), so a frame rendered
+ * while one stands would read a fault, and it stops here instead. */
 void armrec_vram_render_begin(void) {
 #if defined(ARMREC_VRAM_COPY)
-    if (vram_mapped) vram_copy(0, 0);
+    if (vram_mapped) {
+        vram_mstats_render();
+        vram_reconcile(1, NULL);
+    }
+#else
+    int w, blk;
+    if (!vram_mapped) return;
+    for (w = 0; w < VW_COUNT; w++)
+        for (blk = 0; blk < vram_win[w].blocks; blk++) {
+            if (!vram_ovl[w][blk]) continue;
+            fprintf(stderr,
+                    "armrec: VRAM window %s block %d (0x%08X) has two banks at"
+                    " a\n"
+                    "  render (VRAMCNT = %02X %02X %02X %02X %02X %02X %02X"
+                    " %02X %02X).\n"
+                    "  The console ORs them; this model aliases each window"
+                    " onto\n"
+                    "  one bank's storage and cannot, so it stops rather than\n"
+                    "  choosing. The copying model (ARMREC_VRAM_COPY) is"
+                    " exact.\n",
+                    vram_win[w].name, blk,
+                    vram_win[w].base + (uint32_t)blk * ARM_VRAM_BLK,
+                    vram_cnt_live[0], vram_cnt_live[1], vram_cnt_live[2],
+                    vram_cnt_live[3], vram_cnt_live[4], vram_cnt_live[5],
+                    vram_cnt_live[6], vram_cnt_live[7], vram_cnt_live[8]);
+            abort();
+        }
 #endif
 }
 
 void armrec_vram_render_end(void) {
 #if defined(ARMREC_VRAM_COPY)
-    if (vram_mapped) vram_copy(1, 0);
+    if (vram_mapped) vram_after_render();
 #endif
 }
 
@@ -711,10 +1042,6 @@ static int vram_remap(void) {
     int w, b, i;
 
 #if defined(ARMREC_VRAM_COPY)
-    /* Writes made through the old arrangement go home first; the map they
-     * were made under is still in vram_map until the rebuild below. */
-    if (vram_mapped) vram_copy(0, 0);
-
     /*
      * Incremental after the first build, the same diff as the POSIX path
      * below and for the same measured reason, a visible stutter: the
@@ -724,23 +1051,64 @@ static int vram_remap(void) {
      * owner's machine those were the 21-31 ms work spikes. The diff zeroes
      * only the blocks a bank vacated and pushes only the blocks whose
      * mapping moved, in every mirror of their window; an unchanged block
-     * keeps its bytes. The coherence this narrows is one the model had
-     * already narrowed: between remaps only the first mirror is refreshed
-     * (the render bracket's vram_copy(1, 0)), so a non-primary mirror was
-     * never current except momentarily after a remap.
+     * keeps its bytes, guest writes through any of its mirrors included,
+     * for the next reconcile to collect.
      */
     {
         static uint8_t old_map[VW_COUNT][VW_MAXBLK];
         static uint32_t old_off[VW_COUNT][VW_MAXBLK];
+        static uint16_t old_ovl[VW_COUNT][VW_MAXBLK];
+        static uint32_t old_ovl_off[VW_COUNT][VW_MAXBLK][ARM_VRAM_BANKS];
+        static uint8_t new_map[VW_COUNT][VW_MAXBLK];
+        static uint32_t new_off[VW_COUNT][VW_MAXBLK];
+        static uint16_t new_ovl[VW_COUNT][VW_MAXBLK];
+        static uint32_t new_ovl_off[VW_COUNT][VW_MAXBLK][ARM_VRAM_BANKS];
+        static uint8_t moving[VW_COUNT][VW_MAXBLK];
         int full = !vram_mapped;
 
         memcpy(old_map, vram_map, sizeof old_map);
         memcpy(old_off, vram_off, sizeof old_off);
+        memcpy(old_ovl, vram_ovl, sizeof old_ovl);
+        memcpy(old_ovl_off, vram_ovl_off, sizeof old_ovl_off);
 
         memset(vram_map, 0, sizeof vram_map);
         memset(vram_off, 0, sizeof vram_off);
+        memset(vram_ovl, 0, sizeof vram_ovl);
+        memset(vram_ovl_off, 0, sizeof vram_ovl_off);
         for (b = 0; b < ARM_VRAM_BANKS; b++)
             vram_place_bank(b, vram_cnt_live[b]);
+
+        if (!full) {
+            /* Writes made through the old arrangement go home first, under
+             * the map they were made in: every mirror of a block about to
+             * move, whose window bytes the push below replaces, and the
+             * first mirror of the rest (vram_pull). */
+            for (w = 0; w < VW_COUNT; w++)
+                for (i = 0; i < VW_MAXBLK; i++)
+                    moving[w][i] = (uint8_t)!vram_block_same(
+                        w, i, old_map[w][i], old_off[w][i], old_ovl[w][i],
+                        old_ovl_off[w][i]);
+            memcpy(new_map, vram_map, sizeof new_map);
+            memcpy(new_off, vram_off, sizeof new_off);
+            memcpy(new_ovl, vram_ovl, sizeof new_ovl);
+            memcpy(new_ovl_off, vram_ovl_off, sizeof new_ovl_off);
+            memcpy(vram_map, old_map, sizeof old_map);
+            memcpy(vram_off, old_off, sizeof old_off);
+            memcpy(vram_ovl, old_ovl, sizeof old_ovl);
+            memcpy(vram_ovl_off, old_ovl_off, sizeof old_ovl_off);
+            vram_reconcile(0, (const uint8_t(*)[VW_MAXBLK])moving);
+            memcpy(vram_map, new_map, sizeof new_map);
+            memcpy(vram_off, new_off, sizeof new_off);
+            memcpy(vram_ovl, new_ovl, sizeof new_ovl);
+            memcpy(vram_ovl_off, new_ovl_off, sizeof new_ovl_off);
+        }
+        /* An overlap gone takes its push-time copy with it. */
+        for (w = 0; w < VW_COUNT; w++)
+            for (i = 0; i < VW_MAXBLK; i++)
+                if (!vram_ovl[w][i] && vram_ovl_snap[w][i]) {
+                    free(vram_ovl_snap[w][i]);
+                    vram_ovl_snap[w][i] = NULL;
+                }
 
         if (full) {
             /* The floor: every VRAM address readable and zero, as on POSIX:
@@ -752,7 +1120,7 @@ static int vram_remap(void) {
 #if !defined(__wasm__)
             memset((void *)(uintptr_t)ARM_VRAM_BASE, 0, ARM_VRAM_SIZE);
 #endif
-            vram_copy(1, 1);
+            vram_push(NULL, 0);
         } else {
             for (w = 0; w < VW_COUNT; w++) {
                 uint32_t mirrors = vram_win[w].span / vram_win[w].period;
@@ -761,24 +1129,16 @@ static int vram_remap(void) {
                     uint32_t at = vram_win[w].base + m * vram_win[w].period;
                     for (i = 0; i < vram_win[w].blocks; i++) {
                         char *win;
-                        int bank = vram_map[w][i] - 1;
 
-                        if (vram_map[w][i] == old_map[w][i]
-                            && (!vram_map[w][i]
-                                || vram_off[w][i] == old_off[w][i]))
+                        if (vram_block_same(w, i, old_map[w][i], old_off[w][i],
+                                            old_ovl[w][i], old_ovl_off[w][i]))
                             continue;
                         win = (char *)(uintptr_t)
                                   (at + (uint32_t)i * ARM_VRAM_BLK);
-                        if (!vram_map[w][i]) {
+                        if (!vram_map[w][i])
                             memset(win, 0, ARM_VRAM_BLK);
-                        } else {
-                            memcpy(win,
-                                   (char *)vram_store +
-                                       (size_t)vram_lcdc_blk[bank]
-                                           * ARM_VRAM_BLK +
-                                       vram_off[w][i],
-                                   ARM_VRAM_BLK);
-                        }
+                        else
+                            vram_push_block(w, i, win, m == 0);
                     }
                 }
             }
@@ -815,10 +1175,14 @@ static int vram_remap(void) {
     {
         static uint8_t old_map[VW_COUNT][VW_MAXBLK];
         static uint32_t old_off[VW_COUNT][VW_MAXBLK];
+        static uint16_t old_ovl[VW_COUNT][VW_MAXBLK];
+        static uint32_t old_ovl_off[VW_COUNT][VW_MAXBLK][ARM_VRAM_BANKS];
         int full = !vram_mapped;
 
         memcpy(old_map, vram_map, sizeof old_map);
         memcpy(old_off, vram_off, sizeof old_off);
+        memcpy(old_ovl, vram_ovl, sizeof old_ovl);
+        memcpy(old_ovl_off, vram_ovl_off, sizeof old_ovl_off);
 
         if (full
             && mmap((void *)(uintptr_t)ARM_VRAM_BASE, ARM_VRAM_SIZE,
@@ -832,6 +1196,8 @@ static int vram_remap(void) {
 
         memset(vram_map, 0, sizeof vram_map);
         memset(vram_off, 0, sizeof vram_off);
+        memset(vram_ovl, 0, sizeof vram_ovl);
+        memset(vram_ovl_off, 0, sizeof vram_ovl_off);
         for (b = 0; b < ARM_VRAM_BANKS; b++)
             vram_place_bank(b, vram_cnt_live[b]);
 
@@ -845,9 +1211,25 @@ static int vram_remap(void) {
                     int n = 1;
 
                     /* Unchanged blocks keep their pages, the whole point. */
-                    if (!full && vram_map[w][i] == old_map[w][i]
-                        && (!vram_map[w][i]
-                            || vram_off[w][i] == old_off[w][i])) {
+                    if (!full && vram_block_same(w, i, old_map[w][i],
+                                                 old_off[w][i], old_ovl[w][i],
+                                                 old_ovl_off[w][i])) {
+                        i++;
+                        continue;
+                    }
+                    if (vram_ovl[w][i]) {
+                        /* Two banks: no page can be both (vram_place). */
+                        if (mmap((void *)(uintptr_t)
+                                     (at + (uint32_t)i * ARM_VRAM_BLK),
+                                 ARM_VRAM_BLK, PROT_NONE,
+                                 MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED, -1,
+                                 0) == MAP_FAILED) {
+                            snprintf(mem_err, sizeof mem_err,
+                                     "cannot fence VRAM at 0x%08X: %s",
+                                     at + (uint32_t)i * ARM_VRAM_BLK,
+                                     strerror(errno));
+                            return -1;
+                        }
                         i++;
                         continue;
                     }
@@ -883,10 +1265,14 @@ static int vram_remap(void) {
                      * and paid for). */
                     while (i + n < vram_win[w].blocks &&
                            vram_map[w][i + n] == vram_map[w][i] &&
+                           !vram_ovl[w][i + n] &&
                            vram_off[w][i + n] ==
                                vram_off[w][i] + (uint32_t)n * ARM_VRAM_BLK &&
-                           !(!full && vram_map[w][i + n] == old_map[w][i + n]
-                             && vram_off[w][i + n] == old_off[w][i + n]))
+                           !(!full && vram_block_same(w, i + n,
+                                                      old_map[w][i + n],
+                                                      old_off[w][i + n],
+                                                      old_ovl[w][i + n],
+                                                      old_ovl_off[w][i + n])))
                         n++;
                     if (mmap((void *)(uintptr_t)
                                  (at + (uint32_t)i * ARM_VRAM_BLK),
@@ -1033,6 +1419,18 @@ static void armrec_vram_free(void) {
     munmap((void *)(uintptr_t)ARM_VRAM_BASE, ARM_VRAM_SIZE);
     if (vram_fd >= 0) close(vram_fd);
     vram_fd = -1;
+#endif
+#if defined(ARMREC_VRAM_COPY)
+    {
+        int w, i;
+        for (w = 0; w < VW_COUNT; w++)
+            for (i = 0; i < VW_MAXBLK; i++) {
+                free(vram_ovl_snap[w][i]);
+                vram_ovl_snap[w][i] = NULL;
+            }
+        free(vram_old);
+        vram_old = NULL;
+    }
 #endif
     vram_store = NULL;
     vram_mapped = 0;
@@ -2881,6 +3279,18 @@ void armrec_load_data(uint32_t addr, const void *src, uint32_t len) {
      * catches is the ARM7's `Autoload EXT` at 0x06000000, which is VRAM the
      * ARM9 cannot be given. See ARM7_DROP in pc/Makefile.
      */
+#ifdef ARMREC_TWL
+    /*
+     * TWL-SDK's crt0 autoloads every entry of the NTR list, and one of them
+     * is a 32-byte NTR-mode stand-in at 0x02400000 (the start of the TWL's
+     * extended main RAM). On a DS that address is the main-RAM mirror, so
+     * the loader's write lands at 0x02000000, which is where it goes here.
+     * The shared region (DTCM, shared page) above the mirror is storage of
+     * its own (ARM_SHARED_BASE).
+     */
+    if (addr >= ARM_MAIN_RAM_BASE + ARM_MAIN_RAM_SIZE && addr < ARM_SHARED_BASE)
+        addr = ARM_MAIN_RAM_BASE + ((addr - ARM_MAIN_RAM_BASE) & (ARM_MAIN_RAM_SIZE - 1));
+#endif
     if (armrec_guest_span_ok(addr, len)) {
         memcpy((void *)(uintptr_t)addr, src, len);
         return;

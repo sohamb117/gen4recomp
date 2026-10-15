@@ -1,0 +1,10 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26081
+money 20000
+
+party SPECIES_INFERNAPE 40 ITEM_NONE
+# slots refuse without the Coin Case (scripts_game_corner.s:80-99)
+item ITEM_COIN_CASE 1
+# facing machine 0 at (12,6) from the west
+map MAP_HEADER_GAME_CORNER 11 6 FACE_RIGHT

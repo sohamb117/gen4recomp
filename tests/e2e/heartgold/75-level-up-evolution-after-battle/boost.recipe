@@ -1,0 +1,4 @@
+# Boost on 04's end save (run.py hgss_boost: np_save4 set-level on a member already in the party: experience at the
+# level's base, stats recomputed, HP full, no evolution). Party: 0 CYNDAQUIL lv10 (Tackle, Leer, SmokeScreen, Ember).
+# 13 is one level short of Quilava (evo.json:117 EVO_LEVEL 14): the next level gained in a battle evolves it.
+party-level 0 13

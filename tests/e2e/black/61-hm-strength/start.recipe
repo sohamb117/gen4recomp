@@ -1,0 +1,7 @@
+# On 16's end save (party: Darmanitan, Pansage, Blitzle, Patrat (Cut), Tepig, Sawk; scouted end save).
+# A Strength carrier for Route 16's boulder (zone_event 383 object 10; scr 0867 script 1 @0x008D Cmd116 0x46):
+# Timburr (532) lv 30 with Strength (70), Low Kick (67), Rock Throw (88) in place of Tepig (slot 4).
+party-set 4 532 30 70 67 88
+# Nimbasa City (zone 62), one tile below the door of zone 88 (zone_event 62 warp 8 (399,455)); y 1 = Nimbasa's
+# object height 16 / 16 [INFERENCE: set-location's y in tiles]
+location 62 399 1 456

@@ -109,7 +109,7 @@ static int plain_file_name(const char *n)
     return n[0] && n[0] != '.' && !strchr(n, '/') && !strchr(n, '\\') && !strchr(n, ':');
 }
 
-static int parse_rep(const ctx *c, int obj, np_skin_rep *r)
+static int parse_rep(const ctx *c, int obj, int gba, np_skin_rep *r)
 {
     memset(r, 0, sizeof *r);
     int map = np_json_get(c->s, c->t, obj, "mappingSize");
@@ -140,17 +140,25 @@ static int parse_rep(const ctx *c, int obj, np_skin_rep *r)
         np_skin_screen *dst = &r->screen[r->nscreens];
         if (rect(c, np_json_get(c->s, c->t, sc, "outputFrame"), &dst->output))
             continue;
-        /* Without an inputFrame a screen shows the top, then the bottom. */
+        /* Without an inputFrame a DS screen shows the top, then the
+         * bottom; a GBA screen the whole picture. */
         if (rect(c, np_json_get(c->s, c->t, sc, "inputFrame"), &dst->input))
-            dst->input = (np_skin_rect){0, (float)(192 * r->nscreens), 256, 192};
+            dst->input = gba ? (np_skin_rect){0, 0, 240, 160} : (np_skin_rect){0, (float)(192 * r->nscreens), 256, 192};
         r->nscreens++;
+        if (gba)
+            break; /* one screen */
     }
     np_skin_rect game;
     if (!r->nscreens && !rect(c, np_json_get(c->s, c->t, obj, "gameScreenFrame"), &game)) {
-        /* Older skins give one frame for both screens, top above bottom. */
-        r->screen[0] = (np_skin_screen){{0, 0, 256, 192}, {game.x, game.y, game.w, game.h * 0.5f}};
-        r->screen[1] = (np_skin_screen){{0, 192, 256, 192}, {game.x, game.y + game.h * 0.5f, game.w, game.h * 0.5f}};
-        r->nscreens = 2;
+        if (gba) {
+            r->screen[0] = (np_skin_screen){{0, 0, 240, 160}, game};
+            r->nscreens = 1;
+        } else {
+            /* Older DS skins give one frame for both screens, top above bottom. */
+            r->screen[0] = (np_skin_screen){{0, 0, 256, 192}, {game.x, game.y, game.w, game.h * 0.5f}};
+            r->screen[1] = (np_skin_screen){{0, 192, 256, 192}, {game.x, game.y + game.h * 0.5f, game.w, game.h * 0.5f}};
+            r->nscreens = 2;
+        }
     }
     if (!r->nscreens)
         return -1;
@@ -172,8 +180,10 @@ int np_skin_parse(const char *json, size_t len, np_skin_def *d, const char **why
         *why = "info.json is not valid JSON";
         goto done;
     }
-    if (!np_json_eq(json, t, np_json_get(json, t, 0, "gameTypeIdentifier"), NP_SKIN_GAME_TYPE)) {
-        *why = "not a Nintendo DS skin";
+    int type = np_json_get(json, t, 0, "gameTypeIdentifier");
+    d->gba = np_json_eq(json, t, type, NP_SKIN_GAME_TYPE_GBA);
+    if (!d->gba && !np_json_eq(json, t, type, NP_SKIN_GAME_TYPE)) {
+        *why = "not a Nintendo DS or Game Boy Advance skin";
         goto done;
     }
     np_json_string(json, t, np_json_get(json, t, 0, "name"), d->name, sizeof d->name);
@@ -188,7 +198,7 @@ int np_skin_parse(const char *json, size_t len, np_skin_def *d, const char **why
             int disp = np_json_get(json, t, dev, order[k][1]);
             int rep = np_json_get(json, t, disp, orient[o]);
             if (rep >= 0)
-                parse_rep(&c, rep, &d->rep[o]);
+                parse_rep(&c, rep, d->gba, &d->rep[o]);
         }
     if (!d->rep[0].present && !d->rep[1].present) {
         *why = "the skin has no usable portrait or landscape layout";

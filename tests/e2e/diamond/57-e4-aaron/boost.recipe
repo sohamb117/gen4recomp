@@ -1,0 +1,16 @@
+# Boost on 56's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# The Elite Four and Cynthia come with no Pokemon Center between them (trdata.json #261-#264, #267). The chain's two
+# fighters go to level 100 with their moves set again (PP full): Torterra (slot 0) and Gyarados (slot 3, 55's boost).
+# Stone Edge for Aaron's bugs, Seed Bomb and Waterfall for Bertha's grounds, Earthquake and Waterfall for Flint's
+# fires, Crunch for Lucian's psychics, Ice Fang for Cynthia's Garchomp (4x). On a lab start slot 0 is Garchomp and
+# slot 3 Bibarel: the same moves serve them.
+party-level 0 100
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_STONE_EDGE
+party-move 0 2 MOVE_CRUNCH
+party-move 0 3 MOVE_SEED_BOMB
+party-level 3 100
+party-move 3 0 MOVE_WATERFALL
+party-move 3 1 MOVE_ICE_FANG
+party-move 3 2 MOVE_CRUNCH
+party-move 3 3 MOVE_EARTHQUAKE

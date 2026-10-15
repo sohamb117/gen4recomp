@@ -1,0 +1,35 @@
+--- a/src/sound.c
++++ b/src/sound.c
+@@ -65,7 +65,9 @@
+     /* 0xBEC84 */ u32 gbSoundsVolume;
+ }; // size: 0xBEC88
+ 
+-SND_WORK sSoundWork;
++/* nativeplat: moved into the guest-addressed port window, see
++ * GetSoundDataPointer(). */
++static SND_WORK *sSoundWork;
+ u32 _0211194C;
+ u32 _02111950;
+ u32 sSndHeapFreeSize;
+@@ -204,7 +206,20 @@
+ }
+ 
+ SND_WORK *GetSoundDataPointer(void) {
+-    return &sSoundWork;
++    /* nativeplat: the SND_WORK carries the sound heap (0xBEC88 bytes in
++     * all), and every wave the SPU plays lives inside it. SOUNDxSAD holds 27
++     * bits, so the heap must sit at a guest address: as a C static of the
++     * wasm module it sat above NP_GUEST_C_BASE (0x0B1xxxxx), the SPU's mask
++     * turned every wave address into 0x031xxxxx, and the music played
++     * silence (sound effects loaded elsewhere were heard). It moves into the
++     * port window (pc_guest_window.c, 0x02A00000), as D/P's SoundData and
++     * Platinum's SoundSystem do. */
++    extern void *pc_guest_window_alloc(unsigned int bytes, const char *what);
++
++    if (sSoundWork == NULL) {
++        sSoundWork = pc_guest_window_alloc(sizeof(SND_WORK), "SND_WORK");
++    }
++    return sSoundWork;
+ }
+ 
+ void *GF_SdatGetAttrPtr(u32 attr) {

@@ -19,8 +19,8 @@
  */
 #include "app.h"
 
+#include "edsave.h"
 #include "romdb.h"
-#include "save4/save4.h"
 #include "sha1.h"
 #include "sync_plan.h"
 
@@ -196,7 +196,7 @@ static int copy_file(const char *src, const char *dst, int keep_backup)
 
 static int running_slot(const np_app *app, np_game game, const char *slot)
 {
-    return app->core && app->game == game && np_slot_name_eq(app->slot, slot);
+    return app->core && app->card_game == game && np_slot_name_eq(app->slot, slot);
 }
 
 typedef struct sync_tally {
@@ -366,7 +366,8 @@ void np_sync_all(np_app *app, int quiet)
     db_load();
     sync_tally t = {0};
     for (int g = 0; g < NP_GAME_COUNT; g++)
-        sync_game(app, (np_game)g, NULL, &t);
+        if (np_game_known((np_game)g))
+            sync_game(app, (np_game)g, NULL, &t);
     db_save();
     if (t.pulled)
         np_app_refresh_slots(app, NULL);
@@ -441,25 +442,25 @@ static void describe(np_game game, const char *slot, char *out, size_t n)
     np_storage_slot_path(game, slot, path, sizeof path);
     size_t len;
     uint8_t *data = SDL_LoadFile(path, &len);
-    save4 s;
-    save4_trainer t;
+    np_save s;
+    np_trainer t;
     char when[40] = "";
     file_state f = stat_file(path);
     SDL_DateTime dt;
     if (f.exists && SDL_TimeToDateTime(f.mtime, &dt, true))
         SDL_snprintf(when, sizeof when, "saved %04d-%02d-%02d %02d:%02d", dt.year, dt.month, dt.day, dt.hour,
                      dt.minute);
-    if (data && save4_load(&s, data, len) == SAVE4_OK) {
-        if (save4_get_trainer(&s, &t) == SAVE4_OK) {
+    if (data && np_save_load(&s, -1, NP_GAME_DIAMOND, data, len) == NP_SAVE_OK) {
+        if (np_save_trainer(&s, &t) == NP_SAVE_OK) {
             int badges = 0;
             for (int b = 0; b < 8; b++)
-                badges += t.badges >> b & 1;
+                badges += (t.badges >> b & 1) + (t.kanto_badges >> b & 1);
             SDL_snprintf(out, n, "%s, %u:%02u played, %d badge%s, %s", t.name, t.play_hours, t.play_minutes, badges,
                          badges == 1 ? "" : "s", when);
         } else {
             SDL_snprintf(out, n, "%s", when);
         }
-        save4_free(&s);
+        np_save_free(&s);
     } else {
         SDL_snprintf(out, n, "unreadable save, %s", when);
     }

@@ -1,0 +1,14 @@
+# The link map armrec --overlay-dispatch reads for the bridge test: three
+# overlays sharing one window (ids by link order; OVERLAY_00 is a filler so
+# the numbering is the paths' arm9/overlays/NN).
+#>02200000          SDK_OVERLAY.OVERLAY_00.START (linker command file)
+#>02200010          SDK_OVERLAY.OVERLAY_00.END (linker command file)
+#>02100000          SDK_OVERLAY.OVERLAY_01.START (linker command file)
+  02100000 00000008 .text   ov01_02100000	(bridge_ovl1.o)
+#>02100100          SDK_OVERLAY.OVERLAY_01.END (linker command file)
+#>02100000          SDK_OVERLAY.OVERLAY_02.START (linker command file)
+  02100000 00000004 .text   ov02_02100000	(bridge_ovl2.o)
+#>02100100          SDK_OVERLAY.OVERLAY_02.END (linker command file)
+#>02100000          SDK_OVERLAY.OVERLAY_03.START (linker command file)
+  02100000 00000010 .text   ov03_02100000	(bridge_c2.o)
+#>02100100          SDK_OVERLAY.OVERLAY_03.END (linker command file)

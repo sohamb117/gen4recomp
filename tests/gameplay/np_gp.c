@@ -8,8 +8,9 @@
  * snapshots cannot cross processes, they hold this process's fiber stack
  * addresses, so a scenario starts from a save, never from a snapshot.)
  *
- *   np_gp <rom.nds> [options]
- *     --game NAME         diamond, pearl or platinum (default platinum)
+ *   np_gp <rom> [options]
+ *     --game NAME         diamond, pearl, platinum, black, white, heartgold,
+ *                         soulsilver, ruby, sapphire or emerald (default platinum)
  *     --frames N          run until frame N (absolute; counts from 0 at boot)
  *     --save FILE         backup chip file (loaded if present, written on store)
  *     --schedule FILE     shell press schedule (shell/README.md), repeatable
@@ -26,6 +27,17 @@
  *     --peek F:ADDR:LEN   after frame F, print LEN bytes of guest memory at
  *                         ADDR as "peek F ADDR: <u32 words>", repeatable
  *                         (addresses: games/<game>/build/pc-wasm/<game>.map)
+ *     --serve 1           no frame count or schedule loop: commands on stdin
+ *                         drive the run (tests/e2e's bots; see serve() below)
+ *     --gba-rom FILE      a GBA cartridge in slot 2 (Pal Park); --gba-save FILE
+ *                         its backup, loaded if present, written on store
+ *     --lockstep MY:PEER  with --net-id ID: two instances on 127.0.0.1 ports MY
+ *                         and PEER advance frame by frame together and carry
+ *                         the game's datagrams between them, exactly as
+ *                         np_headless --lockstep does (same records, same
+ *                         delivery frame), so inputs recorded on a pair of
+ *                         np_gp instances replay on a pair of np_headless
+ *                         ones (tests/link/linkbot.py drives two of these)
  *
  * Prints status changes ("[status] frame K: map_id A -> B"), then a summary:
  *   frames N  hash H  ms/frame M  fps X  audio A  stalls S  audio-stalls T
@@ -39,7 +51,12 @@
  * lock shows up there; it is reported, not judged).
  */
 #define _POSIX_C_SOURCE 200809L
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <poll.h>
+#include <sys/socket.h>
 #include <pthread.h>
+#include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,6 +65,7 @@
 #include <unistd.h>
 
 #include "np_core.h"
+#include "np_e2e.h"
 #include "np_guest_abi.h"
 
 extern char **environ;
@@ -82,12 +100,13 @@ static uint16_t parse_key_names(const char *v) {
 }
 
 /* The same grammar as np_headless's load_schedule; "+D" is relative to the
- * previous step of the same file. */
-static int load_schedule(const char *path) {
+ * previous step of the same file. Frames count from BASE (0 for
+ * --schedule; the serve loop's `sched` loads a file at the current frame). */
+static int load_schedule(const char *path, int64_t base) {
     FILE *f = fopen(path, "rb");
     if (!f) return -1;
     char line[512];
-    int64_t prev = 0;
+    int64_t prev = base;
     while (fgets(line, sizeof line, f)) {
         char *hash = strchr(line, '#');
         if (hash) *hash = 0;
@@ -114,7 +133,7 @@ static int load_schedule(const char *path) {
             memset(p, 0, sizeof *p);
             p->n = 6;
             p->count = 1;
-            p->frame = rel ? prev + frame : frame;
+            p->frame = rel ? prev + frame : base + frame;
             prev = p->frame;
             int *rest = v;
             if (strcmp(k, "tap") == 0) {
@@ -250,6 +269,9 @@ static void *watchdog(void *arg) {
 typedef struct runner {
     FILE *rom;
     const char *save_path;
+    FILE *gba_rom;
+    uint32_t gba_rom_size;
+    const char *gba_save_path;
 } runner;
 
 static int rom_read(void *user, uint32_t offset, void *dst, uint32_t len) {
@@ -281,6 +303,38 @@ static int save_store(void *user, const void *src, uint32_t len) {
     return ok ? 0 : -1;
 }
 
+/* --gba-rom / --gba-save: a GBA cartridge in slot 2 (Pal Park), as
+ * np_headless has it. A missing save file is an erased chip; a shorter one
+ * is padded with 0xFF. */
+static int gba_rom_read(void *user, uint32_t offset, void *dst, uint32_t len) {
+    runner *r = user;
+    if (fseek(r->gba_rom, (long)offset, SEEK_SET) != 0) return -1;
+    return fread(dst, 1, len, r->gba_rom) == len ? 0 : -1;
+}
+
+static int gba_save_load(void *user, void *dst, uint32_t len) {
+    runner *r = user;
+    FILE *f = r->gba_save_path ? fopen(r->gba_save_path, "rb") : NULL;
+    if (!f) return 0;
+    size_t n = fread(dst, 1, len, f);
+    fclose(f);
+    if (n == 0) return 0;
+    memset((uint8_t *)dst + n, 0xFF, len - n);
+    return 1;
+}
+
+static int gba_save_store(void *user, const void *src, uint32_t len) {
+    runner *r = user;
+    if (!r->gba_save_path) return -1;
+    FILE *f = fopen(r->gba_save_path, "wb");
+    if (!f) return -1;
+    int ok = fwrite(src, 1, len, f) == len;
+    ok &= fclose(f) == 0;
+    fprintf(stderr, "[np_gp] frame %lld: stored %u-byte GBA save to %s\n", (long long)g_frame, len,
+            r->gba_save_path);
+    return ok ? 0 : -1;
+}
+
 static void log_line(void *user, const char *line) {
     (void)user;
     fprintf(stderr, "%s\n", line);
@@ -292,14 +346,17 @@ static uint64_t fnv(uint64_t h, const void *p, size_t n) {
     return h;
 }
 
+/* Both screens stacked (DS); the GBA has one (screen[1] NULL). */
+static int frame_screens(const np_frame *f) { return f->screen[1] ? 2 : 1; }
+
 static int dump_ppm(const char *dir, int64_t number, const np_frame *f) {
     char path[1024];
     snprintf(path, sizeof path, "%s/frame_%06lld.ppm", dir, (long long)number);
     FILE *out = fopen(path, "wb");
     if (!out) return -1;
-    fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * 2);
+    fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * frame_screens(f));
     uint8_t *row = malloc((size_t)f->width * 3);
-    for (int s = 0; s < 2; s++)
+    for (int s = 0; s < frame_screens(f); s++)
         for (uint32_t y = 0; y < f->height; y++) {
             for (uint32_t x = 0; x < f->width; x++) {
                 uint32_t p = f->screen[s][y * f->stride + x];
@@ -316,7 +373,7 @@ static int dump_ppm(const char *dir, int64_t number, const np_frame *f) {
 static const char *const k_opt_names[] = {"bgm_volume", "se_volume",     "render_scale", "widescreen",  "camera_zoom",
                                           "camera_tilt", "quicksave_seq", "rules",        "text_instant"};
 static const char *const k_stat_names[] = {"link_active", "field_ready", "quicksave_seq", "quicksave_result",
-                                           "map_id",      "in_battle"};
+                                           "map_id",      "in_battle",   "e2e",           "resets"};
 
 typedef struct opt_set {
     int64_t frame;
@@ -347,17 +404,431 @@ static int parse_opt(const char *v, opt_set *s) {
 }
 
 static int usage(void) {
-    fprintf(stderr, "usage: np_gp <rom.nds> [--game diamond|pearl|platinum] [--frames N] [--save FILE]\n"
+    fprintf(stderr, "usage: np_gp <rom> [--game diamond|pearl|platinum|black|white|heartgold|soulsilver|ruby|sapphire|emerald] [--frames N] [--save FILE]\n"
                     "             [--schedule FILE]...\n"
                     "             [--dump DIR [--dump-at F,..]... [--dump-every N\n"
                     "             [--dump-from F]]] [-o [F:]NAME=V]... [-e K=V]... [--random SEED\n"
-                    "             [--random-from F]] [--hang-sec S] [--time-from F] [--peek F:ADDR:LEN]...\n");
+                    "             [--random-from F]] [--hang-sec S] [--time-from F] [--peek F:ADDR:LEN]...\n"
+                    "             [--serve 1] [--lockstep MYPORT:PEERPORT --net-id ID] [--gba-rom FILE [--gba-save FILE]]\n");
     return 2;
 }
 
 static int cmp_i64(const void *a, const void *b) {
     int64_t x = *(const int64_t *)a, y = *(const int64_t *)b;
     return x < y ? -1 : x > y;
+}
+
+/* ---- --lockstep: np_headless's frame lockstep (core/tools/np_headless.c,
+ * "--lockstep MY:PEER"), its record format and delivery rule, without the
+ * relay and the fork checkpoints. Record: u8 kind (bit 0: 0 DATA, 1 END;
+ * bits 1-7 the epoch, always 0 here), u32 sender id, u32 frame, payload.
+ * Before frame N each side waits for the peer's END(N - 1); what the peer
+ * sent during its frame N - 1 is delivered during frame N. Arrival frames
+ * are a function of the two input streams alone, so a pair of np_gp runs
+ * and a pair of np_headless runs fed the same inputs trade the same
+ * datagrams on the same frames. */
+#define LS_QUEUE 256
+static struct {
+    int on, sock;
+    uint32_t id, peer_id;
+    struct sockaddr_in peer;
+    struct {
+        uint16_t len;
+        uint8_t data[1500];
+    } q[LS_QUEUE];
+    int qhead, qcount;
+} g_ls;
+
+static int lockstep_open(const char *spec, uint32_t id) {
+    unsigned mine, theirs;
+    if (sscanf(spec, "%u:%u", &mine, &theirs) != 2 || mine > 65535 || theirs > 65535) return -1;
+    g_ls.sock = socket(AF_INET, SOCK_DGRAM, 0);
+    int big = 4 << 20;
+    setsockopt(g_ls.sock, SOL_SOCKET, SO_RCVBUF, &big, sizeof big);
+    struct sockaddr_in a = {0};
+    a.sin_family = AF_INET;
+    a.sin_addr.s_addr = htonl(0x7F000001u); /* 127.0.0.1 (INADDR_LOOPBACK is not POSIX) */
+    a.sin_port = htons((uint16_t)mine);
+    if (bind(g_ls.sock, (struct sockaddr *)&a, sizeof a) != 0) return -1;
+    g_ls.peer = a;
+    g_ls.peer.sin_port = htons((uint16_t)theirs);
+    g_ls.id = id;
+    g_ls.on = 1;
+    return 0;
+}
+
+static void lockstep_send(uint8_t kind, uint32_t frame, const void *buf, uint32_t len) {
+    uint8_t p[9 + 1500];
+    if (len > 1500) return;
+    p[0] = kind;
+    memcpy(p + 1, &g_ls.id, 4);
+    memcpy(p + 5, &frame, 4);
+    memcpy(p + 9, buf, len);
+    sendto(g_ls.sock, p, 9 + len, 0, (struct sockaddr *)&g_ls.peer, sizeof g_ls.peer);
+}
+
+/* The barrier before frame `frame`: the peer's records up to END(frame - 1)
+ * become this frame's delivery queue. Frame 0 trades hellos (END of frame
+ * -1) first, so either side may start first. */
+static void lockstep_barrier(int64_t frame) {
+    uint8_t p[9 + 1500];
+    double last_hello = -1;
+    g_ls.qhead = g_ls.qcount = 0;
+    for (;;) {
+        if (frame == 0 && now_s() - last_hello > 0.1) {
+            lockstep_send(1, 0xFFFFFFFFu, NULL, 0);
+            last_hello = now_s();
+        }
+        struct pollfd pf = {g_ls.sock, POLLIN, 0};
+        if (poll(&pf, 1, 100) <= 0) continue;
+        ssize_t n = recv(g_ls.sock, p, sizeof p, 0);
+        if (n < 9 || p[0] >> 1 != 0) continue;
+        uint32_t f;
+        memcpy(&g_ls.peer_id, p + 1, 4);
+        memcpy(&f, p + 5, 4);
+        if (p[0] & 1) {
+            if (frame == 0 ? f == 0xFFFFFFFFu : f == (uint32_t)(frame - 1)) break;
+            continue; /* a stale hello */
+        }
+        if (g_ls.qcount < LS_QUEUE) {
+            g_ls.q[g_ls.qcount].len = (uint16_t)(n - 9);
+            memcpy(g_ls.q[g_ls.qcount].data, p + 9, (size_t)(n - 9));
+            g_ls.qcount++;
+        }
+    }
+    if (frame == 0) lockstep_send(1, 0xFFFFFFFFu, NULL, 0); /* answer a late starter */
+}
+
+static uint32_t net_self_cb(void *user) {
+    (void)user;
+    return g_ls.id;
+}
+
+static int net_send_cb(void *user, uint32_t peer, const void *buf, uint32_t len) {
+    (void)user;
+    (void)peer;
+    lockstep_send(0, 0, buf, len);
+    return 0;
+}
+
+static int net_recv_cb(void *user, uint32_t *peer, void *buf, uint32_t cap) {
+    (void)user;
+    if (g_ls.qhead == g_ls.qcount) return 0;
+    int i = g_ls.qhead++;
+    if (g_ls.q[i].len > cap) return -1;
+    memcpy(buf, g_ls.q[i].data, g_ls.q[i].len);
+    *peer = g_ls.peer_id;
+    return g_ls.q[i].len;
+}
+
+/* ---- the per-frame work of both modes: run, hash, judge, report. */
+typedef struct frame_run {
+    np_core *core;
+    np_frame f;
+    uint32_t status[NP_STAT_COUNT];
+    uint64_t hash, audio_total, prev_number, prev_screen;
+    int have_prev, defects, rc;
+    int64_t stall_run, audio_run, static_run, static_max, static_max_at, stalls, audio_stalls;
+    int64_t time_from, timed_frames;
+    double t_timed;
+    const opt_set *sets;
+    int nsets;
+} frame_run;
+
+static int16_t g_audio[2 * 8192];
+
+/* Frame K with input IN. Returns the core's rc: 0, or the run is over. */
+static int run_frame(frame_run *fr, int64_t k, const np_input *in) {
+    g_frame = k;
+    for (int o = 0; o < fr->nsets; o++)
+        if (fr->sets[o].frame == k) np_core_set_option(fr->core, fr->sets[o].opt, fr->sets[o].value);
+
+    if (g_ls.on) lockstep_barrier(k);
+    double t0 = now_s();
+    g_wd_start = t0;
+    g_wd_frame = k;
+    fr->rc = np_core_run_frame(fr->core, in, &fr->f);
+    g_wd_frame = -1;
+    if (g_ls.on) lockstep_send(1, (uint32_t)k, NULL, 0); /* END(k) */
+    if (k >= fr->time_from) {
+        fr->t_timed += now_s() - t0;
+        fr->timed_frames++;
+    }
+    if (fr->rc != 0) return fr->rc;
+
+    const np_frame *f = &fr->f;
+    uint64_t sh = 0xCBF29CE484222325ull;
+    for (int s = 0; s < frame_screens(f); s++) {
+        sh = fnv(sh, f->screen[s], (size_t)f->stride * f->height * 4);
+        fr->hash = fnv(fr->hash, f->screen[s], (size_t)f->stride * f->height * 4);
+    }
+    size_t n, got = 0;
+    while ((n = np_core_audio_read(fr->core, g_audio, 8192)) > 0) {
+        fr->hash = fnv(fr->hash, g_audio, n * 4);
+        got += n;
+    }
+    fr->audio_total += got;
+
+    if (fr->have_prev) {
+        if (f->number == fr->prev_number) {
+            if (++fr->stall_run == 60) {
+                printf("DEFECT stall frame %lld seed %llu: the VBlank counter did not advance (%llu)\n",
+                       (long long)k, (unsigned long long)(g_random ? g_seed : 0), (unsigned long long)f->number);
+                fr->stalls++;
+                fr->defects++;
+            }
+        } else {
+            fr->stall_run = 0;
+        }
+        if (got == 0) {
+            if (++fr->audio_run == AUDIO_STALL_FRAMES) {
+                printf("DEFECT audio-stall frame %lld seed %llu: no audio for %d frames\n", (long long)k,
+                       (unsigned long long)(g_random ? g_seed : 0), AUDIO_STALL_FRAMES);
+                fr->audio_stalls++;
+                fr->defects++;
+            }
+        } else {
+            fr->audio_run = 0;
+        }
+        if (sh == fr->prev_screen) {
+            if (++fr->static_run > fr->static_max) {
+                fr->static_max = fr->static_run;
+                fr->static_max_at = k;
+            }
+        } else {
+            fr->static_run = 0;
+        }
+    }
+    fr->have_prev = 1;
+    fr->prev_number = f->number;
+    fr->prev_screen = sh;
+
+    for (uint32_t i = 0; i < NP_STAT_COUNT; i++) {
+        uint32_t v = np_core_status(fr->core, i);
+        if (v != fr->status[i] && i < sizeof k_stat_names / sizeof *k_stat_names && i != NP_STAT_QUICKSAVE_SEQ &&
+            i != NP_STAT_E2E)
+            fprintf(stderr, "[status] frame %lld: %s %u -> %u\n", (long long)k, k_stat_names[i], fr->status[i], v);
+        fr->status[i] = v;
+    }
+    return 0;
+}
+
+/* The end of a run in either mode: the save flushed, the way the core
+ * stopped, the summary line. Returns the exit status. */
+static int finish(frame_run *fr, int64_t k) {
+    np_core_save_flush(fr->core);
+    if (fr->rc < 0) {
+        printf("DEFECT trap frame %lld seed %llu: %s\n", (long long)k, (unsigned long long)(g_random ? g_seed : 0),
+               np_core_last_error(fr->core));
+        fr->defects++;
+    } else if (fr->rc > 0) {
+        /* The save lab ends its run with exit(0) once the save is written. */
+        if (strstr(np_core_last_error(fr->core), "status 0")) {
+            printf("exited frame %lld: %s\n", (long long)k, np_core_last_error(fr->core));
+        } else {
+            printf("DEFECT exit frame %lld seed %llu: %s\n", (long long)k,
+                   (unsigned long long)(g_random ? g_seed : 0), np_core_last_error(fr->core));
+            fr->defects++;
+        }
+    }
+    double ms = fr->timed_frames ? fr->t_timed * 1e3 / (double)fr->timed_frames : 0;
+    printf("frames %lld  hash %016llx  ms/frame %.3f  fps %.1f  size %ux%u  audio %llu  stalls %lld  "
+           "audio-stalls %lld  static-max %lld@%lld  map %u\n",
+           (long long)k, (unsigned long long)fr->hash, ms, ms > 0 ? 1e3 / ms : 0, fr->f.width, fr->f.height,
+           (unsigned long long)fr->audio_total, (long long)fr->stalls, (long long)fr->audio_stalls,
+           (long long)fr->static_max, (long long)fr->static_max_at, np_core_status(fr->core, NP_STAT_MAP_ID));
+    fflush(stdout);
+    np_core_destroy(fr->core);
+    return fr->defects ? 1 : 0;
+}
+
+/*
+ * ---- serve mode (--serve 1): the run is driven over stdin/stdout one
+ * command at a time, for tests/e2e's input bots, which decide each input
+ * from what the game shows. One command per line; each answers with one
+ * line, after any DEFECT lines the frames it ran printed. Status changes,
+ * guest logs and saves go to stderr as in the batch mode.
+ *
+ *   run N KEYS [X Y] [until NAME=V|NAME!=V]...
+ *        hold KEYS ("a+up", "none") and, with X Y, a touch at (X,Y) for N
+ *        frames, or until any of the conditions holds after a frame. NAME is a
+ *        status (field_ready, map_id, in_battle, quicksave_seq,
+ *        quicksave_result, link_active, resets: soft resets so far) or a probe field (field, x, z, y,
+ *        facing, move_state, ui, ui_arg; core/include/np_e2e.h). Loaded
+ *        schedules add their presses on top.
+ *        -> "ok K HIT S0 .. S15": the next frame K, HIT 1 if the condition
+ *           stopped it, the 16 status words; "dead K" once the core stopped
+ *   e2e         -> "e2e HEX" the probe block, or "e2e none" (PC_E2E unset)
+ *   peek A L    -> "peek HEX", L bytes of guest memory at A
+ *   dump PATH   -> "ok": the last frame as a PPM (both screens; one on the GBA)
+ *   opt NAME=V  -> "ok": an np_core option, from the next frame on
+ *   sched PATH  -> "ok": a press schedule, its frames counted from now
+ *   flush       -> "ok": the save image stored now if the guest changed it (np_core_save_flush): a GBA
+ *                  guest publishes its flash chip every frame and leaves the storing to the host
+ *   quit        -> the summary line (as the batch mode ends), then exit
+ */
+typedef struct serve_cond {
+    int stat;  /* status index, or -1 */
+    int field; /* probe field offset in bytes, or -1 */
+    int neg;
+    uint32_t value;
+} serve_cond;
+
+static const struct { const char *name; int offset; } k_e2e_fields[] = {
+    {"field", offsetof(np_e2e_block, field)},   {"x", offsetof(np_e2e_block, x)},
+    {"z", offsetof(np_e2e_block, z)},           {"y", offsetof(np_e2e_block, y)},
+    {"facing", offsetof(np_e2e_block, facing)},
+    {"move_state", offsetof(np_e2e_block, move_state)}, {"ui", offsetof(np_e2e_block, ui)},
+    {"ui_arg", offsetof(np_e2e_block, ui_arg)},
+};
+
+static int parse_cond(const char *s, serve_cond *c) {
+    const char *op = strstr(s, "!=");
+    const char *eq = strchr(s, '=');
+    if (!eq) return -1;
+    c->neg = op != NULL;
+    size_t n = (size_t)((op ? op : eq) - s);
+    c->stat = c->field = -1;
+    for (uint32_t i = 0; i < sizeof k_stat_names / sizeof *k_stat_names; i++)
+        if (strlen(k_stat_names[i]) == n && strncmp(s, k_stat_names[i], n) == 0) c->stat = (int)i;
+    for (size_t i = 0; i < sizeof k_e2e_fields / sizeof *k_e2e_fields; i++)
+        if (strlen(k_e2e_fields[i].name) == n && strncmp(s, k_e2e_fields[i].name, n) == 0)
+            c->field = k_e2e_fields[i].offset;
+    if (c->stat < 0 && c->field < 0) return -1;
+    c->value = (uint32_t)strtol(eq + 1, NULL, 0);
+    return 0;
+}
+
+static const np_e2e_block *e2e_block(frame_run *fr) {
+    uint32_t addr = fr->status[NP_STAT_E2E];
+    if (!addr) return NULL;
+    const np_e2e_block *b = (const np_e2e_block *)np_core_guest_ptr(fr->core, addr, sizeof(np_e2e_block));
+    return b && b->magic == NP_E2E_MAGIC ? b : NULL;
+}
+
+static int cond_holds(frame_run *fr, const serve_cond *c) {
+    uint32_t v;
+    if (c->stat >= 0) {
+        v = fr->status[c->stat];
+    } else {
+        const np_e2e_block *b = e2e_block(fr);
+        if (!b) return 0;
+        memcpy(&v, (const uint8_t *)b + c->field, 4);
+    }
+    return c->neg ? v != c->value : v == c->value;
+}
+
+static void print_hex(const char *tag, const uint8_t *p, size_t n) {
+    static const char digits[] = "0123456789abcdef";
+    fputs(tag, stdout);
+    putchar(' ');
+    for (size_t i = 0; i < n; i++) {
+        putchar(digits[p[i] >> 4]);
+        putchar(digits[p[i] & 15]);
+    }
+    putchar('\n');
+}
+
+static int64_t serve(frame_run *fr, int64_t k) {
+    static char line[8192];
+    while (fgets(line, sizeof line, stdin)) {
+        char *save = NULL, *cmd = strtok_r(line, " \t\r\n", &save);
+        if (!cmd) continue;
+        if (strcmp(cmd, "run") == 0) {
+            char *a = strtok_r(NULL, " \t\r\n", &save), *keys = strtok_r(NULL, " \t\r\n", &save);
+            if (!a || !keys) {
+                printf("error run N KEYS [X Y] [until COND]\n");
+                fflush(stdout);
+                continue;
+            }
+            int64_t n = strtoll(a, NULL, 0);
+            np_input hold = {0};
+            hold.keys = strcmp(keys, "none") == 0 ? 0 : parse_key_names(keys);
+            serve_cond c[8];
+            int nconds = 0, bad = 0;
+            for (char *t = strtok_r(NULL, " \t\r\n", &save); t; t = strtok_r(NULL, " \t\r\n", &save)) {
+                if (strcmp(t, "until") == 0) {
+                    char *e = strtok_r(NULL, " \t\r\n", &save);
+                    bad |= !e || nconds == 8 || parse_cond(e, &c[nconds]) != 0;
+                    nconds += !bad;
+                } else {
+                    char *y = strtok_r(NULL, " \t\r\n", &save);
+                    bad |= !y;
+                    hold.touch = 1;
+                    hold.touch_x = (uint16_t)atoi(t);
+                    hold.touch_y = y ? (uint16_t)atoi(y) : 0;
+                }
+            }
+            if (bad) {
+                printf("error bad run arguments\n");
+                fflush(stdout);
+                continue;
+            }
+            int hit = 0;
+            for (int64_t i = 0; i < n; i++) {
+                np_input in = hold;
+                schedule_input(k, &in);
+                if (run_frame(fr, k, &in) != 0) break;
+                k++;
+                for (int ci = 0; ci < nconds && !hit; ci++) hit = cond_holds(fr, &c[ci]);
+                if (hit) break;
+            }
+            if (fr->rc != 0) {
+                printf("dead %lld\n", (long long)k);
+                fflush(stdout);
+                return k;
+            }
+            printf("ok %lld %d", (long long)k, hit);
+            for (uint32_t i = 0; i < NP_STAT_COUNT; i++) printf(" %u", fr->status[i]);
+            putchar('\n');
+        } else if (strcmp(cmd, "e2e") == 0) {
+            const np_e2e_block *b = e2e_block(fr);
+            if (b) print_hex("e2e", (const uint8_t *)b, sizeof *b);
+            else printf("e2e none\n");
+        } else if (strcmp(cmd, "peek") == 0) {
+            char *a = strtok_r(NULL, " \t\r\n", &save), *l = strtok_r(NULL, " \t\r\n", &save);
+            uint32_t addr = a ? (uint32_t)strtoul(a, NULL, 0) : 0, len = l ? (uint32_t)strtoul(l, NULL, 0) : 0;
+            const uint8_t *m = len && len <= (1u << 20) ? np_core_guest_ptr(fr->core, addr, len) : NULL;
+            if (m) print_hex("peek", m, len);
+            else printf("error out of range\n");
+        } else if (strcmp(cmd, "dump") == 0) {
+            char *path = strtok_r(NULL, "\r\n", &save);
+            FILE *out = path && fr->have_prev ? fopen(path, "wb") : NULL;
+            if (!out) {
+                printf("error cannot write %s\n", path ? path : "(no path)");
+            } else {
+                const np_frame *f = &fr->f;
+                fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * frame_screens(f));
+                for (int s = 0; s < frame_screens(f); s++)
+                    for (uint32_t y = 0; y < f->height; y++)
+                        for (uint32_t x = 0; x < f->width; x++) {
+                            uint32_t p = f->screen[s][y * f->stride + x];
+                            uint8_t rgb[3] = {(uint8_t)(p >> 16), (uint8_t)(p >> 8), (uint8_t)p};
+                            fwrite(rgb, 1, 3, out);
+                        }
+                printf(fclose(out) == 0 ? "ok\n" : "error short write\n");
+            }
+        } else if (strcmp(cmd, "opt") == 0) {
+            char *v = strtok_r(NULL, " \t\r\n", &save);
+            opt_set s;
+            if (!v || parse_opt(v, &s) != 0) printf("error bad option\n");
+            else {
+                np_core_set_option(fr->core, s.opt, s.value);
+                printf("ok\n");
+            }
+        } else if (strcmp(cmd, "sched") == 0) {
+            char *path = strtok_r(NULL, "\r\n", &save);
+            printf(path && load_schedule(path, k) == 0 ? "ok\n" : "error cannot read schedule\n");
+        } else if (strcmp(cmd, "flush") == 0) {
+            printf(np_core_save_flush(fr->core) == 0 ? "ok\n" : "error the save store failed\n");
+        } else if (strcmp(cmd, "quit") == 0) {
+            return k;
+        } else {
+            printf("error unknown command %s\n", cmd);
+        }
+        fflush(stdout);
+    }
+    return k;
 }
 
 int main(int argc, char **argv) {
@@ -373,13 +844,15 @@ int main(int argc, char **argv) {
 
     const char *options[MAX_OPTIONS + 1];
     int noptions = 0;
-    opt_set sets[MAX_SETS];
+    static opt_set sets[MAX_SETS];
     int nsets = 0;
     static int64_t dump_at[MAX_LIST];
     int ndump_at = 0;
     int64_t frames = 600, dump_every = 0, dump_from = 0, random_from = -1, time_from = -1;
     struct { int64_t frame; uint32_t addr, len; } peeks[64];
-    int npeeks = 0;
+    int npeeks = 0, serving = 0;
+    const char *lockstep = NULL;
+    uint32_t net_id = 0;
     const char *dump_dir = NULL;
     int game = NP_GAME_PLATINUM;
 
@@ -387,15 +860,20 @@ int main(int argc, char **argv) {
         const char *a = argv[i], *v = i + 1 < argc ? argv[i + 1] : NULL;
         if (!v) return usage();
         if (strcmp(a, "--game") == 0) {
-            static const char *const names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum"};
+            static const char *const names[NP_GAME_COUNT] = {
+                [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
+                [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white",
+                [NP_GAME_HEARTGOLD] = "heartgold", [NP_GAME_SOULSILVER] = "soulsilver",
+                [NP_GAME_RUBY] = "ruby", [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald",
+                [NP_GAME_POKETRANSFER] = "poketransfer"};
             game = -1;
             for (int g = 0; g < NP_GAME_COUNT; g++)
-                if (strcmp(v, names[g]) == 0) game = g;
+                if (names[g] && strcmp(v, names[g]) == 0) game = g;
             if (game < 0) return usage();
         } else if (strcmp(a, "--frames") == 0) frames = strtoll(v, NULL, 0);
         else if (strcmp(a, "--save") == 0) r.save_path = v;
         else if (strcmp(a, "--schedule") == 0) {
-            if (load_schedule(v) != 0) {
+            if (load_schedule(v, 0) != 0) {
                 fprintf(stderr, "np_gp: cannot read schedule %s\n", v);
                 return 2;
             }
@@ -423,6 +901,19 @@ int main(int argc, char **argv) {
         } else if (strcmp(a, "--random-from") == 0) random_from = strtoll(v, NULL, 0);
         else if (strcmp(a, "--hang-sec") == 0) g_hang_sec = atof(v);
         else if (strcmp(a, "--time-from") == 0) time_from = strtoll(v, NULL, 0);
+        else if (strcmp(a, "--serve") == 0) serving = atoi(v) != 0;
+        else if (strcmp(a, "--lockstep") == 0) lockstep = v;
+        else if (strcmp(a, "--gba-save") == 0) r.gba_save_path = v;
+        else if (strcmp(a, "--gba-rom") == 0) {
+            r.gba_rom = fopen(v, "rb");
+            if (!r.gba_rom) {
+                fprintf(stderr, "np_gp: cannot open %s\n", v);
+                return 2;
+            }
+            fseek(r.gba_rom, 0, SEEK_END);
+            r.gba_rom_size = (uint32_t)ftell(r.gba_rom);
+        }
+        else if (strcmp(a, "--net-id") == 0) net_id = (uint32_t)strtoul(v, NULL, 0);
         else if (strcmp(a, "--peek") == 0 && npeeks < 64) {
             long long pf;
             unsigned pa, pl;
@@ -445,112 +936,64 @@ int main(int argc, char **argv) {
     host.save_load = save_load;
     host.save_store = save_store;
     host.log = log_line;
+    if (r.gba_rom) {
+        host.gba_rom_size = r.gba_rom_size;
+        host.gba_rom_read = gba_rom_read;
+        host.gba_save_load = gba_save_load;
+        host.gba_save_store = gba_save_store;
+    }
+    if (lockstep) {
+        if (!net_id || lockstep_open(lockstep, net_id) != 0) {
+            fprintf(stderr, "np_gp: --lockstep %s needs a free port pair and a nonzero --net-id\n", lockstep);
+            return 2;
+        }
+        host.net_self = net_self_cb;
+        host.net_send = net_send_cb;
+        host.net_recv = net_recv_cb;
+    }
     if (!np_core_available((np_game)game)) {
         fprintf(stderr, "np_gp: that game is not built into this binary\n");
         return 2;
     }
-    np_core *core = np_core_create((np_game)game, &host, options);
-    if (!core) {
+    frame_run fr;
+    memset(&fr, 0, sizeof fr);
+    fr.core = np_core_create((np_game)game, &host, options);
+    if (!fr.core) {
         fprintf(stderr, "np_gp: create failed: %s\n", np_core_create_error());
         return 1;
     }
 
     if (random_from < 0) random_from = 0;
-    if (time_from < 0) time_from = 0;
+    fr.time_from = time_from < 0 ? 0 : time_from;
+    fr.sets = sets;
+    fr.nsets = nsets;
+    fr.hash = 0xCBF29CE484222325ull;
+    fr.static_max_at = -1;
     g_rng = g_seed * 0x9E3779B97F4A7C15ull + 0x1234567ull;
     if (!g_rng) g_rng = 1;
 
     pthread_t wd;
     pthread_create(&wd, NULL, watchdog, NULL);
 
-    uint32_t status[NP_STAT_COUNT];
-    for (uint32_t i = 0; i < NP_STAT_COUNT; i++) status[i] = np_core_status(core, i);
-    uint64_t hash = 0xCBF29CE484222325ull, audio_total = 0, prev_number = 0, prev_screen = 0;
-    int have_prev = 0, defects = 0, ndump_i = 0;
-    int64_t stall_run = 0, audio_run = 0, static_run = 0, static_max = 0, static_max_at = -1;
-    int64_t stalls = 0, audio_stalls = 0;
-    double t_timed = 0;
-    int64_t timed_frames = 0;
-    np_frame f;
-    int rc = 0;
-    static int16_t audio[2 * 8192];
+    for (uint32_t i = 0; i < NP_STAT_COUNT; i++) fr.status[i] = np_core_status(fr.core, i);
+    if (serving) {
+        int64_t k = serve(&fr, 0);
+        int status = finish(&fr, k);
+        fclose(r.rom);
+        return status;
+    }
 
+    int ndump_i = 0;
     int64_t k = 0;
     for (; k < frames; k++) {
-        g_frame = k;
         np_input in = {0};
         if (g_random && k >= random_from) random_input(&in);
         else schedule_input(k, &in);
-        for (int o = 0; o < nsets; o++)
-            if (sets[o].frame == k) np_core_set_option(core, sets[o].opt, sets[o].value);
-
-        double t0 = now_s();
-        g_wd_start = t0;
-        g_wd_frame = k;
-        rc = np_core_run_frame(core, &in, &f);
-        g_wd_frame = -1;
-        if (k >= time_from) {
-            t_timed += now_s() - t0;
-            timed_frames++;
-        }
-        if (rc != 0) break;
-
-        uint64_t sh = fnv(0xCBF29CE484222325ull, f.screen[0], (size_t)f.stride * f.height * 4);
-        sh = fnv(sh, f.screen[1], (size_t)f.stride * f.height * 4);
-        hash = fnv(hash, f.screen[0], (size_t)f.stride * f.height * 4);
-        hash = fnv(hash, f.screen[1], (size_t)f.stride * f.height * 4);
-        size_t n, got = 0;
-        while ((n = np_core_audio_read(core, audio, 8192)) > 0) {
-            hash = fnv(hash, audio, n * 4);
-            got += n;
-        }
-        audio_total += got;
-
-        if (have_prev) {
-            if (f.number == prev_number) {
-                if (++stall_run == 60) {
-                    printf("DEFECT stall frame %lld seed %llu: the VBlank counter did not advance (%llu)\n",
-                           (long long)k, (unsigned long long)(g_random ? g_seed : 0),
-                           (unsigned long long)f.number);
-                    stalls++;
-                    defects++;
-                }
-            } else {
-                stall_run = 0;
-            }
-            if (got == 0) {
-                if (++audio_run == AUDIO_STALL_FRAMES) {
-                    printf("DEFECT audio-stall frame %lld seed %llu: no audio for %d frames\n", (long long)k,
-                           (unsigned long long)(g_random ? g_seed : 0), AUDIO_STALL_FRAMES);
-                    audio_stalls++;
-                    defects++;
-                }
-            } else {
-                audio_run = 0;
-            }
-            if (sh == prev_screen) {
-                if (++static_run > static_max) {
-                    static_max = static_run;
-                    static_max_at = k;
-                }
-            } else {
-                static_run = 0;
-            }
-        }
-        have_prev = 1;
-        prev_number = f.number;
-        prev_screen = sh;
-
-        for (uint32_t i = 0; i < NP_STAT_COUNT; i++) {
-            uint32_t v = np_core_status(core, i);
-            if (v != status[i] && i < sizeof k_stat_names / sizeof *k_stat_names && i != NP_STAT_QUICKSAVE_SEQ)
-                fprintf(stderr, "[status] frame %lld: %s %u -> %u\n", (long long)k, k_stat_names[i], status[i], v);
-            status[i] = v;
-        }
+        if (run_frame(&fr, k, &in) != 0) break;
 
         for (int p = 0; p < npeeks; p++) {
             if (peeks[p].frame != k) continue;
-            const uint8_t *m = np_core_guest_ptr(core, peeks[p].addr, peeks[p].len);
+            const uint8_t *m = np_core_guest_ptr(fr.core, peeks[p].addr, peeks[p].len);
             printf("peek %lld 0x%08x:", (long long)k, peeks[p].addr);
             for (uint32_t o = 0; m && o + 4 <= peeks[p].len; o += 4) {
                 uint32_t w;
@@ -565,33 +1008,11 @@ int main(int argc, char **argv) {
                 if (dump_at[ndump_i] == k) want = 1;
                 ndump_i++;
             }
-            if (want && dump_ppm(dump_dir, k, &f) != 0)
+            if (want && dump_ppm(dump_dir, k, &fr.f) != 0)
                 fprintf(stderr, "np_gp: cannot write a frame dump into %s\n", dump_dir);
         }
     }
-    np_core_save_flush(core);
-    if (rc < 0) {
-        printf("DEFECT trap frame %lld seed %llu: %s\n", (long long)k, (unsigned long long)(g_random ? g_seed : 0),
-               np_core_last_error(core));
-        defects++;
-    } else if (rc > 0) {
-        /* The save lab ends its run with exit(0) once the save is written. */
-        if (strstr(np_core_last_error(core), "status 0")) {
-            printf("exited frame %lld: %s\n", (long long)k, np_core_last_error(core));
-        } else {
-            printf("DEFECT exit frame %lld seed %llu: %s\n", (long long)k,
-                   (unsigned long long)(g_random ? g_seed : 0), np_core_last_error(core));
-            defects++;
-        }
-    }
-    double ms = timed_frames ? t_timed * 1e3 / (double)timed_frames : 0;
-    printf("frames %lld  hash %016llx  ms/frame %.3f  fps %.1f  size %ux%u  audio %llu  stalls %lld  "
-           "audio-stalls %lld  static-max %lld@%lld  map %u\n",
-           (long long)k, (unsigned long long)hash, ms, ms > 0 ? 1e3 / ms : 0, f.width, f.height,
-           (unsigned long long)audio_total, (long long)stalls, (long long)audio_stalls, (long long)static_max,
-           (long long)static_max_at, np_core_status(core, NP_STAT_MAP_ID));
-    fflush(stdout);
-    np_core_destroy(core);
+    int status = finish(&fr, k);
     fclose(r.rom);
-    return defects ? 1 : 0;
+    return status;
 }

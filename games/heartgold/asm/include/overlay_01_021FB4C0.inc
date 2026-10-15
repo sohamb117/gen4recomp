@@ -1,0 +1,12 @@
+#include <nitro/fs/overlay.h>
+#pragma once
+.public Main_SetHBlankIntrCB
+.public Heap_Alloc
+.public Heap_Free
+.public GF_AssertFail
+.public HBlankSystem_New
+.public HBlankSystem_Delete
+.public HBlankSystem_Start
+.public HBlankSystem_Stop
+.public ov01_021FB530
+.public ov01_021FB554

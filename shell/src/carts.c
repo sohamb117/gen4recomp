@@ -1,7 +1,8 @@
 /*
  * Custom carts: a sealed, named set of mod packages (Gen1Recomp's custom
  * carts). Sealing records the enabled packages in load order and a SHA-256
- * over each package's name, mod.toml and cooked digest, in
+ * over each package's name, mod.toml and payload (the cooked digest, or a
+ * GBA game's data patch: np_mods_payload), in
  * <user data>/carts/<game>/<name>.cart (a cart holds one game's packages). A save slot can be bound to a cart
  * (saves/<game>/<slot>.cart); booting it loads exactly that set, and refuses
  * to start if any package changed since sealing, so a playthrough never
@@ -31,8 +32,8 @@ static void cart_path(np_game game, const char *name, char *out, size_t n)
     SDL_snprintf(out, n, "%s/%s.cart", dir, name);
 }
 
-/* Hash of packages `dirs` (in order): each name, mod.toml and .cooked/digest
- * with separators. Returns 0, or -1 naming the package that is missing. */
+/* Hash of packages `dirs` (in order): each name, mod.toml and payload
+ * (np_mods_payload) with separators. Returns 0, or -1 naming the package that is missing. */
 static int set_hash(np_game game, char (*dirs)[NP_MOD_ID_MAX], int n, uint8_t out[32], char *why, size_t whyn)
 {
     np_sha256 h;
@@ -43,7 +44,9 @@ static int set_hash(np_game game, char (*dirs)[NP_MOD_ID_MAX], int n, uint8_t ou
         return -1;
     }
     for (int i = 0; i < n; i++) {
-        static const char *const files[2] = {"mod.toml", ".cooked/digest"};
+        char payload[64];
+        np_mods_payload(game, payload, sizeof payload);
+        const char *const files[2] = {"mod.toml", payload};
         np_sha256_update(&h, dirs[i], SDL_strlen(dirs[i]) + 1);
         for (int f = 0; f < 2; f++) {
             char path[1300];

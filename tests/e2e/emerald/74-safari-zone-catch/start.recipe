@@ -1,0 +1,9 @@
+# Safari Zone: the gate's entry check needs the Pokeblock Case, 500 money and a party with room (or box space)
+# (data/maps/Route121_SafariZoneEntrance/scripts.inc:55-60, :80-90). One party member: the catch joins the party.
+flag FLAG_SYS_POKEMON_GET              # data/maps/Route101/scripts.inc:217 (the starter)
+party SPECIES_MUDKIP 10 ITEM_NONE      # the starter (data/maps/Route101/scripts.inc); a Safari battle never sends it out
+# Emerald's case comes from Lilycove's contest receptionist (data/scripts/contest_hall.inc:7,17-18), not Slateport's
+item ITEM_POKEBLOCK_CASE 1             # data/scripts/contest_hall.inc:17 (giveitem); checked Route121_SafariZoneEntrance/scripts.inc:56
+flag FLAG_RECEIVED_POKEBLOCK_CASE      # data/scripts/contest_hall.inc:18
+money 3000                             # checkmoney 500 (:59), removemoney 500 (:63)
+map MAP_ROUTE121_SAFARI_ZONE_ENTRANCE 14 12   # Route121_SafariZoneEntrance/map.json warp_events[2] (14,13): just inside the door

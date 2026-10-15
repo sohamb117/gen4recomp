@@ -1,0 +1,75 @@
+{
+  "kind": "cell",
+  "graphics": [
+    {
+      "narc": "NARC_graphic_plist_gra",
+      "file": 1,
+      "compressed": false,
+      "id": 0,
+      "extra": [
+        21,
+        21
+      ]
+    },
+    {
+      "narc": "NARC_graphic_plist_gra",
+      "file": 6,
+      "compressed": false,
+      "id": 1,
+      "extra": [
+        21,
+        21
+      ]
+    },
+    {
+      "narc": "NARC_graphic_plist_gra",
+      "file": 10,
+      "compressed": false,
+      "id": 2,
+      "extra": [
+        21,
+        21
+      ]
+    },
+    {
+      "narc": "NARC_a_0_3_9",
+      "file": 63,
+      "compressed": false,
+      "id": 3,
+      "extra": [
+        39,
+        39
+      ]
+    },
+    {
+      "narc": "NARC_poketool_icongra_poke_icon",
+      "file": 4,
+      "compressed": false,
+      "id": 4,
+      "extra": [
+        20,
+        20
+      ]
+    },
+    {
+      "narc": "NARC_graphic_plist_gra",
+      "file": 19,
+      "compressed": false,
+      "id": 5,
+      "extra": [
+        21,
+        21
+      ]
+    },
+    {
+      "narc": "NARC_a_0_1_5",
+      "file": 28,
+      "compressed": false,
+      "id": 6,
+      "extra": [
+        15,
+        15
+      ]
+    }
+  ]
+}

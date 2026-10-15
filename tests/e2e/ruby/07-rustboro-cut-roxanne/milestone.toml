@@ -1,0 +1,104 @@
+# Proves the Cutter's HM01 Cut and the first gym: Josh/Tommy, Roxanne (TRAINER_ROXANNE), FLAG_BADGE01_GET, TM39 Rock
+# Tomb, VAR_RUSTBORO_STATE 1 (arms the stolen-goods scene) and PETALBURG_GYM_STATE 3.
+# Start: Rustboro Pokemon Center (16,39) -> end: MAP_RUSTBORO_CITY at the gym door (27,20).
+title = "Rustboro: HM01 Cut and Roxanne's Stone Badge"
+priority = "P0"
+version = "both"
+estimate = 13228
+refs = [
+  "data/maps/RustboroCity/map.json warp_events[8] (9,38) -> CUTTERS_HOUSE",
+  "data/maps/RustboroCity_CuttersHouse/scripts.inc:4-13 (Cutter: ITEM_HM01_CUT, FLAG_RECEIVED_HM01)",
+  "data/maps/RustboroCity/map.json warp_events[0] (27,19) -> RUSTBORO_CITY_GYM",
+  "data/maps/RustboroCity_Gym/map.json object_events[0] ROXANNE (5,2), [1] Josh (7,12) sight 3, [2] Tommy (3,7) sight 3",
+  "data/maps/RustboroCity_Gym/scripts.inc:4-9 (trainerbattle_single TRAINER_ROXANNE)",
+  "data/maps/RustboroCity_Gym/scripts.inc:11-34 (RoxanneDefeated: FLAG_DEFEATED_RUSTBORO_GYM, FLAG_BADGE01_GET, RUSTBORO_STATE 1, addvar PETALBURG_GYM_STATE; TM39)",
+]
+notes = "Roxanne: TRAINER_ROXANNE (265): GEODUDE 14, NOSEPASS 15 (Water Gun is x4 on Geodude, x2 on Nosepass; the chained Mudkip is ~lv14 after the boost in 05 and the woods). Gym trainers: TRAINER_JOSH (320): GEODUDE 10, GEODUDE 8, GEODUDE 6; TRAINER_TOMMY (321): GEODUDE 11. R/S's Roxanne is trainerbattle_single (intro speech then the battle on one talk)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 19900
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 38
+note = "Cutter's house door (Rustboro warp 8)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY_CUTTERS_HOUSE"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "Cutter (object 1 (7,5)) -> giveitem ITEM_HM01_CUT, FLAG_RECEIVED_HM01 (RustboroCity_CuttersHouse/scripts.inc:4-13)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 8
+note = "exit mat (warp 0) -> Rustboro (9,38)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY"
+
+[[step]]
+do = "walk_to"
+x = 27
+z = 19
+note = "gym door (Rustboro warp 0) -> MAP_RUSTBORO_CITY_GYM (5,18)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY_GYM"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 3
+face = "up"
+interact = true
+note = "below Roxanne (5,2); Josh (7,12) and Tommy (3,7) fought on the way"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_ROXANNE (265): GEODUDE 14, NOSEPASS 15"
+
+[[step]]
+do = "advance_text"
+shot = "stone-badge"
+note = "RoxanneDefeated + TM39 Rock Tomb (RustboroCity_Gym/scripts.inc:11-34)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 18
+note = "exit mat (warp 0) -> Rustboro (27,19)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_RUSTBORO_CITY"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_RUSTBORO_CITY"
+badges = 1
+flags = ["FLAG_BADGE01_GET", "FLAG_DEFEATED_RUSTBORO_GYM", "FLAG_RECEIVED_TM_ROCK_TOMB", "FLAG_RECEIVED_HM01"]
+battles = 1
+
+[expect.vars]
+VAR_RUSTBORO_STATE = 1
+VAR_PETALBURG_GYM_STATE = 3

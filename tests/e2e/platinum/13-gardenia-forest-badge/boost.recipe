@@ -1,0 +1,7 @@
+# Boost on 12's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Six trainers' worth of the forest and no Pokemon Center since Floaroma; Bite (slot 3) is neutral on the
+# whole grass gym: TRAINER_LASS_CAROLINE CHERUBI 17, ROSELIA 17; TRAINER_AROMA_LADY_JENNA BUDEW 15/16/17;
+# TRAINER_AROMA_LADY_ANGELA ROSELIA 19; TRAINER_LEADER_GARDENIA TURTWIG 20, CHERRIM 20, ROSERADE 22
+# (res/trainers/data). party-level refills HP, party-move refills Bite's PP.
+party-level 0 34
+party-move 0 3 MOVE_BITE

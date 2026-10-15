@@ -1,0 +1,12 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31101
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# Mesprit's hide flag is set at new game (scr_seq 0377 @0x001A) and cleared by the Spear Pillar story
+# (scr_seq 0230 @0x0FD4)
+clear-flag 0x1FD
+party SPECIES_TURTWIG 15 ITEM_NONE
+# below Mesprit (12,13) (zone_event 0300 object 0); [INFERENCE] (12,14) walkable. Door (14,29) <- MAP_LAKE_VERITY_GALACTIC
+map MAP_VERITY_CAVERN 12 14 FACE_UP

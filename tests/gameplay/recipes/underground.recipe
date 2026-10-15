@@ -1,0 +1,13 @@
+# Oreburgh City with the Explorer Kit registered to Y and the Underground never
+# visited: Y opens the first-visit path (the comms confirm, the forced save, the
+# hole, Roark's intro). CanUseExplorerKit allows this main-matrix map.
+name GQ
+gender GENDER_MALE
+trainer-id 26091
+money 3000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+item ITEM_EXPLORER_KIT 1
+register-item ITEM_EXPLORER_KIT
+flag FLAG_RECEIVED_EXPLORER_KIT
+map MAP_HEADER_OREBURGH_CITY 0x12F 0x2F5 FACE_DOWN

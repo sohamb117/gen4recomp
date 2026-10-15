@@ -1,0 +1,4 @@
+# On 09's end save (Fennel's lab upstairs, zone 10; the C-Gear in hand): the lab's ground floor (zone 9), one tile
+# above its exit mat (zone_event 9 warp 0 (6..8,10) -> Striaton City, zone 6). The C-Gear cannot warp to the
+# Entralink indoors (msg 263 #8), so the run walks out into Striaton City, which loads its own objects.
+location 9 7 0 9

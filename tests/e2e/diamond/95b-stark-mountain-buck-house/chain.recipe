@@ -1,0 +1,3 @@
+# On 95's end save (the Magma Stone scene played: var 0x409E 1, Buck's hide flag 0x1F4 cleared): only the
+# station. West house door (4,8) (zone_event 0432 warp 0) <- MAP_SURVIVAL_AREA (650,338) (zone_event 0428 warp 0)
+warp MAP_SURVIVAL_AREA_WEST_HOUSE 0

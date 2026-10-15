@@ -1,0 +1,104 @@
+# Proves the Oreburgh Mine visit: Roark smashes the rock and returns to the gym, which hides Barry from the gym door.
+# Start: Oreburgh City warp 1 (Pokecenter door) -> end: inside Oreburgh Gym (08's start), Roark back.
+title = "Oreburgh Mine: Roark returns to the gym"
+priority = "P0"
+estimate = 13362
+refs = [
+  "scripts_oreburgh_mine_b1f.s:13-14",
+  "scripts_oreburgh_mine_b2f.s:13-59",
+  "scripts_oreburgh_mine_b2f.s:55-57",
+  "scripts_oreburgh_city.s:29-49",
+  "events_oreburgh_city (warps 11-15 (300..304,795) mine; warp 0 (282,756) gym)",
+  "events_oreburgh_mine_b1f (warps (11..13,1), (11..13,21))",
+  "events_oreburgh_mine_b2f (Roark (18,28) facing east; warp 0 (15,1))",
+  "TRAINER_WORKER_COLIN (195)",
+  "TRAINER_WORKER_MASON (196)",
+]
+notes = "The Workers have no sight (data []), so every battle on the way is wild: the walks flee them (on_battle), which saves ~650 frames a battle."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 20100
+
+[[step]]
+do = "heal"
+x = 303
+z = 756
+note = "Oreburgh Pokemon Center first: 06's trainers leave the starter low (seen: 6/40 HP, a whiteout in the mine). events_oreburgh_city warp 1"
+
+[[step]]
+do = "walk_to"
+x = 302
+z = 795
+note = "mine mouth (events_oreburgh_city warps 11-15) -> B1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_MINE_B1F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 21
+on_battle = "flee"
+note = "B1F stairs (11..13,21) -> B2F (15,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_MINE_B2F"
+
+[[step]]
+do = "walk_to"
+x = 18
+z = 29
+face = "up"
+interact = true
+on_battle = "flee"
+note = "Roark (18,28) between the rocks (17,28) and (19,28); (18,27) is wall, so talk from the south (probe grid of B2F: the row z=29 is open, z=27 is wall at x=6..25)"
+
+[[step]]
+do = "advance_text"
+shot = "roark-smashes"
+note = "Roark smashes the rock and leaves; FLAG_ROARK_RETURNED_TO_OREBURGH_GYM, FLAG_HIDE_OREBURGH_CITY_RIVAL (scripts_oreburgh_mine_b2f.s:55-57)"
+
+[[step]]
+do = "walk_to"
+x = 15
+z = 1
+on_battle = "flee"
+note = "B2F exit (warp 0) -> B1F"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_MINE_B1F"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 1
+on_battle = "flee"
+note = "B1F exit (warp 1) -> Oreburgh"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_CITY"
+
+[[step]]
+do = "walk_to"
+x = 282
+z = 756
+note = "gym door (warp 0); Barry (282,757) is hidden now, so 08 starts inside"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_OREBURGH_CITY_GYM"
+
+[[step]]
+do = "wait_field"
+
+[expect]
+map = "MAP_HEADER_OREBURGH_CITY_GYM"
+flags = ["FLAG_ROARK_RETURNED_TO_OREBURGH_GYM", "FLAG_HIDE_OREBURGH_CITY_RIVAL", "FLAG_FIRST_ARRIVAL_OREBURGH_MINE", "FLAG_HIDE_OREBURGH_MINE_B2F_ROARK"]

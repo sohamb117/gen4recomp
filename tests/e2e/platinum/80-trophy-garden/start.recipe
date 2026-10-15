@@ -1,0 +1,11 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26080
+money 3000
+
+# GetNationalDexEnabled gate (scripts_pokemon_mansion_office.s:31-95); same as SetNationalDexEnabled (pc_lab.c:789-793)
+national-dex 1
+pokedex 1
+party SPECIES_INFERNAPE 50 ITEM_NONE
+party-move 0 0 MOVE_FLAMETHROWER
+map MAP_HEADER_POKEMON_MANSION_OFFICE 16 9 FACE_UP

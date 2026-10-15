@@ -1,0 +1,23 @@
+# HeartGold/SoulSilver from a blank chip: the touch tutorial, Oak's introduction, the boy (default), the default
+# name (Chase) confirmed, to the field load in the bedroom. Copied verbatim from docs/HANDOFF-hgss.md:84-104 (the
+# schedule both games passed; the last intro frame is the boy's shrinking silhouette at ~16101). Frames are relative
+# to the schedule step, which is frame 0 of a blank-chip run; recorded at the real text speed (text_instant=0).
+1300:start
+1700:start
+2100:a:4:40:10
+3100:tap:220:170:4:80:30
+6100:tap:128:72:4
+6500:a:4
+6800:tap:128:147:4
+7200:tap:220:170:4:80:50
+11500:tap:70:140:4
+11900:tap:220:180:4:80:3
+12500:tap:60:80:4
+12800:tap:220:180:4
+13200:tap:190:55:4
+13500:tap:220:180:4:80:3
+14000:start:4
+14100:a:4
+14500:tap:220:180:4
+14800:tap:190:55:4
+15100:tap:220:180:4:80:20

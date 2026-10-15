@@ -1,0 +1,16 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31103
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# game completed: every script gate is CheckGameCompleted/CheckFlag 0x964 (scrcmd_flags.c:194-201 -> unk_0205EC84.c:55-56)
+flag 0x964
+# post-HoF rematch state: the Hall of Fame sets var 0x4098 5 (scr_seq 0192 @0x01D2) and clears 0x1E2 if 0x15F
+# (caught) is clear; ON_TRANSITION with 0x4098==5 clears 0x1E2 too (scr_seq 0230 @0x01AF-0x01B7)
+var 0x4098 5
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# Water/Dragon takes 2x from Dragon [INFERENCE: hand calc, lv47 ~170 HP]
+party-move 0 0 MOVE_DRAGON_CLAW
+# one tile below coord 7 (29..33,26) (zone_event 0217 coord 7); the Mt. Coronet climb is skipped by the map line
+map MAP_MOUNT_CORONET_SPEAR_PILLAR 31 27 FACE_UP

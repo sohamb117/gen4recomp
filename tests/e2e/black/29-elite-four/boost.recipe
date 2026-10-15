@@ -1,0 +1,14 @@
+# Boost on 28's end save (AUTHORING.md, Boosts): party levels and moves only, the story stays played.
+# The four rooms are fought back to back: the League's centre (137) does not let the player out to heal between them,
+# and no bot uses items. Scouting with the party at 62-70 lost to Shauntal's Ghosts; at 72-78 Black won the four with
+# only Sawk standing and White lost to Shauntal (the fourth room). So: Darmanitan (555) and Sawk (539) made again
+# (np_save5 set-mon) at 85 with coverage for the four types: Flare Blitz, Crunch (Ghost, Psychic), Rock Slide,
+# Earthquake; Close Combat (Dark), Stone Edge, Earthquake, Payback (Ghost, Psychic). Pansage (511) at 78 with Crunch,
+# Seed Bomb, Brick Break, Payback in place of Scratch/Leer/Lick/Vine Whip; Unfezant keeps Air Slash and Fly (Marshal) at
+# 80; Blitzle and Tepig levelled to 78.
+party-set 0 555 85 394 242 157 89
+party-set 1 511 78 242 402 280 371
+party-level 2 78
+party-level 3 80
+party-level 4 78
+party-set 5 539 85 370 444 89 371

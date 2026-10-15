@@ -1,0 +1,64 @@
+# Proves the starter scene: the gift box's three Pokémon, the choice (var 0x4030), Bianca's battle, Cheren healing
+# both, Cheren's battle, and the bedroom left to the player with the stairs open (var 0x4081 2).
+# Start: 01's save in the bedroom (zone 391, (7,4)) -> end: the bedroom, one Pokémon, 0x4081 = 2.
+title = "The gift box: the starter, Bianca's and Cheren's first battles"
+priority = "P0"
+version = "both"
+estimate = 14924
+refs = [
+  "zone_event 391 object 2 gfx 0xD0 (5,8) hidden by flag 0x2A8 -> scr 0782 script 9",
+  "scr 0782 @0x0220 msg 430 #11 (the gift box opened); @0x023A Cmd153 var 0x8020 (the choice)",
+  "scr 0782 @0x026F/@0x029F/@0x02BC SetVar 0x4030 0 Snivy (495) / 1 Tepig (498) / 2 Oshawott (501)",
+  "scr 0782 @0x02E6 GivePokemon var 0x8021 lv 5; @0x02F0 SetFlag 0x961",
+  "scr 0782 @0x0404/@0x0425/@0x0433 TrainerBattle trdata #59/#60/#61 (Bianca: Oshawott/Snivy/Tepig 5), mode 1",
+  "scr 0782 @0x0465 GetBattleResult -> msg 430 #37 (won) / #38 (lost): the scene goes on either way",
+  "scr 0782 @0x0513-@0x055A Cheren heals both (msg 430 #43/#45)",
+  "scr 0782 @0x0620/@0x0641/@0x064F TrainerBattle trdata #53/#54/#55 (Cheren: Tepig/Oshawott/Snivy 5), mode 1",
+  "scr 0782 @0x06BE-@0x06D2 RemoveObject 0/1, SetFlag 0x1F4/0x1F5/0x2A8, SetVar 0x4081 2",
+  "zone_event 391 trigger 0 (8,2) var 0x4081 == 1 -> scr 0782 script 6 (the stairs gate, msg 430 #8)",
+  "docs/BW_RAM.md (party, vars, flags, battle)",
+]
+notes = "Measured from the previous end save (CONTINUE included): Black 14592, White 14924 frames on the core of 2026-10-10 with the ARM7 VBlank-count fix (build/core-bwm2, instant text). Both battles are mode 1: a loss only changes the line. The A presses through the choice take Tepig (0x4030 = 1): Bianca sends Snivy (#60), Cheren Oshawott (#54); auto_battle drives the bottom screen's key cursor (docs/BW_RAM.md, Battle menu). The end save is made through the X menu, whose SAVE button moves once there is a party (bots.py _bw_save_tap)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 22500
+
+[[step]]
+do = "talk_to"
+id = 2
+shot = "gift-box"
+note = "the gift box (zone_event 391 object 2, (5,8)) -> scr 0782 script 9"
+
+[[step]]
+do = "advance_text"
+note = "A through the box's text and the choice: the cursor starts on Tepig (the proposal runs' A presses chose it, 0x4030 = 1) and A answers YES; Bianca's battle stops it"
+
+[[step]]
+do = "auto_battle"
+snap = "bianca-battle"
+note = "Bianca (trdata #60 Snivy 5 against Tepig), mode 1 (scr 0782 @0x0425)"
+
+[[step]]
+do = "advance_text"
+note = "Bianca's and Cheren's lines, the heal; Cheren's battle stops it"
+
+[[step]]
+do = "auto_battle"
+note = "Cheren (trdata #54 Oshawott 5 against Tepig), mode 1 (scr 0782 @0x0641)"
+
+[[step]]
+do = "advance_text"
+shot = "after-battles"
+note = "to the end of script 9: 0x4081 2 (@0x06D2), Cheren and Bianca gone"
+
+[expect]
+map = 391
+party_size = 1
+save = ['s["party"][0]["species"] == 498']
+flags = ["0x961", "0x1F4", "0x1F5", "0x2A8"]
+
+[expect.vars]
+"0x4081" = 2

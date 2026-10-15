@@ -1,0 +1,7 @@
+# Boost on 14's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Cut (HM01, received in 14) for the tree at (305,521) before the building door; the lead carries it (slot 0)
+# as a Grotle can learn it. Bite refilled for the building's grunts and
+# TRAINER_COMMANDER_JUPITER_TEAM_GALACTIC_ETERNA_BUILDING (406): ZUBAT 21, SKUNTANK 23.
+party-level 0 38
+party-move 0 0 MOVE_CUT
+party-move 0 3 MOVE_BITE

@@ -1,0 +1,63 @@
+# Azelf in Valor Cavern, freed by the Spear Pillar story: A -> LegendaryBattle 482, 50; defeating it takes
+# the caught path (SetFlag 0x126): it is gone for good. Uxie's twin station (../105-legendary-uxie-azelf).
+# Start: MAP_VALOR_CAVERN (16,15) below Azelf (16,14). End: same map.
+title = "Legendary: Azelf"
+priority = "P2"
+version = "both"
+estimate = 5000
+refs = [
+  "maps.h:320",
+  "zone_event 0303 object 0",
+  "scr_seq 0377 @0x001E",
+  "scr_seq 0230 @0x0FD8",
+  "scr_seq 0348 @0x0046-0x0075",
+  "scr_seq 0348 @0x0077-0x008E",
+  "scr_seq 0348 @0x00A9-0x00BA",
+  "scr_seq 0348 @0x00C2",
+  "msg 0275 #4",
+  "scr_seq 0192 @0x01A1-0x0217",
+  "games/diamond/arm9/src/scrcmd_7.c:236-244",
+  "games/diamond/arm9/asm/unk_020476CC.s:1207-1217",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 7500
+
+[[step]]
+do = "press"
+keys = "A"
+note = "Azelf SPRITE_SPPOKE3 (16,14), hidden 0x1FE (zone_event 0303 object 0)"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "PlayCry 482, SetFlag 0x8E, LegendaryBattle 482, 50 (scr_seq 0348 @0x0077-0x008E)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+
+[[step]]
+do = "auto_battle"
+note = "Garchomp lv100 Crunch (2x on Psychic). A-only never throws a ball"
+
+[[step]]
+do = "advance_text"
+max = 1500
+note = "defeated: Unk00ED (sub_020480C8) is 0 for a win or a catch -> SetFlag 0x126 (@0x00BA), no text; 'AZELF disappeared deep into the cavern...' (msg 275 #4, @0x00C2) is the run-away path"
+
+[[step]]
+do = "wait_field"
+shot = "after"
+
+[[shots]]
+frames = [2500]
+
+[expect]
+map = "MAP_VALOR_CAVERN"
+battles = 1
+flags = ["0x126"]
+flags_clear = ["0x8E"]

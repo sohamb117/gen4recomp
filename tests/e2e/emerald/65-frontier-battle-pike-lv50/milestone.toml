@@ -1,0 +1,153 @@
+# Proves the Battle Frontier's Battle Pike, Level 50: the attendant's menus, the choose-half party menu (three entries), the
+# save before the challenge, seven left doors: fourteen rooms, each hall and the room behind it, and the lobby's Battle Points.
+# Start: MAP_BATTLE_FRONTIER_BATTLE_PIKE_LOBBY (5,6) -> end: the lobby, the run won.
+title = "Battle Frontier: Battle Pike, a Level 50 run of fourteen rooms"
+priority = "P1"
+estimate = 36314
+refs = [
+  "data/maps/BattleFrontier_BattlePikeLobby/scripts.inc (attendant, MULTI_CHALLENGEINFO, MULTI_LEVEL_MODE, ChoosePartyForBattleFrontier, save, WonChallenge)",
+  "data/maps/BattleFrontier_BattlePikeBattleRoom/scripts.inc (opponents, MULTI_GO_ON_RECORD_REST_RETIRE)",
+  "data/maps/BattleFrontier_BattlePikeThreePathRoom/map.json coord_events (2,3)/(6,3)/(10,3) the three doors",
+  "data/maps/BattleFrontier_BattlePikeRoomNormal/scripts.inc:12-260 (room types: single, double, hard battle, full heal, status; the exit coord (4,3))",
+  "data/scripts/battle_pike.inc:148-180 (the exit: PIKE_DATA_WIN_STREAK, FRONTIER_DATA_BATTLE_NUM, pike_isfinalroom -> ROOM_FINAL)",
+]
+notes = "Each door opens a random room (src/battle_pike.c): a trainer, a double battle, a hard battle, wild Pokemon in the grass, a heal or a status attack; the walk to each room exit fights and reads what comes."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 54500
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the attendant (BattleFrontier_BattlePikeLobby/map.json object_events[0])"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_CHALLENGEINFO: CHALLENGE (BattleFrontier_BattlePikeLobby/scripts.inc)"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 3
+note = "MULTI_LEVEL_MODE: LV. 50"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 120
+note = "'select three Pokemon', the fade to the choose-half party menu (special ChoosePartyForBattleFrontier)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 0: ENTER/SUMMARY/CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "ENTER"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "slot 1 entered"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+shot = "entry-three"
+note = "slot 2 entered: the cursor moves to CONFIRM"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 90
+note = "CONFIRM"
+
+[[step]]
+do = "menu"
+choose = 0
+count = 2
+note = "'okay to save?' YES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+times = 60
+until = "map_id!=6690"
+note = "Common_EventScript_SaveGame's dialog answered with A, the walk out of the lobby"
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_PIKE_THREE_PATH_ROOM"
+note = "the corridor: the attendant's words and the walk to the three-path room"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 3
+note = "the first door: the left (ThreePathRoom coord (2,3) LeftRoomWarp; RoomWarp counts the hall and draws the room, data/scripts/battle_pike.inc:72-100)"
+
+[[step]]
+do = "wait_frames"
+n = 180
+shot = "pike-room-1"
+note = "behind the door: a room the game drew (src/battle_pike.c GetRoomType)"
+
+[[step]]
+do = "repeat"
+until = "map_id=6694"
+max_rounds = 400
+note = "the rest of the fourteen rooms (each three-path hall and the room behind its door count one each: RoomWarp and the exit both add to FRONTIER_DATA_BATTLE_NUM), in the order the game draws them (src/battle_pike.c GetRoomType): in the three-path room (6692) the left door (coord (2,3) LeftRoomWarp); in a normal room (6693) or the wild-Pokemon room (6695) whatever it holds (a battle fought, text read, wild Pokemon in the grass) and its exit (4,3) (data/scripts/battle_pike.inc:148-180); until the fourteenth exit warps to ROOM_FINAL (6694, pike_isfinalroom)"
+steps = [
+  {do = "walk_to", x = 2, z = 3, if = "map_id=6692"},
+  {do = "wait_frames", n = 180, if = "map_id=6692"},
+  {do = "walk_to", x = 4, z = 3, max = 12000, if = "map_id=6693"},
+  {do = "wait_frames", n = 180, if = "map_id=6693"},
+  {do = "walk_to", x = 4, z = 3, max = 12000, if = "map_id=6695"},
+  {do = "wait_frames", n = 180, if = "map_id=6695"},
+]
+
+[[step]]
+do = "advance_text"
+map = "MAP_BATTLE_FRONTIER_BATTLE_PIKE_LOBBY"
+note = "the fourteenth room's exit: ROOM_FINAL, 'congratulations', back to the lobby (BattlePikeRoomFinal/scripts.inc)"
+
+[[step]]
+do = "advance_text"
+shot = "pike-won"
+note = "WonChallenge: Battle Points; the record YES/NO's default NO taken by A"
+
+[expect]
+map = "MAP_BATTLE_FRONTIER_BATTLE_PIKE_LOBBY"
+save = ['s["location"]["map"] == 6690']

@@ -1,0 +1,6 @@
+# Boost on 11's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Without it the lead walks into Mars worn down by the door grunt and the windworks grunts and blacks out to a
+# Pokemon Center (seen chained: ended in MAP_OREBURGH_POKECENTER_1F). Opponents: trdata.json #843 GLAMEOW 11,
+# #295 ZUBAT 14 + PURUGLY 16, #298 CASCOON 11, #299 WURMPLE 10 + GLAMEOW 10, Route 205 South #16-#23: Bite (slot 0,
+# 11's boost) is neutral on all of them; level 30 with HP full.
+party-level 0 30

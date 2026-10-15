@@ -1,0 +1,11 @@
+#include <nitro/fs/overlay.h>
+#pragma once
+.public GF_AssertFail
+.public MapHeader_GetRegionNo
+.public Save_VarsFlags_Get
+.public BattleSetup_GetWildTransitionEffect
+.public BattleSetup_GetWildBattleMusic
+.public GetFirstAliveMonInParty_CrashIfNone
+.public Save_VarsFlags_FlypointFlagAction
+.public GetMonData
+.public ov01_021F0D20

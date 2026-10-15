@@ -1,0 +1,5 @@
+# Boost on 11's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# 11 ends with the lead at a third of its HP and Bite near 0 PP, and the forest has no Pokemon Center (seen: a
+# whiteout in the Jack/Briana double). party-level refills HP, party-move refills Bite's PP.
+party-level 0 32
+party-move 0 3 MOVE_BITE

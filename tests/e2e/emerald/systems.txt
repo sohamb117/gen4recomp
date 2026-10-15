@@ -1,0 +1,38 @@
+# Emerald side systems, run with --systems: each starts from its start.recipe minted on the new-game base save (68
+# continues 67's end save, ../ruby/67 continues ../ruby/66's).
+# Emerald-only systems first: the Battle Frontier (60-66), Lilycove's contest (67) and Berry Blender (68).
+# Then the systems Emerald shares with Ruby/Sapphire. A ../ruby dir is listed where it was run on Emerald unchanged and
+# proves the system there (its shots and end save checked against Emerald's own scripts, maps, menus and save layout);
+# an Emerald dir (70-) where Emerald differs, its notes saying how. Not ported:
+# - ruby/68 Berry Blender and ruby/69 contest: Emerald blends and holds contests only in Lilycove's Contest Lobby (67, 68).
+# - ruby/71 Battle Tower: Emerald's Battle Tower is the Battle Frontier's (60).
+# - ruby/74 Mystery Events: unreachable in Emerald (the profile man's secret saying sets nothing, and the main menu never
+#   checks FLAG_SYS_MYSTERY_EVENT_ENABLE: src/main_menu.c:643-647); 77 proves the menu gate Emerald has, Mystery Gift's.
+# Emerald dirs in place of R/S's: 70 (ruby/60), 71 (63), 72 (64), 73 (65), 74 (70), 75 Match Call (72 Trainer's Eyes),
+# 76 (73), 81 and 82 (81, 82).
+# P1
+60-frontier-battle-tower-lv50-singles
+61-frontier-battle-factory-lv50
+62-frontier-battle-arena-lv50
+63-frontier-battle-palace-lv50
+64-frontier-battle-dome-lv50
+65-frontier-battle-pike-lv50
+66-frontier-battle-pyramid-lv50
+67-contest-lilycove-normal-rank-win
+68-berry-blender-lilycove-pokeblock
+70-daycare-deposit-egg-hatch
+../ruby/61-pc-storage-box-moves
+../ruby/62-fishing-old-good-super-rod
+71-hm-fly-surf-dive-waterfall
+72-trick-house-puzzle-1
+73-secret-base-secret-power-decorate
+../ruby/66-berry-plant-water
+../ruby/67-berry-harvest
+74-safari-zone-catch
+75-pokenav-match-call
+76-tv-lati-news
+77-mystery-gift-questionnaire
+# P2
+../ruby/80-mirage-island
+81-sky-pillar-rayquaza-catch
+82-regis-braille-sealed-chamber

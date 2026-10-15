@@ -1,0 +1,10 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26095
+money 3000
+party SPECIES_TURTWIG 15 ITEM_NONE
+# base Poketch (enable+register+select, pc_lab.c:992-1007), as JubilifeCity_GivePoketch leaves it
+poketch POKETCH_APPID_DIGITALWATCH
+# Poketch owned state (scripts_jubilife_city.s:1426-1435)
+var VAR_JUBILIFE_CITY_STATE 2
+warp MAP_HEADER_GRAND_LAKE_ROUTE_213_NORTHEAST_HOUSE 0

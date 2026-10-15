@@ -1,0 +1,5 @@
+# Boost on 29's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# Party: 0 TYPHLOSION, 1 TOGEPI, 2 SCYTHER (Cut, Wing Attack, Pursuit, Quick Attack), 3 AMPHAROS, 4 PELIPPER,
+# 5 FERALIGATR. Headbutt is the Ilex Forest tutor's (scr_seq_0092_D36R0101.s:1112-1165), not on the chain's way, so
+# the boost gives it: SCYTHER, in Pursuit's place.
+party-move 2 2 MOVE_HEADBUTT

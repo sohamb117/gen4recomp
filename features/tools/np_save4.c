@@ -1,16 +1,19 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /*
- * np_save4: inspect and edit Diamond/Pearl/Platinum saves.
+ * np_save4: inspect and edit Diamond/Pearl/Platinum/HeartGold/SoulSilver saves.
  *
  *   np_save4 dump [<rom.nds>] <save.sav>        JSON summary (names from ROM)
+ *   np_save4 gamedata <rom.nds>                  JSON battle tables: species
+ *                                                types, moves, type chart
  *   np_save4 verify <save.sav>                   checksum / copy report
  *   np_save4 set-money <save> <n>
  *   np_save4 set-coins <save> <n>
  *   np_save4 set-name <save> <name>
  *   np_save4 set-ids <save> <tid> <sid>
  *   np_save4 set-badges <save> <mask>
+ *   np_save4 set-kanto-badges <save> <mask>      HeartGold/SoulSilver only
  *   np_save4 set-item <save> <pocket> <slot> <item> <qty>
- *   np_save4 set-flag <save> <id|FLAG_NAME> <0|1>
+ *   np_save4 set-flag <save> <id|FLAG_NAME> <0|1>   names: Platinum only
  *   np_save4 set-var <save> <id|VAR_NAME> <value>
  *   np_save4 set-dex <save> <species> none|seen|caught
  *   np_save4 set-national-dex <save> <0|1>
@@ -20,6 +23,16 @@
  *   np_save4 remove-gift <save> <card slot 1-3>
  *   np_save4 set-box-name <save> <box 1-18> <name>
  *   np_save4 add-mon <save> <rom.nds> <species> <level> [move...]   party Pokemon
+ *   np_save4 add-box-mon <save> <rom.nds> <species> <level> [move...]   the same, in the first empty box slot
+ *   np_save4 set-move <save> <rom.nds> <slot> <index> <move>   a party Pokemon's move (full PP)
+ *   np_save4 set-level <save> <rom.nds> <slot> <level>   a party Pokemon's level (stats recalculated)
+ *   np_save4 set-condition <save> <slot> <cool> <beauty> <cute> <smart> <tough> <sheen>   a party Pokemon's
+ *                                                contest conditions (what fed poffins leave; the e2e `condition`)
+ *   np_save4 heal-party <save> <rom.nds>   the party's HP, status and PP restored (a Pokemon Center's)
+ *   np_save4 set-location <save> <map> <x> <z> [<dir> [<y>]]   HG/SS: where CONTINUE starts
+ *                                                (dir 0 up 1 down 2 left 3 right, default 1;
+ *                                                 y: map-object height, default the saved one;
+ *                                                 save4.h save4_set_location's caveats apply)
  *
  * Edits write back in place after copying the original to <save>.bak, or to
  * the path given with a trailing `-o <out>`.
@@ -46,12 +59,15 @@ static int usage(void)
     fprintf(stderr,
             "usage:\n"
             "  %s dump [<rom.nds>] <save.sav>\n"
+            "  %s gamedata <rom.nds>\n"
             "  %s verify <save.sav>\n"
             "  %s set-money <save> <n>\n"
             "  %s set-coins <save> <n>\n"
             "  %s set-name <save> <name>\n"
             "  %s set-ids <save> <tid> <sid>\n"
             "  %s set-badges <save> <mask>\n"
+            "  %s set-kanto-badges <save> <mask>\n"
+            "  %s set-location <save> <map> <x> <z> [<dir> [<y>]]\n"
             "  %s set-item <save> <pocket> <slot> <item> <qty>\n"
             "      pockets: items key_items tms_hms mail medicine berries balls battle_items\n"
             "  %s set-flag <save> <id|FLAG_NAME> <0|1>\n"
@@ -64,10 +80,15 @@ static int usage(void)
             "  %s remove-gift <save> <card slot 1-3>\n"
             "  %s set-box-name <save> <box 1-18> <name>\n"
             "  %s add-mon <save> <rom.nds> <species> <level> [move id...]\n"
+            "  %s add-box-mon <save> <rom.nds> <species> <level> [move id...]\n"
+            "  %s set-move <save> <rom.nds> <party slot 0-5> <move index 0-3> <move id>\n"
+            "  %s set-level <save> <rom.nds> <party slot 0-5> <level 1-100>\n"
+            "  %s set-condition <save> <party slot 0-5> <cool> <beauty> <cute> <smart> <tough> <sheen>\n"
+            "  %s heal-party <save> <rom.nds>\n"
             "edits accept a trailing `-o <out.sav>`; otherwise the save is\n"
             "rewritten in place after backing it up to <save>.bak\n",
             prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog, prog,
-            prog);
+            prog, prog, prog, prog, prog, prog, prog, prog, prog);
     return EXIT_USAGE;
 }
 
@@ -185,7 +206,8 @@ static void jname(FILE *o, nd_text_kind kind, uint32_t id)
 /* enum MysteryGiftType order (save4.h SAVE4_MG_*). */
 static const char *const kGiftTypes[SAVE4_MG_TYPE_MAX] = {
     NULL,          "pokemon",     "egg",         "item",        "battle_reg",  "decoration", "cosmetics",
-    "manaphy_egg", "member_card", "oaks_letter", "azure_flute", "poketch_app", "secret_key", "unknown"};
+    "manaphy_egg", "member_card", "oaks_letter", "azure_flute", "poketch_app", "secret_key", "unknown",
+    "pokewalker_course", "memorial_photo"};
 
 static const char *gift_type_name(uint16_t type)
 {
@@ -246,13 +268,23 @@ static void dump_mon(FILE *o, const pkm4 *p, save4_status dst, int full)
     }
     fprintf(o, "], \"ivs\": [%u, %u, %u, %u, %u, %u]", i.ivs[0], i.ivs[1], i.ivs[2], i.ivs[3], i.ivs[4], i.ivs[5]);
     fprintf(o, ", \"evs\": [%u, %u, %u, %u, %u, %u]", i.evs[0], i.evs[1], i.evs[2], i.evs[3], i.evs[4], i.evs[5]);
+    fprintf(o, ", \"conditions\": [%u, %u, %u, %u, %u, %u]", i.contest[0], i.contest[1], i.contest[2], i.contest[3],
+            i.contest[4], i.contest[5]);   /* cool, beauty, cute, smart, tough, sheen */
     fprintf(o, ", \"friendship\": %u, \"ot_name\": ", i.friendship);
     jstr(o, i.ot_name);
     fprintf(o, ", \"tid\": %u, \"sid\": %u, \"met_location\": {\"id\": %u, \"name\": ", i.tid, i.sid, i.met_location);
     jstr(o, g_names ? nd_location_name(g_names, i.met_location) : NULL);
     fprintf(o, "}, \"met_level\": %u, \"ball\": {\"id\": %u, \"name\": ", i.met_level, i.ball);
-    jname(o, ND_TEXT_ITEMS, i.ball); /* ball ids equal their item ids in Gen 4 */
+    /* Ball ids equal their item ids up to the Cherish Ball (16); HG/SS's Apricorn balls BALL_FAST 17..BALL_SPORT 24
+     * are items 492..499 (pokeheartgold src/pokemon.c MON_DATA_POKEBALL, include/constants/items.h). */
+    jname(o, ND_TEXT_ITEMS, i.ball >= 17 && i.ball <= 24 ? i.ball + (492u - 17u) : i.ball);
     fputc('}', o);
+    /* block C's u64 ribbonsDS2 (Platinum struct_defs/pokemon.h), canonical offset 0x08 + 2 * 0x20 + 0x18: the Super
+     * Contest ribbons, bit 0 = MON_DATA_SUPER_COOL_RIBBON (Normal rank) on (pokemon.c GetRibbon) */
+    uint64_t ds2 = 0;
+    for (int b = 7; b >= 0; b--)
+        ds2 = ds2 << 8 | p->data[0x60 + b];
+    fprintf(o, ", \"super_contest_ribbons\": %llu", (unsigned long long)ds2);
     if (i.has_party_data)
         fprintf(o, ", \"hp\": %u, \"stats\": [%u, %u, %u, %u, %u, %u], \"status\": %u", i.hp, i.stats[0], i.stats[1],
                 i.stats[2], i.stats[3], i.stats[4], i.stats[5], i.status);
@@ -280,6 +312,310 @@ static int open_rom(const char *path, FILE **fp, nd_rom *rom)
     return 0;
 }
 
+/* The Hall of Fame: the extra save block written by Platinum's ClearGame (src/clear_game.c
+ * ClearGame_AddHallOfFameEntry, SaveDataExtra_Save in src/savedata.c) and D/P's CallTask_GameClear (SaveHallOfFame,
+ * arm9/src/unk_02022504.c; chunk header UNK_020EE6E0[0] in arm9/src/save_arrays.c). It sits at sector 32 of each
+ * copy in both: 0x20000 primary, 0x60000 backup, each a HallOfFame (30 entries of six 0x3C-byte HallOfFamePokemon
+ * (D/P: struct HOFMon) + a u16 year, u8 month, u8 day, then u32 nextEntryIndex, u32 totalEntriesCount;
+ * include/hall_of_fame_entries.h, D/P include/hall_of_fame.h) and a footer (u32 signature 0x20060623, u32
+ * saveCounter, u32 size, u16 id 0, u16 CRC16 of everything before it; D/P CreateChunkFooter, arm9/src/save.c).
+ * HG/SS keep the same HallOfFame and SaveArrayFooter (pokeheartgold include/hall_of_fame.h, include/save.h,
+ * src/save.c CreateChunkFooter) at sector SAVE_PAGE_MAX = 35 (gExtraSaveChunkHeaders[0], src/save_arrays.c), so
+ * 0x23000 and 0x63000. The valid copy with the higher counter is dumped: the entry count and the latest entry
+ * (date, species and levels). null: no valid copy (no Hall of Fame entered yet). */
+#define HOF_MON_SIZE 0x3C
+#define HOF_ENTRY_SIZE (6 * HOF_MON_SIZE + 4)
+#define HOF_ENTRIES 30
+#define HOF_SIZE (HOF_ENTRIES * HOF_ENTRY_SIZE + 8)
+
+static uint32_t le32(const uint8_t *p) { return p[0] | p[1] << 8 | p[2] << 16 | (uint32_t)p[3] << 24; }
+static uint16_t le16(const uint8_t *p) { return (uint16_t)(p[0] | p[1] << 8); }
+
+static void dump_hall_of_fame(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    const uint8_t *best = NULL;
+    uint32_t best_counter = 0;
+    const size_t copies[2] = {save4_game_is_hgss(s->game) ? 0x23000 : 0x20000,
+                              save4_game_is_hgss(s->game) ? 0x63000 : 0x60000};
+    for (int c = 0; c < 2; c++) {
+        if (copies[c] + HOF_SIZE + 16 > len)
+            continue;
+        const uint8_t *body = img + copies[c], *ft = body + HOF_SIZE;
+        if (le32(ft) != 0x20060623 || le32(ft + 8) != HOF_SIZE || le16(ft + 12) != 0 ||
+            le16(ft + 14) != save4_crc16(body, HOF_SIZE + 14))
+            continue;
+        if (!best || le32(ft + 4) > best_counter) {
+            best = body;
+            best_counter = le32(ft + 4);
+        }
+    }
+    if (!best) {
+        fputs("  \"hall_of_fame\": null,\n", o);
+        return;
+    }
+    uint32_t next = le32(best + HOF_ENTRIES * HOF_ENTRY_SIZE), total = le32(best + HOF_ENTRIES * HOF_ENTRY_SIZE + 4);
+    fprintf(o, "  \"hall_of_fame\": {\"total\": %u, \"latest\": ", total);
+    if (!total || next >= HOF_ENTRIES) {
+        fputs("null},\n", o);
+        return;
+    }
+    const uint8_t *e = best + ((next + HOF_ENTRIES - 1) % HOF_ENTRIES) * HOF_ENTRY_SIZE;
+    const uint8_t *date = e + 6 * HOF_MON_SIZE;
+    fprintf(o, "{\"date\": \"%04u-%02u-%02u\", \"party\": [", 2000u + le16(date), date[2], date[3]); /* RTCDate year 0-99 */
+    for (int i = 0, n = 0; i < 6; i++) {
+        const uint8_t *m = e + i * HOF_MON_SIZE;
+        if (!le16(m))
+            continue;
+        fprintf(o, "%s{\"species\": %u, \"species_name\": ", n++ ? ", " : "", le16(m));
+        jname(o, ND_TEXT_SPECIES, le16(m));
+        fprintf(o, ", \"level\": %u}", m[2]);
+    }
+    fputs("]}},\n", o);
+}
+
+/* Platinum's Daycare (struct_defs/daycare.h) in the general block: two DaycareMon (BoxPokemon, DaycareMail,
+ * u32 steps; 0xEC each), then u32 offspringPersonality (an egg waiting when non-zero) and u8 stepCounter (the
+ * egg-cycle counter). Offset found by scanning lab saves for valid BoxPokemon (save_table.c sums the page sizes).
+ * HG/SS's Daycare (pokeheartgold include/daycare.h: mons[2], egg_pid, egg_cycles) has the same shape; its offset was
+ * found the same way, from the PIDs of two Pokemon deposited on Route 34 (tests/e2e/heartgold/73).
+ * Diamond/Pearl's Daycare (pokediamond include/daycare.h: mons[2], egg_pid, egg_cycles) has the same shape too: save
+ * chunk 8, after the Pokedex (chunk 7 at 0x12DC; arm9/src/save_arrays.c:75-76). Its offset was found the same way,
+ * from the PIDs of the two BIBAREL deposited in Solaceon (tests/e2e/diamond/72): 0x141C, not the Pokedex's end. */
+#define PT_DAYCARE_OFF 0x1654
+#define HGSS_DAYCARE_OFF 0x15FC
+#define DP_DAYCARE_OFF 0x141C
+#define DAYCARE_MON_SIZE 0xEC
+
+static void dump_daycare(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    uint32_t off = s->game == SAVE4_GAME_PT ? PT_DAYCARE_OFF
+                   : save4_game_is_hgss(s->game) ? HGSS_DAYCARE_OFF
+                   : s->game == SAVE4_GAME_DP ? DP_DAYCARE_OFF : 0;
+    if (!off || base + off + 2 * DAYCARE_MON_SIZE + 5 > len) {
+        fputs("  \"daycare\": null,\n", o);
+        return;
+    }
+    const uint8_t *d = img + base + off;
+    fputs("  \"daycare\": {\"mons\": [", o);
+    for (int i = 0, n = 0; i < 2; i++) {
+        const uint8_t *m = d + i * DAYCARE_MON_SIZE;
+        pkm4 p;
+        save4_status st = pkm4_decrypt(m, PKM4_BOX_SIZE, &p);
+        if (pkm4_is_empty(&p))
+            continue;
+        fputs(n++ ? ", {" : "{", o);
+        dump_mon(o, &p, st, 0);
+        fprintf(o, ", \"steps\": %u}", le32(m + DAYCARE_MON_SIZE - 4));
+    }
+    fprintf(o, "], \"egg_waiting\": %s, \"step_counter\": %u},\n",
+            le32(d + 2 * DAYCARE_MON_SIZE) ? "true" : "false", d[2 * DAYCARE_MON_SIZE + 4]);
+}
+
+/* Platinum's SpecialEncounter roamers (struct_defs/special_encounter.h) in the general block: PlayerRecentRoutes
+ * (int current, previous map), then ROAMING_SLOT_MAX (6) Roamer of 20 bytes (int map, u32 ivs, u32 personality,
+ * u16 species, u16 hp, u8 level, status, active). Offset found by scanning played saves for the activated
+ * Mesprit (slot 0), Cresselia (slot 1) and Moltres (slot 3).
+ * HG/SS's RoamerSaveData (pokeheartgold include/roamer.h: u32 rand[2], playerLocationHistory[2], Roamer
+ * data[ROAMER_MAX 4] of the same 20 bytes, u8 locations[4] (ROAMER_LOC_* indices into field_roamer.c's
+ * sRoamerLocations)) sits at HGSS_ROAMERS_OFF; found by scanning saves past the Burned Tower (chain 14) for the
+ * activated Raikou (slot 0) and Entei (slot 1). Its Roamer.map is the map the roamer is on now. */
+#define PT_ROAMERS_OFF 0x7FF4
+#define HGSS_ROAMERS_OFF 0x68A4
+#define ROAMER_SIZE 20
+#define ROAMER_SLOTS 6
+#define HGSS_ROAMER_SLOTS 4
+
+static void dump_roamers(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    int hgss = save4_game_is_hgss(s->game);
+    uint32_t off = s->game == SAVE4_GAME_PT ? PT_ROAMERS_OFF : hgss ? HGSS_ROAMERS_OFF + 16 : 0;
+    int slots = hgss ? HGSS_ROAMER_SLOTS : ROAMER_SLOTS;
+    if (!off || base + off + slots * ROAMER_SIZE + (hgss ? slots : 0) > len) {
+        fputs("  \"roamers\": null,\n", o);
+        return;
+    }
+    const uint8_t *r = img + base + off;
+    fprintf(o, "  \"roamers\": {\"player_map\": %d, \"player_previous_map\": %d, \"slots\": [", (int32_t)le32(r - 8),
+            (int32_t)le32(r - 4));
+    for (int i = 0, n = 0; i < slots; i++) {
+        const uint8_t *m = r + i * ROAMER_SIZE;
+        if (!le16(m + 12))
+            continue;
+        fprintf(o, "%s{\"slot\": %d, \"species\": %u, \"species_name\": ", n++ ? ", " : "", i, le16(m + 12));
+        jname(o, ND_TEXT_SPECIES, le16(m + 12));
+        fprintf(o, ", \"level\": %u, \"hp\": %u, \"map\": %d, \"active\": %s", m[16], le16(m + 14), (int32_t)le32(m),
+                m[18] ? "true" : "false");
+        if (hgss)
+            fprintf(o, ", \"location\": %u", r[slots * ROAMER_SIZE + i]);
+        fputc('}', o);
+    }
+    fputs("]},\n", o);
+}
+
+/* HG/SS's Gymmick (pokeheartgold include/gymmick.h: GymmickType type, GymmickUnion data, a 0x20-byte union): the
+ * puzzle state of the gym the player last entered. Found by scanning a save made inside Vermilion Gym (91) for
+ * type GYMMICK_VERMILION (3) followed by two trash cans that are neighbours in gymmick_init.c's sTrashCans.
+ * Vermilion's part (switches[2], gates[2]) is the two switch cans (VermilionGymCanCheck ids, the gym's bg events
+ * 0-14) and whether each lock is open. */
+#define HGSS_GYMMICK_OFF 0x22B0
+#define GYMMICK_VERMILION 3
+
+static void dump_gymmick(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (!save4_game_is_hgss(s->game) || base + HGSS_GYMMICK_OFF + 0x24 > len) {
+        fputs("  \"gymmick\": null,\n", o);
+        return;
+    }
+    const uint8_t *g = img + base + HGSS_GYMMICK_OFF;
+    fprintf(o, "  \"gymmick\": {\"type\": %u", le32(g));
+    if (le32(g) == GYMMICK_VERMILION)
+        fprintf(o, ", \"vermilion\": {\"switches\": [%u, %u], \"gates\": [%u, %u]}", g[4], g[5], g[6], g[7]);
+    fputs("},\n", o);
+}
+
+/* Platinum's SpecialEncounter.trophyGarden (struct_defs/special_encounter.h: BOOL unused, u16 slot1, slot2), 8
+ * bytes after the block's start (int marshDaily, swarmDaily): Mr. Backlot's daily Pokemon as indices into the
+ * garden's 16-entry list (encounters_trophy_garden.json), 0xFFFF empty. Offset found by diffing a save before and
+ * after Backlot's daily mon (80); the roamers above sit 0xD0 further on. */
+#define PT_TROPHY_GARDEN_OFF 0x7F30
+
+static void dump_trophy_garden(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_TROPHY_GARDEN_OFF + 4 > len) {
+        fputs("  \"trophy_garden\": null,\n", o);
+        return;
+    }
+    const uint8_t *g = img + base + PT_TROPHY_GARDEN_OFF;
+    fputs("  \"trophy_garden\": [", o);
+    for (int i = 0, n = 0; i < 2; i++)
+        if (le16(g + 2 * i) != 0xFFFF)
+            fprintf(o, "%s%u", n++ ? ", " : "", le16(g + 2 * i));
+    fputs("],\n", o);
+}
+
+/* Platinum's PoffinCase (poffin.h) in the general block: 100 Poffin of 8 bytes (type, spiciness, dryness,
+ * sweetness, bitterness, sourness, smoothness, dummy); a slot whose type is past POFFIN_TYPE_MILD (28) is empty.
+ * Offset found by diffing a save before and after cooking one poffin (77). */
+#define PT_POFFINS_OFF 0x52E8
+#define POFFIN_SLOTS 100
+
+static void dump_poffins(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_POFFINS_OFF + POFFIN_SLOTS * 8 > len) {
+        fputs("  \"poffins\": null,\n", o);
+        return;
+    }
+    const uint8_t *c = img + base + PT_POFFINS_OFF;
+    fputs("  \"poffins\": [", o);
+    for (int i = 0, n = 0; i < POFFIN_SLOTS; i++) {
+        const uint8_t *q = c + i * 8;
+        if (q[0] > 28)
+            continue;
+        fprintf(o, "%s{\"slot\": %d, \"type\": %u, \"flavors\": [%u, %u, %u, %u, %u], \"smoothness\": %u}",
+                n++ ? ", " : "", i, q[0], q[1], q[2], q[3], q[4], q[5], q[6]);
+    }
+    fputs("],\n", o);
+}
+
+/* Platinum's Underground (underground.h) tail in the general block: u32 minedPlates, then u8 goodsPC[200],
+ * traps[40], goodsBag[40], treasure[40], sphereTypes[40], sphereSizes[40], placedGoodSlots[15], stepCount and a
+ * byte holding shouldSpawnNewBuriedObjects (low 4 bits) and hasMined (high 4). A zero is an empty slot. Offset
+ * found by scanning a lab save stocked with known spheres, traps and goods (92's recipe). Values are the
+ * generated sphere_types/traps/goods/treasure enums. */
+#define PT_UG_PLATES_OFF 0x446C
+
+static void dump_ug_bag(FILE *o, const char *key, const uint8_t *b, int n)
+{
+    fprintf(o, "\"%s\": [", key);
+    for (int i = 0, k = 0; i < n; i++)
+        if (b[i])
+            fprintf(o, "%s%u", k++ ? ", " : "", b[i]);
+    fputs("]", o);
+}
+
+static void dump_underground(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_UG_PLATES_OFF + 0x1A5 > len) {
+        fputs("  \"underground\": null,\n", o);
+        return;
+    }
+    const uint8_t *u = img + base + PT_UG_PLATES_OFF;
+    const uint8_t *types = u + 4 + 200 + 40 * 3, *sizes = types + 40;
+    fprintf(o, "  \"underground\": {\"mined_plates\": %u, ", le32(u));
+    dump_ug_bag(o, "goods_pc", u + 4, 200);
+    fputs(", ", o);
+    dump_ug_bag(o, "traps", u + 4 + 200, 40);
+    fputs(", ", o);
+    dump_ug_bag(o, "goods", u + 4 + 240, 40);
+    fputs(", ", o);
+    dump_ug_bag(o, "treasures", u + 4 + 280, 40);
+    fputs(", \"spheres\": [", o);
+    for (int i = 0, k = 0; i < 40; i++)
+        if (types[i])
+            fprintf(o, "%s{\"type\": %u, \"size\": %u}", k++ ? ", " : "", types[i], sizes[i]);
+    fprintf(o, "], \"has_mined\": %s},\n", (sizes[40 + 15 + 1] >> 4) ? "true" : "false");
+}
+
+/* Platinum's GameRecords (game_records.h: u32 recordsU32[71], u16 recordsU16[77], u16 padding, EncodingSeed
+ * {u16 byteSum, u16 modifier}) in the general block. recordsU32[0] (RECORD_STEPS) is stored plain; the rest, up
+ * to the seed, is EncodeData'd (math_util.c: each u16 XORed with the LCRNG stream from byteSum + (modifier << 16),
+ * game_records.c EncodeGameRecords), and byteSum is the plain bytes' sum. Offset found by scanning the general
+ * block for the one 0x1BC window whose decoded bytes sum to its byteSum (a save that watched TV once reads
+ * RECORD_WATCHED_TV 1). Printed as a list indexed by record id (generated/game_records.txt order). */
+#define PT_GAME_RECORDS_OFF 0x61B0
+#define PT_GAME_RECORDS_U32 71
+#define PT_GAME_RECORDS_U16 77
+#define PT_GAME_RECORDS_SEED (PT_GAME_RECORDS_U32 * 4 + PT_GAME_RECORDS_U16 * 2 + 2)
+
+static void dump_game_records(FILE *o, const save4 *s)
+{
+    size_t len = 0;
+    const uint8_t *img = save4_image(s, &len);
+    uint32_t base = save4_block_base(s, SAVE4_BLOCK_GENERAL);
+    if (s->game != SAVE4_GAME_PT || base + PT_GAME_RECORDS_OFF + PT_GAME_RECORDS_SEED + 4 > len) {
+        fputs("  \"game_records\": null,\n", o);
+        return;
+    }
+    const uint8_t *r = img + base + PT_GAME_RECORDS_OFF;
+    uint8_t plain[PT_GAME_RECORDS_SEED];
+    uint32_t seed = (uint32_t)r[PT_GAME_RECORDS_SEED] | (uint32_t)r[PT_GAME_RECORDS_SEED + 1] << 8 |
+                    (uint32_t)r[PT_GAME_RECORDS_SEED + 2] << 16 | (uint32_t)r[PT_GAME_RECORDS_SEED + 3] << 24;
+    memcpy(plain, r, sizeof plain);
+    for (int i = 4; i < PT_GAME_RECORDS_SEED; i += 2) {
+        seed = seed * 0x41C64E6Du + 0x6073u;
+        plain[i] ^= (uint8_t)(seed >> 16);
+        plain[i + 1] ^= (uint8_t)(seed >> 24);
+    }
+    fputs("  \"game_records\": [", o);
+    for (int i = 0; i < PT_GAME_RECORDS_U32; i++)
+        fprintf(o, "%s%u", i ? ", " : "", le32(plain + i * 4));
+    for (int i = 0; i < PT_GAME_RECORDS_U16; i++) {
+        const uint8_t *h = plain + PT_GAME_RECORDS_U32 * 4 + i * 2;
+        fprintf(o, ", %u", (unsigned)(h[0] | h[1] << 8));
+    }
+    fputs("],\n", o);
+}
+
 static int cmd_dump(const char *rom_path, const char *save_path)
 {
     save4 s;
@@ -299,7 +635,9 @@ static int cmd_dump(const char *rom_path, const char *save_path)
         have_rom = 1;
         int rom_pt = rom.game == ND_GAME_PLATINUM;
         int rom_dp = rom.game == ND_GAME_DIAMOND || rom.game == ND_GAME_PEARL;
-        if ((s.game == SAVE4_GAME_PT && !rom_pt) || (s.game == SAVE4_GAME_DP && !rom_dp)) {
+        int rom_hgss = rom.game == ND_GAME_HEARTGOLD || rom.game == ND_GAME_SOULSILVER;
+        if ((s.game == SAVE4_GAME_PT && !rom_pt) || (s.game == SAVE4_GAME_DP && !rom_dp) ||
+            (save4_game_is_hgss(s.game) && !rom_hgss)) {
             fprintf(stderr, "%s: warning: ROM is %s (%s) but the save is %s; names omitted\n", prog,
                     nd_game_name(rom.game), rom.gamecode, save4_game_name(s.game));
         } else {
@@ -341,17 +679,45 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     }
     fputs("],\n  \"trainer\": {\"name\": ", o);
     jstr(o, t.name);
-    int nbadges = 0;
-    for (int i = 0; i < 8; i++)
+    int nbadges = 0, nkanto = 0;
+    for (int i = 0; i < 8; i++) {
         nbadges += (t.badges >> i) & 1;
+        nkanto += (t.kanto_badges >> i) & 1;
+    }
     fprintf(o,
             ", \"tid\": %u, \"sid\": %u, \"gender\": \"%s\", \"money\": %u, \"coins\": %u, \"badges\": %d, "
-            "\"badge_mask\": %u, \"play_time\": \"%u:%02u:%02u\", \"language\": %u, \"national_dex\": %s},\n",
-            t.tid, t.sid, t.gender ? "female" : "male", t.money, t.coins, nbadges, t.badges, t.play_hours,
+            "\"badge_mask\": %u, ",
+            t.tid, t.sid, t.gender ? "female" : "male", t.money, t.coins, nbadges, t.badges);
+    /* HG/SS: badges / badge_mask are Johto's, these Kanto's; D/P/Pt have none. */
+    if (save4_game_is_hgss(s.game))
+        fprintf(o, "\"kanto_badges\": %d, \"kanto_badge_mask\": %u, ", nkanto, t.kanto_badges);
+    else
+        fputs("\"kanto_badges\": null, \"kanto_badge_mask\": null, ", o);
+    fprintf(o, "\"play_time\": \"%u:%02u:%02u\", \"language\": %u, \"national_dex\": %s},\n", t.play_hours,
             t.play_minutes, t.play_seconds, t.language, t.has_national_dex ? "true" : "false");
     save4_location loc;
     save4_get_location(&s, &loc);
     fprintf(o, "  \"location\": {\"map\": %u, \"x\": %u, \"z\": %u, \"dir\": %u},\n", loc.map, loc.x, loc.z, loc.dir);
+    /* The game clock as last recorded (the RTC shortly before the save). */
+    save4_game_time gt;
+    save4_get_game_time(&s, &gt);
+    fprintf(o, "  \"game_time\": {\"date\": \"%04u-%02u-%02u\", \"time\": \"%02u:%02u:%02u\"},\n", gt.year, gt.month,
+            gt.day, gt.hour, gt.minute, gt.second);
+    /* Event state: the ids of every set flag, and every nonzero var keyed
+     * by its decimal id (tests/e2e checks story progress against these). */
+    fputs("  \"flags\": [", o);
+    for (unsigned id = 1, n = 0; id < (unsigned)save4_num_flags(&s); id++) {
+        bool on = false;
+        if (save4_flag_get(&s, (uint16_t)id, &on) == SAVE4_OK && on)
+            fprintf(o, "%s%u", n++ ? ", " : "", id);
+    }
+    fputs("],\n  \"vars\": {", o);
+    for (unsigned id = SAVE4_VARS_START, n = 0; id < SAVE4_VARS_START + (unsigned)save4_num_vars(&s); id++) {
+        uint16_t v = 0;
+        if (save4_var_get(&s, (uint16_t)id, &v) == SAVE4_OK && v)
+            fprintf(o, "%s\"%u\": %u", n++ ? ", " : "", id, v);
+    }
+    fputs("},\n", o);
 
     fputs("  \"party\": [", o);
     uint8_t count = save4_party_count(&s);
@@ -388,7 +754,7 @@ static int cmd_dump(const char *rom_path, const char *save_path)
     for (int pk = 0; pk < SAVE4_POCKET_COUNT; pk++) {
         fprintf(o, "%s\n    \"%s\": [", pk ? "," : "", save4_pocket_name((save4_pocket)pk));
         int n = 0;
-        for (int slot = 0; slot < save4_pocket_capacity((save4_pocket)pk); slot++) {
+        for (int slot = 0; slot < save4_pocket_capacity(&s, (save4_pocket)pk); slot++) {
             uint16_t item, qty;
             save4_get_bag_slot(&s, (save4_pocket)pk, slot, &item, &qty);
             if (!item)
@@ -399,6 +765,11 @@ static int cmd_dump(const char *rom_path, const char *save_path)
         }
         fputc(']', o);
     }
+    uint16_t registered = 0;
+    save4_get_registered_item(&s, &registered);
+    fprintf(o, ",\n    \"registered\": %u", registered);
+    /* Counts, and the species ids themselves (a recipe's dex-seen and
+     * dex-caught lines are checked against these). */
     int seen = 0, caught = 0;
     int dex_ok = 1;
     for (int sp = 1; sp <= SAVE4_DEX_MAX; sp++) {
@@ -414,11 +785,68 @@ static int cmd_dump(const char *rom_path, const char *save_path)
         bool obtained = false, national = false;
         save4_dex_get_obtained(&s, &obtained);
         save4_dex_get_national(&s, &national);
-        fprintf(o, "\n  },\n  \"pokedex\": {\"seen\": %d, \"caught\": %d, \"obtained\": %s, \"national\": %s},\n",
+        fprintf(o, "\n  },\n  \"pokedex\": {\"seen\": %d, \"caught\": %d, \"obtained\": %s, \"national\": %s",
                 seen, caught, obtained ? "true" : "false", national ? "true" : "false");
+        for (int list = 0; list < 2; list++) {
+            fputs(list ? ", \"caught_list\": [" : ", \"seen_list\": [", o);
+            for (int sp = 1, n = 0; sp <= SAVE4_DEX_MAX; sp++) {
+                bool sv = false, cv = false;
+                save4_dex_get(&s, (uint16_t)sp, &sv, &cv);
+                if (list ? cv : sv)
+                    fprintf(o, "%s%d", n++ ? ", " : "", sp);
+            }
+            fputc(']', o);
+        }
+        fputs("},\n", o);
     } else {
         fputs("\n  },\n  \"pokedex\": null,\n", o);
     }
+    save4_poketch ptch;
+    if (save4_get_poketch(&s, &ptch) != SAVE4_OK) {
+        fputs("  \"poketch\": null,\n", o); /* HG/SS have no Poketch */
+    } else {
+        fprintf(o, "  \"poketch\": {\"given\": %s, \"apps\": [", ptch.given ? "true" : "false");
+        for (int a = 0, n = 0; a < SAVE4_POKETCH_APPS; a++)
+            if (ptch.apps[a])
+                fprintf(o, "%s%d", n++ ? ", " : "", a);
+        fputs("]},\n", o);
+    }
+    uint32_t courses;
+    if (save4_get_pokewalker_courses(&s, &courses) != SAVE4_OK) {
+        fputs("  \"pokewalker\": null,\n", o); /* D/P/Pt have no Pokewalker */
+    } else {
+        fputs("  \"pokewalker\": {\"unlocked_courses\": [", o);
+        for (int c = 0, n = 0; c < 32; c++)
+            if (courses >> c & 1)
+                fprintf(o, "%s%d", n++ ? ", " : "", c);
+        fputs("]},\n", o);
+    }
+    pkm4 mig;
+    if (save4_get_migrated(&s, 0, &mig) == SAVE4_ERR_UNSUPPORTED) {
+        fputs("  \"migrated\": null,\n", o); /* D/P/Pt: not modelled */
+    } else {
+        /* HG/SS Pal Park: the occupied MigratedPokemon slots */
+        fputs("  \"migrated\": [", o);
+        for (int i = 0, n = 0; i < 6; i++) {
+            save4_status mst = save4_get_migrated(&s, i, &mig);
+            pkm4_info mi;
+            pkm4_info_get(&mig, &mi);
+            if (!mi.species)
+                continue;
+            fprintf(o, "%s\n    {\"slot\": %d, ", n++ ? "," : "", i + 1);
+            dump_mon(o, &mig, mst, 1);
+            fputc('}', o);
+        }
+        fputs("],\n", o);
+    }
+    dump_hall_of_fame(o, &s);
+    dump_daycare(o, &s);
+    dump_roamers(o, &s);
+    dump_gymmick(o, &s);
+    dump_poffins(o, &s);
+    dump_trophy_garden(o, &s);
+    dump_underground(o, &s);
+    dump_game_records(o, &s);
     dump_mystery(o, &s);
     fputs("}\n", o);
 
@@ -430,6 +858,50 @@ static int cmd_dump(const char *rom_path, const char *save_path)
         fclose(rf);
     }
     save4_free(&s);
+    return 0;
+}
+
+/* gamedata: what a battle bot needs from the ROM (tests/e2e auto_battle).
+ * species[i] = [type1, type2, ability1, ability2 (0: one ability)]; moves[i] = [effect, class, power, type,
+ * accuracy, pp, priority, range]; type_chart[attack][defend] = multiplier x10. */
+static int cmd_gamedata(const char *rom_path)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return EXIT_USAGE;
+    nd_gamedata gd;
+    nd_status st = nd_gamedata_load(&gd, &rom);
+    if (st != ND_OK || !gd.type_chart_ok) {
+        fprintf(stderr, "%s: %s: no game data (%s)\n", prog, rom_path,
+                st != ND_OK ? nd_status_str(st) : "type chart not found");
+        if (st == ND_OK)
+            nd_gamedata_free(&gd);
+        nd_rom_close(&rom);
+        fclose(rf);
+        return EXIT_USAGE;
+    }
+    printf("{\"game\": \"%s\",\n\"species\": [", nd_game_name(gd.game));
+    for (uint32_t i = 0; i < gd.species_count; i++)
+        printf("%s[%u,%u,%u,%u]", i ? "," : "", gd.species[i].types[0], gd.species[i].types[1],
+               gd.species[i].abilities[0], gd.species[i].abilities[1]);
+    printf("],\n\"moves\": [");
+    for (uint32_t i = 0; i < gd.move_count; i++) {
+        const nd_move *m = &gd.moves[i];
+        printf("%s[%u,%u,%u,%u,%u,%u,%d,%u]", i ? "," : "", m->effect, m->cls, m->power, m->type, m->accuracy, m->pp,
+               m->priority, m->range);
+    }
+    printf("],\n\"type_chart\": [");
+    for (int a = 0; a < ND_TYPES; a++) {
+        printf("%s[", a ? "," : "");
+        for (int d = 0; d < ND_TYPES; d++)
+            printf("%s%u", d ? "," : "", gd.type_chart[a][d]);
+        printf("]");
+    }
+    printf("]}\n");
+    nd_gamedata_free(&gd);
+    nd_rom_close(&rom);
+    fclose(rf);
     return 0;
 }
 
@@ -461,16 +933,21 @@ static int parse_ul(const char *s, unsigned long max, unsigned long *out)
     return 0;
 }
 
-static int lookup_id(const char *s, unsigned long *out)
+static int lookup_id(const save4 *s, const char *name, unsigned long *out)
 {
     uint16_t id;
-    if (s[0] >= '0' && s[0] <= '9')
-        return parse_ul(s, 0xFFFF, out);
-    if (save4_pt_lookup_name(s, &id) == 0) {
+    if (name[0] >= '0' && name[0] <= '9')
+        return parse_ul(name, 0xFFFF, out);
+    if (save4_game_is_hgss(s->game)) {
+        fprintf(stderr, "%s: flag/var names are Platinum's; use a numeric id for %s\n", prog,
+                save4_game_name(s->game));
+        return -1;
+    }
+    if (save4_pt_lookup_name(name, &id) == 0) {
         *out = id;
         return 0;
     }
-    fprintf(stderr, "%s: unknown flag/var name '%s' (Platinum names from pokeplatinum vars_flags.txt)\n", prog, s);
+    fprintf(stderr, "%s: unknown flag/var name '%s' (Platinum names from pokeplatinum vars_flags.txt)\n", prog, name);
     return -1;
 }
 
@@ -485,9 +962,13 @@ static int edit_status(save4_status st)
 /* add-mon: a party Pokemon as the game's own gift would make it (the
  * species' base friendship and first ability, its growth rate's EXP for the
  * level, stats from base stats, IVs 20 and no EVs, met here in a Poke Ball
- * with the trainer as OT), appended to the party. Moves are given by id. */
+ * with the trainer as OT; on an HG/SS save the ball also goes to the HGSS
+ * ball byte, as HG/SS's SetMonData does), appended to the party. Moves are
+ * given by id. The origin game is the ROM's (D 10, P 11, Pt 12, HG 7, SS 8).
+ * add-box-mon (`to_box`): the same Pokemon without the party tail, in the
+ * first empty PC box slot from box 1 slot 1 on. */
 static save4_status add_mon(save4 *s, const char *rom_path, unsigned long species, unsigned long level,
-                            char **moves, int nmoves)
+                            char **moves, int nmoves, bool to_box)
 {
     FILE *rf;
     nd_rom rom;
@@ -500,15 +981,28 @@ static save4_status add_mon(save4 *s, const char *rom_path, unsigned long specie
     int have_names = have_gd && nd_names_load(&names, &rom) == ND_OK;
     const nd_species *sp = have_gd ? nd_species_get(&gd, (uint32_t)species) : NULL;
     uint8_t count = save4_party_count(s);
+    int box = 0, slot = 0;
     save4_trainer t;
-    if (!sp || !sp->valid || !have_names || count >= SAVE4_PARTY_MAX || save4_get_trainer(s, &t) != SAVE4_OK) {
-        fprintf(stderr, "%s: cannot add species %lu (unknown species, unreadable ROM or full party)\n", prog,
-                species);
+    if (to_box) {
+        for (box = 0; box < SAVE4_BOX_COUNT; box++) {
+            for (slot = 0; slot < SAVE4_BOX_SLOTS; slot++) {
+                pkm4 cur;
+                if (save4_get_box_mon(s, box, slot, &cur) == SAVE4_OK && pkm4_is_empty(&cur))
+                    break;
+            }
+            if (slot < SAVE4_BOX_SLOTS)
+                break;
+        }
+    }
+    if (!sp || !sp->valid || !have_names || (to_box ? box >= SAVE4_BOX_COUNT : count >= SAVE4_PARTY_MAX) ||
+        save4_get_trainer(s, &t) != SAVE4_OK) {
+        fprintf(stderr, "%s: cannot add species %lu (unknown species, unreadable ROM or full %s)\n", prog, species,
+                to_box ? "boxes" : "party");
         goto out;
     }
     pkm4 p;
     memset(&p, 0, sizeof p);
-    p.party = true;
+    p.party = !to_box;
     /* A fixed personality per species, level and trainer: runs repeat. */
     uint32_t pid = (uint32_t)species * 2654435761u ^ (uint32_t)level * 40503u ^ ((uint32_t)t.sid << 16 | t.tid);
     pkm4_set_pid(&p, pid);
@@ -537,19 +1031,150 @@ static save4_status add_mon(save4 *s, const char *rom_path, unsigned long specie
         st = SAVE4_ERR_ENCODE;
         goto out;
     }
-    pkm4_set_origin_game(&p, rom.game == ND_GAME_DIAMOND ? 10 : rom.game == ND_GAME_PEARL ? 11 : 12);
+    pkm4_set_origin_game(&p, rom.game == ND_GAME_DIAMOND      ? 10
+                             : rom.game == ND_GAME_PEARL      ? 11
+                             : rom.game == ND_GAME_HEARTGOLD  ? 7
+                             : rom.game == ND_GAME_SOULSILVER ? 8
+                                                              : 12);
     pkm4_set_met(&p, 0, (uint8_t)level, 4 /* Poke Ball */, t.gender);
-    uint16_t stats[6];
-    pkm4_calc_stats(sp->base, ivs, evs, (uint8_t)level, (uint8_t)(pid % 25), species == 292, stats);
-    pkm4_set_party_stats(&p, (uint8_t)level, stats[0], stats, 0);
-    st = save4_set_party(s, count, &p);
-    if (st == SAVE4_OK)
-        st = save4_set_party_count(s, (uint8_t)(count + 1));
+    if (save4_game_is_hgss(s->game))
+        pkm4_set_ball_hgss(&p, 4);
+    if (to_box) {
+        st = save4_set_box_mon(s, box, slot, &p);
+    } else {
+        uint16_t stats[6];
+        pkm4_calc_stats(sp->base, ivs, evs, (uint8_t)level, (uint8_t)(pid % 25), species == 292, stats);
+        pkm4_set_party_stats(&p, (uint8_t)level, stats[0], stats, 0);
+        st = save4_set_party(s, count, &p);
+        if (st == SAVE4_OK)
+            st = save4_set_party_count(s, (uint8_t)(count + 1));
+    }
 out:
     if (have_names)
         nd_names_free(&names);
     if (have_gd)
         nd_gamedata_free(&gd);
+    nd_rom_close(&rom);
+    fclose(rf);
+    return st;
+}
+
+/* set-move: party slot `slot`'s move `index` becomes `move` with the ROM's base PP and no PP Ups (what a
+ * move tutor or TM leaves; the e2e boosts' party-move). */
+static save4_status set_move(save4 *s, const char *rom_path, unsigned long slot, unsigned long index,
+                             unsigned long move)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return SAVE4_ERR_ARG;
+    nd_gamedata gd;
+    save4_status st = SAVE4_ERR_ARG;
+    int have_gd = nd_gamedata_load(&gd, &rom) == ND_OK;
+    pkm4 p;
+    if (!have_gd || slot >= save4_party_count(s) || save4_get_party(s, (int)slot, &p) != SAVE4_OK
+        || pkm4_is_empty(&p)) {
+        fprintf(stderr, "%s: no party Pokemon in slot %lu (or an unreadable ROM)\n", prog, slot);
+        goto out;
+    }
+    pkm4_set_move(&p, (int)index, (uint16_t)move, move ? nd_move_base_pp(&gd, (uint32_t)move) : 0, 0);
+    st = save4_set_party(s, (int)slot, &p);
+out:
+    if (have_gd)
+        nd_gamedata_free(&gd);
+    nd_rom_close(&rom);
+    fclose(rf);
+    return st;
+}
+
+/* set-condition: party slot `slot`'s six contest conditions (cool, beauty, cute, smart, tough, sheen; 0-255), as
+ * poffins fed to it leave them (the D/P e2e recipes' `condition`, Platinum's lab verb of that name). */
+static save4_status set_condition(save4 *s, unsigned long slot, const unsigned long v[6])
+{
+    pkm4 p;
+    if (slot >= save4_party_count(s) || save4_get_party(s, (int)slot, &p) != SAVE4_OK || pkm4_is_empty(&p)) {
+        fprintf(stderr, "%s: no party Pokemon in slot %lu\n", prog, slot);
+        return SAVE4_ERR_ARG;
+    }
+    for (int i = 0; i < 6; i++)
+        pkm4_set_contest(&p, i, (uint8_t)v[i]);
+    return save4_set_party(s, (int)slot, &p);
+}
+
+/* set-level: party slot `slot` at `level`: its growth rate's EXP for the level, its stats recalculated from its
+ * own IVs, EVs and nature, its HP the new maximum (the e2e boosts' party-level). Moves, friendship and the rest
+ * stay as they are: no level-up moves are learned and no evolution runs. */
+static save4_status set_level(save4 *s, const char *rom_path, unsigned long slot, unsigned long level)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return SAVE4_ERR_ARG;
+    nd_gamedata gd;
+    save4_status st = SAVE4_ERR_ARG;
+    int have_gd = nd_gamedata_load(&gd, &rom) == ND_OK;
+    pkm4 p;
+    pkm4_info info;
+    const nd_species *sp = NULL;
+    if (have_gd && slot < save4_party_count(s) && save4_get_party(s, (int)slot, &p) == SAVE4_OK
+        && !pkm4_is_empty(&p)) {
+        pkm4_info_get(&p, &info);
+        sp = nd_species_get(&gd, info.species);
+    }
+    if (!sp || !sp->valid || info.is_egg) {
+        fprintf(stderr, "%s: no party Pokemon in slot %lu (an egg, or an unreadable ROM)\n", prog, slot);
+        goto out;
+    }
+    pkm4_set_exp(&p, nd_exp_for_level(&gd, info.species, (uint32_t)level));
+    uint16_t stats[6];
+    pkm4_calc_stats(sp->base, info.ivs, info.evs, (uint8_t)level, info.nature, info.species == 292, stats);
+    pkm4_set_party_stats(&p, (uint8_t)level, stats[0], stats, info.status);
+    st = save4_set_party(s, (int)slot, &p);
+out:
+    if (have_gd)
+        nd_gamedata_free(&gd);
+    nd_rom_close(&rom);
+    fclose(rf);
+    return st;
+}
+
+/* heal-party: every party Pokemon (eggs left alone) as a Pokemon Center leaves it: HP at its maximum, no status,
+ * every move's PP at its maximum (the ROM's base PP raised by its PP Ups, base + base * ups / 5). The e2e boosts'
+ * party-heal: what a player's Full Restores and Revives do between the Elite Four's rooms, which no bot uses. */
+static save4_status heal_party(save4 *s, const char *rom_path)
+{
+    FILE *rf;
+    nd_rom rom;
+    if (open_rom(rom_path, &rf, &rom) != 0)
+        return SAVE4_ERR_ARG;
+    nd_gamedata gd;
+    save4_status st = SAVE4_ERR_ARG;
+    if (nd_gamedata_load(&gd, &rom) != ND_OK) {
+        fprintf(stderr, "%s: unreadable ROM\n", prog);
+        goto out_rom;
+    }
+    st = SAVE4_OK;
+    for (int slot = 0; slot < save4_party_count(s) && st == SAVE4_OK; slot++) {
+        pkm4 p;
+        pkm4_info info;
+        if ((st = save4_get_party(s, slot, &p)) != SAVE4_OK)
+            break;
+        if (pkm4_is_empty(&p))
+            continue;
+        pkm4_info_get(&p, &info);
+        if (info.is_egg)
+            continue;
+        for (int i = 0; i < 4; i++) {
+            if (!info.moves[i])
+                continue;
+            uint8_t base = nd_move_base_pp(&gd, info.moves[i]);
+            pkm4_set_move(&p, i, info.moves[i], (uint8_t)(base + base * info.pp_ups[i] / 5), info.pp_ups[i]);
+        }
+        pkm4_set_party_stats(&p, info.level, info.stats[0], info.stats, 0);
+        st = save4_set_party(s, slot, &p);
+    }
+    nd_gamedata_free(&gd);
+out_rom:
     nd_rom_close(&rom);
     fclose(rf);
     return st;
@@ -595,6 +1220,19 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[0], 0xFF, &v1);
         if (!bad)
             st = save4_set_badges(&s, (uint8_t)v1);
+    } else if (!strcmp(cmd, "set-kanto-badges") && na == 1) {
+        bad = parse_ul(a[0], 0xFF, &v1);
+        if (!bad)
+            st = save4_set_kanto_badges(&s, (uint8_t)v1);
+    } else if (!strcmp(cmd, "set-location") && na >= 3 && na <= 5) {
+        unsigned long map = 0, x = 0, z = 0, dir = 1, y = 0;
+        bad = parse_ul(a[0], 0xFFFF, &map) || parse_ul(a[1], 0x7FFF, &x) || parse_ul(a[2], 0x7FFF, &z) ||
+              (na >= 4 && parse_ul(a[3], 3, &dir)) || (na >= 5 && parse_ul(a[4], 0x7FFF, &y));
+        if (!bad) {
+            save4_location loc = {.map = (uint32_t)map, .warp = -1, .x = (uint32_t)x, .z = (uint32_t)z,
+                                  .dir = (uint32_t)dir};
+            st = save4_set_location(&s, &loc, na >= 5 ? (int)y : -1);
+        }
     } else if (!strcmp(cmd, "set-item") && na == 4) {
         int pocket = -1;
         for (int i = 0; i < SAVE4_POCKET_COUNT; i++)
@@ -604,17 +1242,17 @@ static int cmd_edit(int argc, char **argv)
             fprintf(stderr, "%s: unknown pocket '%s'\n", prog, a[0]);
             bad = 1;
         } else {
-            bad = parse_ul(a[1], (unsigned long)save4_pocket_capacity((save4_pocket)pocket), &v1) || v1 == 0 ||
+            bad = parse_ul(a[1], (unsigned long)save4_pocket_capacity(&s, (save4_pocket)pocket), &v1) || v1 == 0 ||
                   parse_ul(a[2], 0xFFFF, &v2) || parse_ul(a[3], 999, &v3);
             if (!bad)
                 st = save4_set_bag_slot(&s, (save4_pocket)pocket, (int)v1 - 1, (uint16_t)v2, (uint16_t)v3);
         }
     } else if (!strcmp(cmd, "set-flag") && na == 2) {
-        bad = lookup_id(a[0], &v1) || parse_ul(a[1], 1, &v2);
+        bad = lookup_id(&s, a[0], &v1) || parse_ul(a[1], 1, &v2);
         if (!bad)
             st = save4_flag_set(&s, (uint16_t)v1, v2 != 0);
     } else if (!strcmp(cmd, "set-var") && na == 2) {
-        bad = lookup_id(a[0], &v1) || parse_ul(a[1], 0xFFFF, &v2);
+        bad = lookup_id(&s, a[0], &v1) || parse_ul(a[1], 0xFFFF, &v2);
         if (!bad)
             st = save4_var_set(&s, (uint16_t)v1, (uint16_t)v2);
     } else if (!strcmp(cmd, "set-dex") && na == 2) {
@@ -669,10 +1307,28 @@ static int cmd_edit(int argc, char **argv)
         bad = parse_ul(a[0], SAVE4_BOX_COUNT, &v1) || v1 == 0;
         if (!bad)
             st = save4_set_box_name(&s, (int)v1 - 1, a[1]);
-    } else if (!strcmp(cmd, "add-mon") && na >= 3 && na <= 7) {
+    } else if (!strcmp(cmd, "set-move") && na == 4) {
+        unsigned long v4 = 0;
+        bad = parse_ul(a[1], 5, &v1) || parse_ul(a[2], 3, &v2) || parse_ul(a[3], 0xFFFF, &v4);
+        if (!bad)
+            st = set_move(&s, a[0], v1, v2, v4);
+    } else if (!strcmp(cmd, "set-level") && na == 3) {
+        bad = parse_ul(a[1], 5, &v1) || parse_ul(a[2], 100, &v2) || v2 == 0;
+        if (!bad)
+            st = set_level(&s, a[0], v1, v2);
+    } else if (!strcmp(cmd, "set-condition") && na == 7) {
+        unsigned long cv[6];
+        bad = parse_ul(a[0], 5, &v1);
+        for (int i = 0; i < 6 && !bad; i++)
+            bad = parse_ul(a[1 + i], 255, &cv[i]);
+        if (!bad)
+            st = set_condition(&s, v1, cv);
+    } else if (!strcmp(cmd, "heal-party") && na == 1) {
+        st = heal_party(&s, a[0]);
+    } else if ((!strcmp(cmd, "add-mon") || !strcmp(cmd, "add-box-mon")) && na >= 3 && na <= 7) {
         bad = parse_ul(a[1], 493, &v1) || v1 == 0 || parse_ul(a[2], 100, &v2) || v2 == 0;
         if (!bad)
-            st = add_mon(&s, a[0], v1, v2, a + 3, na - 3);
+            st = add_mon(&s, a[0], v1, v2, a + 3, na - 3, !strcmp(cmd, "add-box-mon"));
     } else {
         save4_free(&s);
         return usage();
@@ -724,8 +1380,10 @@ int main(int argc, char **argv)
     }
     if (!strcmp(cmd, "verify"))
         return argc == 3 ? cmd_verify(argv[2]) : usage();
+    if (!strcmp(cmd, "gamedata"))
+        return argc == 3 ? cmd_gamedata(argv[2]) : usage();
     if (!strncmp(cmd, "set-", 4) || !strcmp(cmd, "add-gift") || !strcmp(cmd, "remove-gift") ||
-        !strcmp(cmd, "add-mon"))
+        !strcmp(cmd, "add-mon") || !strcmp(cmd, "add-box-mon") || !strcmp(cmd, "heal-party"))
         return cmd_edit(argc, argv);
     return usage();
 }

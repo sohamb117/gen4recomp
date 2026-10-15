@@ -1,0 +1,277 @@
+# Proves the post-game opening to Kanto: CONTINUE after the credits in the player's room, Mom's scene,
+# Elm's S.S. Ticket (FLAG_GAME_CLEAR), the Olivine port, the S.S. Aqua's first voyage (the lost granddaughter
+# errand sets FLAG_BOAT_ARRIVED) and the walk off at Vermilion.
+# Start: 38's end save -> CONTINUE: MAP_NEW_BARK_PLAYER_HOUSE_2F (6,6) -> end: MAP_VERMILION outside the port, FLAG_GOT_SS_TICKET_FROM_ELM, VAR_UNK_40CB 7.
+title = "S.S. Ticket, the S.S. Aqua, Vermilion"
+priority = "P2"
+version = "both"
+estimate = 17805
+refs = [
+  "src/game_clear.c:290 (CallTask_GameClear -> Location_SetToPlayerRoom); src/location_backup.c:10-16 (sLocation_PlayerRoom: MAP_NEW_BARK_PLAYER_HOUSE_2F x 6 y 6 dir 1): CONTINUE after the 38 reset spawns there",
+  "scr_seq_0825_T10R0701.s:45-48 (Hall of Fame: no S.S. Ticket -> VAR_SCENE_PLAYERS_HOUSE_1F 3)",
+  "zone_event 061_T20R0202 warp 0 (3,4) -> MAP_NEW_BARK_PLAYER_HOUSE_1F; scr_seq_0618_T20R0201_hdr.s:13 (OnFrame VAR_SCENE_PLAYERS_HOUSE_1F 3 -> 006)",
+  "scr_seq_0845_T20R0201.s:80-98 (Mom's scene: Elm is looking for you, VAR_SCENE_PLAYERS_HOUSE_1F 4); :101-106 (FLAG_GAME_CLEAR + S.S. Ticket checks)",
+  "zone_event 060_T20R0201 warp 0 (3,10) -> MAP_NEW_BARK; zone_event 058_T20R0101 object 0 obj_T20R0101_doctor (6,5) -> 000",
+  "scr_seq_0843_T20R0101.s:285-290,391-398 (Elm: FLAG_GAME_CLEAR -> _0526: ITEM_S_S__TICKET, FLAG_GOT_SS_TICKET_FROM_ELM include/constants/flags.h:261)",
+  "zone_event 226_P01R0101 object 0 obj_P01R0101_seaman_2 (7,9) -> 000, warp 0 (7,2) <- MAP_OLIVINE 8, warp 1 (7,11) -> MAP_SS_AQUA_OLIVINE_PORT_EXTERIOR 0",
+  "scr_seq_0152_P01R0101.s:125-158 (VAR_UNK_40CB < 7: first voyage any day; S.S. Ticket -> boarding walk, VAR_BOAT_DIRECTION 1, ClearFlag FLAG_BOAT_ARRIVED); :125-126 (VAR_UNK_40CB >= 7 -> _01FB: GetWeekday sailing schedule)",
+  "zone_event 301_P01R0102 warp 1 (27,20) -> MAP_SS_AQUA_1F 0; scr_seq_0153_P01R0102.s:18,120 (direction/arrival checks)",
+  "voyage errand: scr_seq_0158_P01R0303.s:33,41 (TRAINER_SAILOR_STANLY, VAR_UNK_40CB 3); scr_seq_0162_P01R0307.s:108-162 (B1F, VAR_UNK_40CB 5, Warp MAP_SS_AQUA_1F_NORTHWEST_ROOMS); scr_seq_0157_P01R0302.s:215 (captain, VAR_UNK_40CB 4); scr_seq_0161_P01R0306.s:76-80 (VAR_UNK_40CB 6, SetFlag FLAG_BOAT_ARRIVED); scr_seq_0156_P01R0301.s:89-103 (arrival: VAR_UNK_40CB 7)",
+  "zone_event 344_P01R0104 warp 1 (23,17) <- MAP_SS_AQUA_1F 12, warp 0 (12,12) -> MAP_SS_AQUA_VERMILION_PORT_INTERIOR 1; zone_event 343_P01R0103 warp 0 (7,2) -> MAP_VERMILION 7",
+  "include/constants/vars.h:218 VAR_UNK_40CB; include/constants/flags.h:254 FLAG_BOAT_ARRIVED",
+]
+notes = "Gates: FLAG_GAME_CLEAR (38's end save, continued in the player's room). Scouted on HeartGold (core-proposal): Elm's lab door is New Bark (684,393) (arrival (4,14)); Elm (object 0) hands over the S.S. Ticket; the lab's mat (4,15). Olivine's port door (279,276) -> the port building (7,3); its seaman (object 0, 7,9) checks the ticket and moves the player to (7,10); the south mat (7,11) -> the port exterior (16,16), where the gangway seaman (object 0, 27,22) stands on the only way to the ship: talking to him runs the boarding (the ship leaves, the player stands on 1F (24,15) and the gentleman's coord scene (22..26,14, VAR_UNK_40CB 0) sets 2). The errand (VAR_UNK_40CB): B1F's guard seaman's coord (38,17..19, VAR 2) asks for his buddy and sets FLAG_UNK_0ED; sailor Stanly in the 1F southeast rooms (door (30,14), object 0 at (7,10)) battles only after that (TRAINER_SAILOR_STANLY, VAR 3); the captain's room (door (49,15), reached through B1F's east stairs (42,9)) has the granddaughter (object 1): she runs off (VAR 4); she is then on B1F (1,13) (object 0): talking to her takes the player to the 1F northwest rooms (9,10), where her grandfather gives the Metal Coat (VAR 6, FLAG_BOAT_ARRIVED). The 1F exit seaman (object 1, 24,17) stands on the one-tile way to the gangway: A from (24,16) facing him sets VAR 7 and he steps aside (walk_to's talk_to could not path to him: the only adjacent tile is the corridor's (24,16)); the gangway (24,19) -> Vermilion's port exterior (23,18), its building (12,12), whose seaman (object 0, 7,9) walks the player to (7,6); the north mat (7,2) -> Vermilion (1309,340). The day-dependent trainers on B1F and in the rooms (FLAG_UNK_22A..C) are passed or fought by walk_to. Measured: HG 17482 frames, SS 17805; the sheets show the room, Elm's lab after the ticket, the ship's 1F, Sailor Stanly's Machop, the Metal Coat room, Vermilion's port."
+
+[start]
+from = "38-champion-lance-hall-of-fame-credits"
+
+[run]
+frames = 26800
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 4
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK_PLAYER_HOUSE_1F"
+
+[[step]]
+do = "advance_text"
+note = "Mom: Elm is looking for you (VAR_SCENE_PLAYERS_HOUSE_1F 4)"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 10
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK"
+
+[[step]]
+do = "walk_to"
+x = 684
+z = 393
+note = "Elm's lab"
+
+[[step]]
+do = "wait_map"
+map = "MAP_NEW_BARK_ELMS_LAB_1F"
+
+[[step]]
+do = "talk_to"
+id = 0
+
+[[step]]
+do = "advance_text"
+note = "Elm: the S.S. Ticket (FLAG_GOT_SS_TICKET_FROM_ELM)"
+shot = "ticket"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 15
+
+[[step]]
+do = "fly"
+map = "MAP_OLIVINE"
+
+[[step]]
+do = "walk_to"
+x = 279
+z = 276
+note = "the port building"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SS_AQUA_OLIVINE_PORT_INTERIOR"
+
+[[step]]
+do = "talk_to"
+id = 0
+
+[[step]]
+do = "advance_text"
+note = "'Ross flashed the S.S. Ticket.': moved to (7,10)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 11
+note = "the south mat -> the port exterior (16,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SS_AQUA_OLIVINE_PORT_EXTERIOR"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the gangway seaman (27,22)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_SS_AQUA_1F"
+note = "the boarding, the ship leaves"
+
+[[step]]
+do = "advance_text"
+note = "the gentleman's coord scene (VAR_UNK_40CB 2)"
+shot = "on-board"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 3
+note = "the stairs to B1F"
+
+[[step]]
+do = "walk_to"
+x = 38
+z = 17
+note = "B1F: the guard seaman's coord: find my buddy (FLAG_UNK_0ED)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 3
+
+[[step]]
+do = "walk_to"
+x = 30
+z = 14
+note = "1F: the southeast rooms"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "sailor Stanly"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_SAILOR_STANLY (VAR_UNK_40CB 3)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 2
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 3
+
+[[step]]
+do = "walk_to"
+x = 42
+z = 9
+note = "B1F's east stairs -> 1F's east part"
+
+[[step]]
+do = "walk_to"
+x = 49
+z = 15
+note = "the captain's room"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the granddaughter: 'I'm bored!' and she runs off (VAR_UNK_40CB 4)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 11
+
+[[step]]
+do = "walk_to"
+x = 42
+z = 9
+note = "back down to B1F"
+
+[[step]]
+do = "talk_to"
+id = 0
+note = "the granddaughter on B1F (1,13): to the northwest rooms"
+
+[[step]]
+do = "advance_text"
+note = "her grandfather: the Metal Coat (VAR_UNK_40CB 6, FLAG_BOAT_ARRIVED)"
+shot = "metal-coat"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 11
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 16
+note = "above the exit seaman (24,17)"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 60
+note = "'We've arrived in Vermilion' (VAR_UNK_40CB 7); he steps aside"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 24
+z = 19
+note = "the gangway -> Vermilion's port"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SS_AQUA_VERMILION_PORT_EXTERIOR"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 12
+
+[[step]]
+do = "talk_to"
+id = 0
+
+[[step]]
+do = "advance_text"
+note = "the port seaman walks the player to (7,6)"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 2
+
+[[step]]
+do = "wait_map"
+map = "MAP_VERMILION"
+shot = "vermilion"
+
+[expect]
+map = "MAP_VERMILION"
+flags = ["FLAG_GAME_CLEAR", "FLAG_GOT_SS_TICKET_FROM_ELM", "FLAG_BOAT_ARRIVED"]
+save = ['any(i["name"] == "Metal Coat" for i in s["bag"]["items"])']
+
+[expect.vars]
+VAR_UNK_40CB = 7
+VAR_SCENE_PLAYERS_HOUSE_1F = 4

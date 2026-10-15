@@ -1,0 +1,61 @@
+# HM03 Surf, A-press path from the Route 205 South river bank, then swim north across the river.
+# Start: ROUTE_205_SOUTH (180,604) facing the water. End: the north bank (180,599), header FUEGO_IRONWORKS_OUTSIDE (204).
+title = "HM03 Surf: cross the Route 205 river"
+priority = "P1"
+estimate = 2131
+refs = [
+  "res/field/scripts/scripts_celestic_town_cave.s:115-136",
+  "res/field/scripts/scripts_celestic_town_cave.s:129",
+  "src/field_move_tasks.c:414",
+  "src/overlay005/field_control.c:686-694",
+  "res/field/scripts/scripts_field_moves.s:299-327",
+  "res/field/scripts/scripts_field_moves.s:325",
+  "src/map_tile_behavior.c:23-32",
+  "res/field/maps/matrices/map_matrix_000.json",
+  "pc/tests/pc_maptiles.py",
+  "pc/tests/corpus/hm-surf.recipe",
+  "pc/tests/corpus/hm-surf.spec",
+  "pc/replays/lab-fieldmove.txt",
+  "generated/journal_location_events.txt:22",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 3200
+# pc-journal trace for the log expect (pc/src/pc_probe2d.c:262-267)
+env = { PC_TRACE_JOURNAL = "1" }
+
+[[step]]
+do = "press"
+keys = "A"
+note = "facing water: Surf prompt (field_control.c:686-694 checks FEN + MOVE_SURF)"
+
+[[step]]
+do = "wait_frames"
+n = 200
+
+[[step]]
+do = "press"
+keys = "A"
+note = "YES -> UseSurf"
+shot = "surf-prompt"
+
+[[step]]
+do = "advance_text"
+shot = "surfing"
+
+[[step]]
+do = "walk_to"
+x = 180
+z = 599
+surf = true
+note = "across the river (rows 603..600 water, tools/probe_map.py) to the north bank; dismounts on land"
+shot = "north-bank"
+
+[expect]
+map = 204   # the north bank is FUEGO_IRONWORKS_OUTSIDE's matrix cell
+position = [180, 599]
+badge = ["BADGE_ID_FEN"]
+log = ['pc-journal: f=\d+ event=21 ']   # LOCATION_EVENT_USED_SURF

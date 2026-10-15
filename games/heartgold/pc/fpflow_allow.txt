@@ -1,0 +1,27 @@
+# C indirect calls the flow (pc/tools/hg_fpflow_lint.py) lets reach a C
+# function of another wasm type, where the call never reaches it in the
+# port: `<calling function> <callee>` or `<calling function> *`, each with
+# the reason.
+#
+# SysTaskQueue_RunTasks calls every SysTask as (SysTask *, void *);
+# Task_AntipiracyRandom takes nothing. fieldmap.c creates it only when the
+# sums of DSProt answers it keeps (`offset`, `unkVal`) are not multiples of
+# 3433, 4217, 2221 and 1259; with every detector answering as a genuine
+# console (pc/src/pc_hg_dsprot.c) they are exactly 0xDCE6A1 and 0x2AAACF,
+# which are.
+SysTaskQueue_RunTasks Task_AntipiracyRandom
+# OSi_IrqCallback calls OSi_IrqCallbackInfo[i].func as void (*)(void *); the
+# flow also brings it every OSIrqFunction (void (*)(void)) the game hands
+# OS_SetIrqFunction, which stores a timer or DMA handler there
+# (OSi_CountUpTick, timer3.c's sub_02025438). On hardware OSi_IrqTimerN /
+# OSi_IrqDmaN in OS_IRQTable reach OSi_IrqCallback; the port never calls
+# those table entries: its timer interrupt (games/platinum/pc/src/
+# pc_timers.c pc_timer_irq) calls OS_GetIrqFunction's result, the info's
+# func, itself as void (*)(void), and it raises no DMA interrupt.
+OSi_IrqCallback *
+# dsprot_answer calls the detector's callback only for a positive answer;
+# fieldmap.c passes ov01_021E66A8, ov01_021E66B8 and ov01_021E66C8 only to
+# DSProt_DetectDummy and DSProt_DetectFlashcart, which answer FALSE.
+dsprot_answer ov01_021E66A8
+dsprot_answer ov01_021E66B8
+dsprot_answer ov01_021E66C8

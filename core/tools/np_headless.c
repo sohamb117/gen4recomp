@@ -6,7 +6,10 @@
  * reports the guest's log, a running hash of the frames and audio, and
  * optional PPM screenshots. Nothing here is mock-specific.
  *
- *   np_headless <diamond|pearl|platinum> <rom.nds> [options]
+ *   np_headless <diamond|pearl|platinum|black|white|heartgold|soulsilver|ruby|sapphire|emerald|poketransfer>
+ *               <rom> [options]
+ *     (poketransfer: Black/White's Poké Transfer child; <rom> and --save are
+ *     the Gen 4 card in its slot 1)
  *     --frames N         frames to run (default 600)
  *     --save FILE        backup chip file: loaded if present, written on store
  *     --dump DIR         write DIR/frame_NNNNNN.ppm (both screens stacked)
@@ -52,15 +55,17 @@
  *     --net-peer H:P     also say hello to this address, repeatable
  *     --net-id ID        24-bit station id (default random)
  *     --net-drop PCT     drop this share of outgoing datagrams (loss testing)
+ *     --net-wait SECS    wait up to SECS for another station before frame 0
  *     --lockstep MY:PEER test only (POSIX): two instances on 127.0.0.1 ports MY
  *                        and PEER run in frame lockstep and exchange the game's
  *                        datagrams at frame boundaries, so runs repeat exactly
  *                        (needs --net-id; no --net, except that with --net
  *                        PORT --net-relay the clocks stay in lockstep while
  *                        the game's datagrams take the relay and --net-drop)
- *     --fork-at F:CTL    with --lockstep: at frame F fork one child per line
- *                        of CTL (schedule, frames, dumps, save, log), so a
- *                        link test resumes from a checkpoint (see below)
+ *     --fork-at F:CTL    (POSIX) at frame F fork one child per line of CTL
+ *                        (schedule, frames, dumps, save, log), so a run
+ *                        resumes from a checkpoint (see below); with
+ *                        --lockstep, both linked instances do
  *     --net-relay H:P    internet play through a relay (server/relay) instead
  *     --net-pin PIN      of LAN discovery; PIN names the relay room
  *
@@ -314,8 +319,9 @@ static int dump_ppm(const char *dir, uint64_t number, const np_frame *f) {
     snprintf(path, sizeof path, "%s/frame_%06llu.ppm", dir, (unsigned long long)number);
     FILE *out = fopen(path, "wb");
     if (!out) return -1;
-    fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * 2);
-    for (int s = 0; s < 2; s++)
+    int screens = f->screen[1] ? 2 : 1; /* a GBA core has one */
+    fprintf(out, "P6\n%u %u\n255\n", f->width, f->height * screens);
+    for (int s = 0; s < screens; s++)
         for (uint32_t y = 0; y < f->height; y++)
             for (uint32_t x = 0; x < f->width; x++) {
                 uint32_t p = f->screen[s][y * f->stride + x];
@@ -451,17 +457,17 @@ static void lockstep_end_frame(uint64_t frame) {
     lockstep_send(1, (uint32_t)frame, NULL, 0);
 }
 
-/* --fork-at FRAME:CTL (with --lockstep): a checkpoint for link tests. Both
- * instances run to FRAME's barrier, then each serves its control file (a
- * FIFO or a plain file): per line
+/* --fork-at FRAME:CTL: a checkpoint. The run goes to FRAME, then serves its
+ * control file (a FIFO or a plain file): per line
  *   SCHEDULE FRAMES DUMPDIR DUMPEVERY SAVE LOG   ("-" = none)
  * it forks a child that replaces the schedule, the frame count, the dumps
  * (from FRAME) and the save path, sends its output to LOG and runs on from
- * FRAME, then waits for it. The two sides must be fed the same number of
- * lines; child pair N trades records in epoch N, so a finished pair's
- * leftovers on the shared socket are dropped. The parent exits at the
- * control file's end. A whole scenario then costs its tail, not its
- * 10000-frame walk to the Union Room. */
+ * FRAME, then waits for it. The parent exits at the control file's end. A
+ * scenario then costs its tail, not the walk to FRAME. With --lockstep both
+ * instances run to FRAME's barrier and each serves its own control file;
+ * the two sides must be fed the same number of lines, and child pair N
+ * trades records in epoch N, so a finished pair's leftovers on the shared
+ * socket are dropped. */
 typedef struct fork_job {
     char sched[512], dump[512], save[512], log[512];
     unsigned long long frames, every;
@@ -586,14 +592,15 @@ static void wav_header(FILE *fp, uint32_t rate, uint32_t bytes) {
 }
 
 static int usage(void) {
-    fprintf(stderr, "usage: np_headless <diamond|pearl|platinum> <rom.nds> [--frames N] [--save FILE] [--dump DIR]\n"
+    fprintf(stderr, "usage: np_headless <diamond|pearl|platinum|black|white|heartgold|soulsilver|ruby|sapphire|emerald|poketransfer>\n"
+                    "                   <rom> [--frames N] [--save FILE] [--dump DIR]\n"
                     "                   [--content DIR] [--gba-rom FILE [--gba-save FILE]]\n"
                     "                   [--dump-every N [--dump-from F]] [--press F:KEYS]... [--rtc SECONDS] [-e KEY=VALUE]...\n"
                     "                   [-o [F:]NAME=VALUE]... [--rms-from F] [--wav FILE] [--schedule FILE] [--progress N]\n"
                     "                   [--state-test N [--state-span M] [--state-rounds R]]\n"
-                    "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT]\n"
+                    "                   [--net PORT [--net-peer HOST:PORT]... [--net-id ID] [--net-drop PCT] [--net-wait SECS]\n"
                     "                    [--net-relay HOST:PORT --net-pin PIN]]\n"
-                    "                   [--lockstep MYPORT:PEERPORT --net-id ID [--fork-at FRAME:CTLFILE]]\n");
+                    "                   [--lockstep MYPORT:PEERPORT --net-id ID] [--fork-at FRAME:CTLFILE]\n");
     return 2;
 }
 
@@ -627,7 +634,7 @@ static int step(session *s, uint64_t k, np_frame *f, uint64_t *hash) {
     /* The same formula as ever (screens at stride x height, then audio),
      * so a hash recorded before stays comparable. */
     *hash = fnv(*hash, f->screen[0], (size_t)f->stride * f->height * 4);
-    *hash = fnv(*hash, f->screen[1], (size_t)f->stride * f->height * 4);
+    if (f->screen[1]) *hash = fnv(*hash, f->screen[1], (size_t)f->stride * f->height * 4);
     static int16_t audio[2 * 8192];
     size_t n;
     while ((n = np_core_audio_read(s->core, audio, 8192)) > 0) {
@@ -725,10 +732,15 @@ static int state_test(session *s, uint64_t first, uint64_t span, int rounds, uin
 
 int main(int argc, char **argv) {
     if (argc < 3) return usage();
-    static const char *const names[NP_GAME_COUNT] = {"diamond", "pearl", "platinum"};
+    static const char *const names[NP_GAME_COUNT] = {
+        [NP_GAME_DIAMOND] = "diamond", [NP_GAME_PEARL] = "pearl", [NP_GAME_PLATINUM] = "platinum",
+        [NP_GAME_BLACK] = "black",     [NP_GAME_WHITE] = "white",
+        [NP_GAME_HEARTGOLD] = "heartgold", [NP_GAME_SOULSILVER] = "soulsilver",
+        [NP_GAME_RUBY] = "ruby", [NP_GAME_SAPPHIRE] = "sapphire", [NP_GAME_EMERALD] = "emerald",
+        [NP_GAME_POKETRANSFER] = "poketransfer"};
     int game = -1;
     for (int g = 0; g < NP_GAME_COUNT; g++)
-        if (strcmp(argv[1], names[g]) == 0) game = g;
+        if (names[g] && strcmp(argv[1], names[g]) == 0) game = g;
     if (game < 0) return usage();
 
     runner r = {0};
@@ -754,7 +766,7 @@ int main(int argc, char **argv) {
     uint64_t watch_from = 0;
     static uint8_t watch_prev[256];
     int have_rtc = 0;
-    int net_on = 0, net_drop = 0, npeers = 0;
+    int net_on = 0, net_drop = 0, npeers = 0, net_wait = 0;
     uint16_t net_port = 0;
     uint32_t net_id = 0;
     const char *net_peers[8];
@@ -809,6 +821,8 @@ int main(int argc, char **argv) {
             net_id = (uint32_t)strtoul(v, NULL, 0);
         } else if (strcmp(a, "--net-drop") == 0) {
             net_drop = atoi(v);
+        } else if (strcmp(a, "--net-wait") == 0) {
+            net_wait = atoi(v);
         } else if (strcmp(a, "--lockstep") == 0) {
             lockstep = v;
         } else if (strcmp(a, "--fork-at") == 0) {
@@ -885,6 +899,17 @@ int main(int argc, char **argv) {
                 fprintf(stderr, "np_headless: --net-peer: %s\n", err);
                 return 2;
             }
+        /* --net-wait SECS: a partner station before frame 0, so a guest
+         * that waits for its partner at boot (the GBA link cable's
+         * PC_GBA_LINK_WAIT) finds one */
+        for (double end = now_ms() + 1000.0 * net_wait; net_wait && np_net_peer_count(g_net) == 0;) {
+            if (now_ms() > end) {
+                fprintf(stderr, "np_headless: --net-wait: no station answered\n");
+                return 1;
+            }
+            np_net_poll(g_net);
+            sleep_until(now_ms() + 20);
+        }
         host.net_self = net_self_cb;
         host.net_send = net_send_cb;
         host.net_recv = net_recv_cb;
@@ -931,7 +956,7 @@ int main(int argc, char **argv) {
     for (; rc == 0 && state_rc >= 0 && ran < frames; ran++) {
         if (g_ls.on) lockstep_barrier(ran);
 #if !defined(_WIN32)
-        if (fork_ctl && g_ls.on && ran == fork_at) {
+        if (fork_ctl && ran == fork_at) {
             static fork_job job;
             const char *ctl = fork_ctl;
             fork_ctl = NULL;
@@ -946,7 +971,7 @@ int main(int argc, char **argv) {
             dump_every = job.every;
             dump_from = ran;
             r.save_path = strcmp(job.save, "-") != 0 ? job.save : NULL;
-            lockstep_barrier(ran); /* the new pair's hello */
+            if (g_ls.on) lockstep_barrier(ran); /* the new pair's hello */
         }
 #endif
         if (g_net) {

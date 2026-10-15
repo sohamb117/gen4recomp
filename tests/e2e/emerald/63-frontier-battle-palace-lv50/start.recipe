@@ -1,0 +1,57 @@
+# Battle Frontier Battle Palace, Level 50: three eligible level-50 party members (the frontier ban list and distinct species and
+# items: src/frontier_util.c, ChoosePartyForBattleFrontier), the same strong team as 60 (maximum IVs and EVs, four
+# damaging moves of different types each), placed below the attendant. In play the S.S. Tidal brings the player to the
+# Battle Frontier after the Hall of Fame (data/maps/SlateportCity_Harbor/scripts.inc).
+flag FLAG_SYS_POKEMON_GET              # data/maps/Route101/scripts.inc:220 (the starter)
+party SPECIES_METAGROSS 50 ITEM_NONE
+party-move 0 0 MOVE_METEOR_MASH
+party-move 0 1 MOVE_EARTHQUAKE
+party-move 0 2 MOVE_PSYCHIC
+party-move 0 3 MOVE_SHADOW_BALL
+party SPECIES_SALAMENCE 50 ITEM_NONE
+party-move 1 0 MOVE_DRAGON_CLAW
+party-move 1 1 MOVE_EARTHQUAKE
+party-move 1 2 MOVE_FLAMETHROWER
+party-move 1 3 MOVE_AERIAL_ACE
+party SPECIES_LATIOS 50 ITEM_NONE
+party-move 2 0 MOVE_PSYCHIC
+party-move 2 1 MOVE_DRAGON_CLAW
+party-move 2 2 MOVE_SURF
+party-move 2 3 MOVE_THUNDERBOLT
+party-iv 0 0 31
+party-iv 0 1 31
+party-iv 0 2 31
+party-iv 0 3 31
+party-iv 0 4 31
+party-iv 0 5 31
+party-iv 1 0 31
+party-iv 1 1 31
+party-iv 1 2 31
+party-iv 1 3 31
+party-iv 1 4 31
+party-iv 1 5 31
+party-iv 2 0 31
+party-iv 2 1 31
+party-iv 2 2 31
+party-iv 2 3 31
+party-iv 2 4 31
+party-iv 2 5 31
+party-ev 0 0 255
+party-ev 0 1 255
+party-ev 0 2 255
+party-ev 0 3 255
+party-ev 0 4 255
+party-ev 0 5 255
+party-ev 1 0 255
+party-ev 1 1 255
+party-ev 1 2 255
+party-ev 1 3 255
+party-ev 1 4 255
+party-ev 1 5 255
+party-ev 2 0 255
+party-ev 2 1 255
+party-ev 2 2 255
+party-ev 2 3 255
+party-ev 2 4 255
+party-ev 2 5 255
+map MAP_BATTLE_FRONTIER_BATTLE_PALACE_LOBBY 5 7   # BattleFrontier_BattlePalaceLobby/map.json object_events[0] attendant (5,6): the tile below

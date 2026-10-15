@@ -41,6 +41,9 @@ typedef struct np_layout_params {
      * rectangle at the screens' aspect; a width of 0 hides that screen.
      * mode, swap, rotation and scale are then ignored. NULL otherwise. */
     const float *frames;
+    /* Height of each screen in source pixel units: 192 for the DS (0), 160
+     * for a GBA game shown alone (its width, 240, goes in screen_w). */
+    int screen_h;
 } np_layout_params;
 
 typedef struct np_screen_place {

@@ -1,0 +1,14 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26111
+money 3000
+# post-game: story-cleared only sets the trainer-info bit (pc_lab.c:798-800); every script gate
+# checks FLAG_GAME_COMPLETED (src/clear_game.c:204-206, scrcmd_system_flags.c:151, system_flags.c:69-71)
+story-cleared 1
+flag FLAG_GAME_COMPLETED
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# Steel/Dragon takes 2x from Ground (~347-408 vs ~241 HP) [INFERENCE: hand calc]
+party-move 0 0 MOVE_EARTHQUAKE
+# below the rift bg events (29,16..17); Mt. Coronet 6F gate (orb + FLAG_UNLOCKED_DIALGA_PALKIA_SPEAR_PILLAR,
+# scripts_mt_coronet_6f.s:22-60) is bypassed by the map line
+map MAP_HEADER_SPEAR_PILLAR_DIALGA 29 18 FACE_UP

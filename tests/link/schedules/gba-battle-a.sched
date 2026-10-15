@@ -1,0 +1,18 @@
+# Gen 3 link battle (tests/link/run_gba_link_tests.py), station a (parent,
+# the lower station id): Ruby, CONTINUE below Oldale's Colosseum attendant
+# (Pokemon Center 2F, (4,4)). Title, CONTINUE, face up, A through SINGLE
+# BATTLE, the save and "Start link with 2 players"; both are in the
+# Colosseum at 3245. Up 1, left 3, up 2 onto the left spot: the battle
+# starts at 3605. A every 40 frames picks FIGHT and SCRATCH each turn;
+# TORCHIC beats B's MUDKIP and RALTS, the battle ends at 14830 and the
+# Win/Loss screen is the same picture on both stations at 15002.
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1150:up:4
+1200:a:5:80:24
+3300:up:12
+3340:left:44
+3400:up:28
+3600:a:5:40:286

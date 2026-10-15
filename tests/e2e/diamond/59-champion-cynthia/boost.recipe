@@ -1,0 +1,14 @@
+# Boost on the previous room's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# Between the Elite Four rooms a player uses the items they carry (Full Restores, Revives, Elixirs); the bot has no
+# bag menu, so the same levels and moves as 57's boost (HP full, PP refilled) stand in for them. 58b: Lucian's
+# Bronzong (Levitate) outlasted the chain's tired fighters in 18000 frames.
+party-level 0 100
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_STONE_EDGE
+party-move 0 2 MOVE_CRUNCH
+party-move 0 3 MOVE_SEED_BOMB
+party-level 3 100
+party-move 3 0 MOVE_WATERFALL
+party-move 3 1 MOVE_ICE_FANG
+party-move 3 2 MOVE_CRUNCH
+party-move 3 3 MOVE_EARTHQUAKE

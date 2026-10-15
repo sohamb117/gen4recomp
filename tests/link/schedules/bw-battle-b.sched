@@ -1,0 +1,31 @@
+# Black/White Union Room battle, station B (LINKB). Into the Union Room, then
+# accept A's Single Battle (A on "Will you accept a Single Battle...?" YES).
+5000:start:4
+5150:a:4:100:8
+6040:up:4
+6140:a:4:80:30
+10320:a:4
+11500:a:4:150:4
+# The battle room: from (6,9) to B's designated position (9,5), facing A.
+12160:up:28
+12220:right:2
+12250:right:28
+12300:left:2
+12400:up:2
+12430:up:12
+12470:left:2
+12520:right:2
+12550:right:12
+12590:left:2
+12640:up:2
+12670:up:12
+12710:left:2
+# Party slot 1 > ENTER > CONFIRM.
+13420:tap:60:26:4
+13540:tap:200:133:4
+13620:tap:215:181:4
+# Turn 1 and turn 2: FIGHT > the upper-left move (Tackle).
+15320:tap:128:88:4
+15440:tap:64:51:4
+16520:tap:128:88:4
+16640:tap:64:51:4

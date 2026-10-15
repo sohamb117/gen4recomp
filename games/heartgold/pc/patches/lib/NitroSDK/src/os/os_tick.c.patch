@@ -1,0 +1,33 @@
+--- a/lib/NitroSDK/src/os/os_tick.c
++++ b/lib/NitroSDK/src/os/os_tick.c
+@@ -41,12 +41,20 @@
+     OSi_EnterTimerCallback(OSi_TICK_TIMER, (void (*)(void *))OSi_CountUpTick, NULL);
+ }
+ 
++/* nativeplat: the counter is read through the timer model's poll hook
++ * (games/platinum/pc/src/pc_timers.c), as recompiled code naming the
++ * register does. A frame's guest work runs between two VBlanks without
++ * counting cycles, so a loop waiting on the tick (CARD_SpiWaitGetStatus's
++ * 60 us wait, every field load) would otherwise never see it move. */
++u32 armrec_timer_load(u32 a, int size);
++#define OSi_TICK_COUNT_L() ((u16)armrec_timer_load((u32)REG_TM0CNT_L_ADDR + OSi_TICK_TIMER * 4, 2))
++
+ OSTick OS_GetTick(void) {
+     vu16 countL;
+     vu64 countH;
+     OSIntrMode enabled = OS_DisableInterrupts();
+ 
+-    countL = *(REGType16 *)((u32)REG_TM0CNT_L_ADDR + OSi_TICK_TIMER * 4);
++    countL = OSi_TICK_COUNT_L();
+     countH = OSi_TickCounter & 0xffffffffffffULL;
+     if (reg_OS_IF & OSi_TICK_IE_TIMER && !(countL & 0x8000)) {
+         countH++;
+@@ -56,7 +64,7 @@
+ }
+ 
+ u16 OS_GetTickLo(void) {
+-    return *(REGType16 *)((u32)REG_TM0CNT_L_ADDR + OSi_TICK_TIMER * 4);
++    return OSi_TICK_COUNT_L();
+ }
+ 
+ void OS_SetTick(OSTick tick) {

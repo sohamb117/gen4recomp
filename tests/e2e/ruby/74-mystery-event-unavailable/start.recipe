@@ -1,0 +1,6 @@
+# 74 Mystery Event: a save without FLAG_SYS_EXDATA_ENABLE (the new-game base never sets it), in front of the profile
+# man in Petalburg's Pokemon Center. His secret-saying check needs the fifth badge
+# (data/scripts/mystery_event_club.inc:98-104: goto_if_unset FLAG_BADGE05_GET -> no flag).
+badge 5                                  # data/maps/PetalburgCity_Gym/scripts.inc:392 (setflag FLAG_BADGE05_GET, Norman)
+# below the profile man (PetalburgCity_PokemonCenter_1F/map.json object_events[1] (11,2), local id 2)
+map MAP_PETALBURG_CITY_POKEMON_CENTER_1F 11 3

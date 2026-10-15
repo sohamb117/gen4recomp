@@ -1,0 +1,951 @@
+"""
+Function discovery over one module of an NDS ROM (the ARM9 static with its
+autoloads, one overlay, or the ARM7), from the bytes alone.
+
+1. Seeds: the module's entry points (the ARM9 entry and autoload-done
+   callback, an overlay's static-initialiser table), every call target the
+   descent finds, and every word in the module whose value points at
+   plausible code (function-pointer tables, callbacks in literal pools). A
+   word with bit 0 set is a Thumb pointer, an even one ARM.
+2. Recursive descent per function: basic blocks are followed through
+   branches, conditional branches and the two switch idioms mwcc emits (ARM
+   `addls pc, pc, rN, lsl #2` over a branch table; Thumb `add pc, rN` over a
+   halfword offset table, bounded by the compare that tests the upper bound);
+   an ARM `add pc, pc, rN, lsl #3` jump into a run of 8-byte blocks makes
+   every block start an entry point; a pc-relative load marks its literal
+   word as data; BL/BLX targets become functions in the instruction set the
+   encoding says.
+   A branch to a known function start, or to a `push {..., lr}` /
+   `stmdb sp!, {..., lr}` (which mwcc emits once, at entry), is a tail call.
+3. Gap filling: mwcc lays functions out back to back, each followed by its
+   literal pool and alignment padding, so what is left between two
+   discovered functions is either padding, a pool, or a function nothing
+   reaches by a direct call (dead code, or reached only through a computed
+   address). A gap that starts with a prologue, or decodes cleanly to a
+   return and fills the gap, becomes a function, and the descent repeats; a
+   pointer word to the gap's start decides its instruction set.
+
+The result per module: {addr: Func} plus the literal and data words found
+inside the code, which the emitter turns into labelled data.
+"""
+import bisect
+import struct
+
+import disasm
+
+PROLOGUE_T = lambda hw: (hw & 0xFF00) == 0xB500          # push {..., lr}
+PROLOGUE_A = lambda w: (w & 0xFFFF4000) == 0xE92D4000    # stmdb sp!, {..., lr}
+
+
+class Func(object):
+    __slots__ = ("addr", "thumb", "insns", "lits", "end", "calls",
+                 "tails", "jt", "source", "data", "longbr")
+
+    def __init__(self, addr, thumb, source):
+        self.addr = addr
+        self.thumb = thumb
+        self.insns = {}         # addr -> Ins
+        self.lits = {}          # addr -> size of data the code reads pc-relative
+        self.data = set()       # addresses of jump-table / adr data inside
+        self.end = addr
+        self.calls = set()      # call targets (bit 0 = Thumb)
+        self.tails = set()      # tail-call targets
+        self.jt = {}            # jump instruction addr -> [targets]
+        self.longbr = set()     # Thumb BLs that are long branches
+        self.source = source
+
+
+class Module(object):
+    def __init__(self, rom, name):
+        self.rom = rom
+        self.name = name
+        self.view = rom.module_segment(name)
+        self.funcs = {}
+        self.external_calls = []    # (from_func, insn addr, target)
+        self.claimed = {}           # byte-granular owner map: addr -> func addr
+        # BL targets proven to be inside their caller: they tear down a frame
+        # they never built (see fold_fragments)
+        self.fragments = set()
+        # why the module's bytes are left as data, or None
+        self.opaque = None
+
+    # -------------------------------------------------------------- bytes
+    def mem(self, addr, n):
+        data, base = self.view.lookup(addr)
+        if data is None or addr + n > base + len(data):
+            return None
+        return data[addr - base: addr - base + n]
+
+    def u16(self, addr):
+        b = self.mem(addr, 2)
+        return None if b is None else b[0] | (b[1] << 8)
+
+    def u32(self, addr):
+        b = self.mem(addr, 4)
+        return None if b is None else struct.unpack("<I", b)[0]
+
+    def decode(self, addr, thumb):
+        data, base = self.view.lookup(addr)
+        if data is None:
+            return None
+        need = 2 if thumb else 4
+        if addr + need > base + len(data):
+            return None
+        return disasm.decode(data, addr - base, addr, thumb)
+
+    def is_prologue(self, addr, thumb):
+        if thumb:
+            hw = self.u16(addr)
+            return hw is not None and PROLOGUE_T(hw)
+        w = self.u32(addr)
+        return w is not None and PROLOGUE_A(w)
+
+    # ------------------------------------------------------------ descent
+    def explore(self, f, known):
+        """Fill f.insns/lits from f.addr. `known` maps function starts."""
+        thumb = f.thumb
+        work = [f.addr]
+        seen = f.insns
+        while work:
+            a = work.pop()
+            while True:
+                if a in seen or a & (1 if thumb else 3):
+                    break
+                if a != f.addr and a in known and known[a] != f.addr:
+                    break
+                ins = self.decode(a, thumb)
+                if ins is None or ins.kind == "invalid":
+                    if ins is not None:
+                        seen[a] = ins
+                    break
+                if a in f.lits:
+                    break
+                seen[a] = ins
+                if ins.lit is not None:
+                    f.lits[ins.lit] = max(f.lits.get(ins.lit, 0), ins.lit_size)
+                if ins.adr is not None:
+                    f.data.add(ins.adr)
+                k = ins.kind
+                if k == "call" and thumb and self.is_long_branch(f, ins, known):
+                    # a branch, not a call: no fall-through (a pool or
+                    # another block follows)
+                    work.append(ins.target & ~1)
+                    f.longbr.add(a)
+                    break
+                elif k == "call":
+                    f.calls.add(ins.target)
+                elif k == "b":
+                    t = ins.target
+                    if self.is_tail(f, t, known):
+                        f.tails.add(t | (1 if thumb else 0))
+                    else:
+                        work.append(t)
+                elif k == "jt_arm":
+                    n = self.arm_jt_count(f, a)
+                    tg = [a + 8 + 4 * i for i in range(n)] if n else []
+                    f.jt[a] = tg
+                    work.extend(tg)
+                elif k == "jt_thumb":
+                    tg, tab, nbytes = self.thumb_jt(f, a)
+                    f.jt[a] = tg
+                    if tab is not None:
+                        for o in range(0, nbytes, 2):
+                            f.lits[tab + o] = 2
+                    work.extend(tg)
+                elif thumb and ins.text == "bx pc" and not a & 3:
+                    # `bx pc; nop` switches to ARM at a + 4: the ARM half of
+                    # an interworking veneer (mwldarm's Thumb-to-ARM/far
+                    # call stub `bx pc; nop; ldr ip, [pc]; bx ip; .word T`)
+                    # is a function of its own, entered by this tail jump
+                    f.tails.add(a + 4)
+                elif k == "ijump" and not thumb:
+                    # `add pc, pc, rN, lsl #k` with k > 2 jumps into a run
+                    # of straight-line blocks of 1 << k bytes from a + 8,
+                    # each falling into the next (the static's small-copy
+                    # tails, sub_02082EA4 / sub_02083194: 8-byte
+                    # ldrb/strb pairs ending in `bx lr`). Every block start
+                    # is an entry point.
+                    f.tails.update(self.arm_block_jump(a))
+                if ins.ends_flow:
+                    break
+                a += ins.size
+        if seen:
+            last = max(seen)
+            end = last + seen[last].size
+            for la, n in f.lits.items():
+                if la >= f.addr and la + n > end and la - end < 0x1000:
+                    end = la + n
+            f.end = end
+
+    def is_long_branch(self, f, ins, known):
+        """mwcc spells a Thumb branch beyond B's +-2 KB as BL (the prologue
+        saved LR). The target is then inside the caller: past its start,
+        not a prologue, with no function start in between, and not right
+        after a return or padding (where a function nothing else reaches
+        would begin). A BL well inside B's reach is a call; mwcc's own
+        reach estimate is not exact (Black's 0x0201558C branches 2,048 bytes
+        back with BL), so the last 48 bytes are left to the other rules."""
+        t = ins.target
+        if not (t & 1):
+            return False
+        t &= ~1
+        if t in self.fragments:
+            return True
+        if t <= f.addr or t - f.addr > 0x4000 or t in known:
+            return False
+        if -2000 <= t - (ins.addr + 4) <= 2000:
+            return False
+        if self.has_prologue(t, True):
+            return False
+        for k in known:
+            if f.addr < k < t:
+                return False
+        prev = self.u16(t - 2)
+        if self.u16(t) == 0x4778:               # bx pc: an interworking veneer
+            return False
+        if (prev is None or prev in (0, 0x4770, 0x46C0)
+                or (prev & 0xFF00) == 0xBD00 or (prev & 0xFF87) == 0x4700):
+            return False
+        # a literal pool right before the target: a function starts there.
+        # Read from the word itself, not from the caller's pool so far: that
+        # depends on the order the caller's blocks were explored in (Black's
+        # sub_02014D2C lost its epilogue at 0x02015590 behind a `bl` pair)
+        w = self.u32(t - 4)
+        if w is not None and (0x01FF8000 <= w < 0x02800000
+                              or 0x04000000 <= w < 0x04800000):
+            return False
+        if (prev & 0xF800) == 0xE000:           # unconditional b: could be either
+            pass
+        return True
+
+    def is_tail(self, f, t, known):
+        if t == f.addr or t in self.fragments:
+            return False
+        if t in known:
+            return True
+        if t < f.addr:
+            return True
+        if self.is_prologue(t, f.thumb):
+            return True
+        if not self.view.contains(t):
+            return True
+        return False
+
+    def arm_jt_count(self, f, a):
+        """Entries of `add<cc> pc, pc, rN, lsl #2` at a: the run of
+        unconditional branches from a+8 (a+4 is the out-of-range branch).
+        When the condition is an unsigned upper bound (ls/cc) the
+        `cmp rN, #K` before it caps the run at K + 1, and an entry may also
+        be an unconditional return: mwcc puts a case that only returns in
+        the table as the function's `ldmia sp!, {..., pc}` (the Download
+        Play child's sub_0200B8C8). Any other condition (`addge` after a
+        signed lower-bound check) relies on an earlier compare, so the run
+        of branches alone counts."""
+        def run(kinds):
+            n = 0
+            while n <= 1024:
+                w = self.u32(a + 8 + 4 * n)
+                if w is None:
+                    break
+                ins = disasm.decode_arm(w, a + 8 + 4 * n)
+                if ins.kind not in kinds or ins.cond:
+                    break
+                n += 1
+            return n
+        cond = self.u32(a) >> 28
+        if cond in (9, 3):                            # ls, cc
+            for back in range(4, 24, 4):
+                w = self.u32(a - back)
+                if w is None:
+                    break
+                if (w & 0x0FF00000) == 0x03500000:    # cmp rn, #imm
+                    k = disasm.ror32(w & 0xFF, ((w >> 8) & 0xF) * 2) + (1 if cond == 9 else 0)
+                    n = run(("b", "ret"))
+                    return min(k, n) if n else k
+        return run(("b",))
+
+    def arm_block_jump(self, a):
+        """Entry points of `add<cc> pc, pc, rM, lsl #k` (3 <= k <= 5) at a:
+        the starts of the 1 << k byte blocks from a + 8 up to the
+        unconditional return or jump that ends the straight run there."""
+        w = self.u32(a)
+        if w is None or (w & 0x0FFFF070) != 0x008FF000:
+            return []
+        k = (w >> 7) & 0x1F
+        if not 3 <= k <= 5:
+            return []
+        b = a + 8
+        end = None
+        for _ in range(256):
+            ins = self.decode(b, False)
+            if ins is None or ins.kind in ("invalid", "call", "icall", "jt_arm"):
+                return []
+            if ins.ends_flow and not ins.cond:
+                end = b
+                break
+            b += 4
+        if end is None:
+            return []
+        step = 1 << k
+        return [t for t in range(a + 8, end + 1, step)]
+
+    def thumb_bound_extra(self, c, a):
+        """How `cmp rX, #N` at c bounds the switch at a, from the conditional
+        branch right after it: 1 if the cases are 0..N (`bhi`/`bgt` out,
+        `bls`/`ble` in), 0 if 0..N-1 (`bcs`/`bge` out, `bcc`/`blt` in), None
+        if it tests a lower bound instead. "In" is a branch into the switch
+        sequence (c, a]. Without a conditional branch there, 0..N."""
+        hw = self.u16(c + 2)
+        if hw is None or (hw & 0xF000) != 0xD000 or ((hw >> 8) & 0xF) >= 0xE:
+            return 1
+        cond = (hw >> 8) & 0xF
+        t = c + 2 + 4 + disasm.sext(hw & 0xFF, 8) * 2
+        inside = c < t <= a
+        upper_incl = (9, 0xD) if inside else (8, 0xC)    # ls, le / hi, gt
+        upper_excl = (3, 0xB) if inside else (2, 0xA)    # cc, lt / cs, ge
+        if cond in upper_incl:
+            return 1
+        if cond in upper_excl:
+            return 0
+        if cond in (2, 3, 8, 9, 0xA, 0xB, 0xC, 0xD):
+            return None
+        return 1
+
+    def thumb_jt(self, f, a):
+        """Targets of the mwcc Thumb switch ending in `add pc, rN` at a."""
+        # add rX, pc at a-8 (add rX,rX,rX; add rX,pc; ldrh rX,[rX,#k];
+        # lsl; asr; add pc, rX)
+        base = None
+        k = None
+        for back in range(2, 14, 2):
+            hw = self.u16(a - back)
+            if hw is None:
+                break
+            if (hw & 0xFF00) == 0x4400 and ((hw >> 3) & 0xF) == 15:   # add rX, pc
+                base = ((a - back) + 4)
+                break
+            if (hw & 0xF800) == 0x8800:                               # ldrh imm
+                k = ((hw >> 6) & 0x1F) * 2
+        if base is None or k is None:
+            return [], None, 0
+        tab = base + k
+        # the bound: `cmp rX, #N` before the switch, less any `sub rX, #K`
+        # that rebases the index between the compare and the table. A
+        # compare whose branch tests a lower bound (`cmp rX, #0; bge` into
+        # the switch, after a signed `cmp rX, #N; bgt default` further up)
+        # is not the bound: the search goes on past it.
+        n = 0
+        bias = 0
+        for back in range(2, 40, 2):
+            hw = self.u16(a - back)
+            if hw is None:
+                break
+            if (hw & 0xF800) == 0x3800:                               # sub rX, #imm
+                bias += hw & 0xFF
+            elif (hw & 0xF800) == 0x2800:                             # cmp rX, #imm
+                extra = self.thumb_bound_extra(a - back, a)
+                if extra is None:
+                    continue
+                n = (hw & 0xFF) + extra - bias
+                break
+        if n <= 0:
+            return [], None, 0
+        tg = []
+        lowest = None
+        for i in range(n):
+            if lowest is not None and tab + 2 * i >= lowest:
+                break                   # the cases start where the table ends
+            v = self.u16(tab + 2 * i)
+            if v is None:
+                break
+            v = disasm.sext(v, 16)
+            t = (a + 4 + v) & 0xFFFFFFFF
+            tg.append(t)
+            if t > tab and (lowest is None or t < lowest):
+                lowest = t
+        n = len(tg)
+        return tg, tab, 2 * n
+
+    # --------------------------------------------------------------- run
+    def add(self, addr, thumb, source):
+        if addr in self.funcs or addr & (1 if thumb else 3) or addr in self.fragments:
+            return False
+        # the ARM9 secure area (the static's first 2 KB) is the SDK's
+        # syscall blob: data with a few SWI thunks reached by call only
+        if (self.name == "arm9" and source in ("gap", "pointer")
+                and self.rom.arm9_ram <= addr < self.rom.arm9_ram + 0x800):
+            return False
+        if not self.view.contains(addr):
+            return False
+        self.funcs[addr] = Func(addr, thumb, source)
+        return True
+
+    def code_ranges(self):
+        return [(s.ram, s.end) for s in self.view.segs]
+
+    def run(self, seeds, hints=(), pointer_scan=True, gap_fill=True):
+        """seeds: [(addr, thumb, source)] taken as given; hints: pointer-like
+        values from other modules, validated like the module's own words."""
+        if self.opaque:
+            return
+        for a, t, s in seeds:
+            self.add(a, t, s)
+        self.descend()
+        while self.fold_fragments():
+            self.descend()
+        for _ in range(16):
+            changed = False
+            if hints:
+                changed |= self.try_hints(hints)
+            if pointer_scan:
+                changed |= self.try_hints(self.pointer_words(self.view.segs))
+            self.descend()
+            if gap_fill and self.funcs:
+                changed |= self.fill_gaps()
+                self.descend()
+            while self.fold_fragments():
+                self.descend()
+                changed = True
+            if not changed:
+                break
+        self.resolve_overlaps()
+        for _ in range(8):
+            if not self.split_detached():
+                break
+            self.descend()
+        self.prune_calls()
+        self.reexplore_stale()
+        self.check_secure_area()
+        self.check_self_modifying()
+
+    def check_self_modifying(self):
+        """An overlay that invalidates instruction-cache lines itself (the
+        SDK's IC_* live in the static) rewrites its own code when it runs:
+        the bytes at rest are not the code that executes, which no static
+        recompiler can translate, and in a retail cartridge such an overlay
+        is a protection scheme. It is not decoded here: the whole module
+        stays opaque data, so a call into it reaches run-time dispatch and
+        stops there by name."""
+        if not self.name.startswith("ov"):
+            return
+        for f in self.funcs.values():
+            for ia, ins in f.insns.items():
+                t = ins.text.replace(" ", "")
+                if t.startswith("mcrp15,0,") and t.endswith(",c7,c5,1"):
+                    self.opaque = ("self-modifying (invalidates I-cache lines "
+                                   "at 0x%08X)" % ia)
+                    self.funcs = {}
+                    self.external_calls = []
+                    return
+
+    def check_secure_area(self):
+        """The ARM9 secure area (the static's first 2 KB) is the one region
+        a cartridge stores KEY1-encrypted; a dump in the decrypted form holds
+        the SDK's syscall veneers there in plaintext among filler. Nothing
+        here decrypts anything: the only code accepted in the range is a
+        veneer that already reads as `swi #N; bx lr` (reached by a call from
+        plaintext code), which armrec turns into the host's armrec_swi(N).
+        Any other function there means the bytes are not plaintext code, and
+        the module stops instead of recompiling them."""
+        if self.name != "arm9":
+            return
+        lo = self.rom.arm9_ram
+        for a, f in self.funcs.items():
+            if not lo <= a < lo + 0x800:
+                continue
+            texts = [i.text for _, i in sorted(f.insns.items())]
+            if (len(texts) != 2 or not texts[0].startswith("swi ")
+                    or texts[1] != "bx lr"):
+                raise ValueError(
+                    "secure area: 0x%08X is not a plaintext `swi; bx lr` "
+                    "veneer (%s); its bytes are opaque, route the call to "
+                    "the host instead" % (a, "; ".join(texts[:4])))
+
+    def descend(self):
+        done = set(a for a, f in self.funcs.items() if f.insns)
+        while True:
+            pending = [a for a in self.funcs if a not in done]
+            if not pending:
+                break
+            for a in sorted(pending):
+                done.add(a)
+                f = self.funcs[a]
+                known = self.funcs
+                self.explore(f, known)
+                for t in f.calls | f.tails:
+                    th = bool(t & 1)
+                    ta = t & ~1
+                    if self.view.contains(ta):
+                        self.add(ta, th, "call")
+                    else:
+                        self.external_calls.append((a, ta, th))
+        # a tail target that became a function start after its caller was
+        # explored: re-explore callers whose blocks swallowed a later start
+        changed = True
+        rounds = 0
+        while changed and rounds < 4:
+            changed = False
+            rounds += 1
+            for a, f in list(self.funcs.items()):
+                swallowed = [b for b in f.insns if b != a and b in self.funcs]
+                if swallowed:
+                    f.insns = {}
+                    f.lits = {}
+                    f.data = set()
+                    f.calls = set()
+                    f.tails = set()
+                    f.jt = {}
+                    f.longbr = set()
+                    self.explore(f, self.funcs)
+                    changed = True
+
+    def literal_words(self):
+        s = set()
+        for f in self.funcs.values():
+            for la in f.lits:
+                s.add(la & ~3)
+        return s
+
+    def scan_pointers(self):
+        """Words anywhere in the module that point at a function start."""
+        self.try_hints(self.pointer_words(self.view.segs))
+
+    def pointer_words(self, segs):
+        lo = min(s.ram for s in self.view.segs)
+        hi = max(s.end for s in self.view.segs)
+        insn = self.insn_bytes(lits=False)
+        out = []
+        for seg in segs:
+            data = seg.data
+            for off in range(0, len(data) - 3, 4):
+                if seg.ram + off in insn:
+                    continue
+                v = struct.unpack_from("<I", data, off)[0]
+                if lo <= (v & ~1) < hi:
+                    out.append(v)
+        return out
+
+    def try_hints(self, values):
+        """Accept pointer-like values that land on a function start: a
+        prologue, or the first instruction after a known function's end
+        (past its padding and pool) that decodes to a return."""
+        bounds = self.boundaries()
+        insn = self.insn_bytes()
+        added = False
+        for v in values:
+            th = bool(v & 1)
+            t = v & ~1
+            if t in self.funcs or t in insn or not self.view.contains(t):
+                continue
+            if not th and t & 3:
+                continue
+            if self.has_prologue(t, th) or (t in bounds and self.plausible(t, th, 200)):
+                added |= self.add(t, th, "pointer")
+        return added
+
+    def has_prologue(self, addr, thumb, weak=False):
+        if self.is_prologue(addr, thumb):
+            return True
+        if weak:
+            # a leaf saving callee-saved registers only: push {r4-r7} /
+            # stmdb sp!, {r4-r11}
+            if thumb:
+                hw = self.u16(addr)
+                if hw is not None and (hw & 0xFF00) == 0xB400 and hw & 0xFF:
+                    return True
+            else:
+                w = self.u32(addr)
+                if w is not None and (w & 0xFFFF0000) == 0xE92D0000 and w & 0x0FF0:
+                    return True
+        # varargs: push {r0-r3} / stmdb sp!, {r0-r3} first
+        if thumb:
+            hw = self.u16(addr)
+            return (hw is not None and (hw & 0xFFF0) == 0xB400 and hw & 0xF
+                    and self.is_prologue(addr + 2, True))
+        w = self.u32(addr)
+        return (w is not None and (w & 0xFFFFFFF0) == 0xE92D0000 and w & 0xF
+                and self.is_prologue(addr + 4, False))
+
+    def skip_filler(self, a, limit, covered, thumb=True):
+        """Past padding and pools. Thumb pads with a zero halfword (or a
+        `nop` before a 4-aligned pool); ARM only with zero words."""
+        while a < limit:
+            if a in covered:
+                a += 2
+                continue
+            if thumb or a & 2:
+                hw = self.u16(a)
+                if hw is None:
+                    break
+                if hw == 0 or (hw == 0x46C0 and a & 2):
+                    a += 2
+                    continue
+                break
+            w = self.u32(a)
+            if w == 0:
+                a += 4
+                continue
+            break
+        return a
+
+    def boundaries(self):
+        """Addresses where the next function would start after each known
+        function's end."""
+        covered = self.insn_bytes()
+        out = set()
+        hi = max(s.end for s in self.view.segs)
+        for f in self.funcs.values():
+            out.add(self.skip_filler(f.end, hi, covered, f.thumb))
+        return out
+
+    def insn_bytes(self, lits=True):
+        s = set()
+        for f in self.funcs.values():
+            for a, ins in f.insns.items():
+                for i in range(0, ins.size, 2):
+                    s.add(a + i)
+            if not lits:
+                continue
+            for la, n in f.lits.items():
+                for i in range(0, max(n, 2), 2):
+                    s.add((la & ~1) + i)
+        return s
+
+    def plausible(self, addr, thumb, limit=400):
+        """Linear decode from addr reaches a return before anything invalid,
+        an odd branch, or a branch outside the module."""
+        if self.is_prologue(addr, thumb):
+            return True
+        a = addr
+        for _ in range(limit):
+            ins = self.decode(a, thumb)
+            if ins is None or ins.kind == "invalid":
+                return False
+            if ins.kind in ("b", "call") and not thumb and ins.target is not None:
+                pass
+            if ins.kind == "b" and not self.view.contains(ins.target):
+                return False
+            if not thumb and ins.cond is False and (ins.word >> 28) not in (14, 15):
+                pass
+            if ins.kind in ("ret", "ijump", "jt_thumb", "jt_arm") and not ins.cond:
+                return True
+            if ins.kind == "b" and not ins.cond:
+                return True
+            a += ins.size
+        return False
+
+    def fill_gaps(self):
+        """Promote functions in the holes between discovered ones, walking
+        each hole function by function."""
+        if not self.funcs:
+            return False
+        covered = self.insn_bytes()
+        code_hi = self.code_end()
+        mod_hi = max(s.end for s in self.view.segs)
+        added = False
+        # A pointer word to a hole address says which instruction set it is
+        # entered in (bit 0), which a decode in the walking function's set
+        # can only guess: ov121's ARM leaves 0x021DDC30/0x021DDC44, reached
+        # by `blx` through even literals after a Thumb function, decode as
+        # Thumb too.
+        ptrs = set(self.pointer_words(self.view.segs))
+        starts = sorted(self.funcs)
+        for i, s0 in enumerate(starts):
+            f = self.funcs[s0]
+            last = i + 1 >= len(starts)
+            nxt = mod_hi if last else starts[i + 1]
+            a = f.end
+            while True:
+                a = self.skip_filler(a, nxt, covered, f.thumb)
+                if a >= nxt or a in self.funcs or a & 1:
+                    break
+                th = None
+                if (a & 3) == 0 and self.has_prologue(a, False, weak=True):
+                    th = False
+                elif self.has_prologue(a, True, weak=True):
+                    th = True
+                elif (a & 3) == 0 and a in ptrs and (a | 1) not in ptrs and self.plausible(a, False, 64):
+                    th = False
+                elif (a | 1) in ptrs and a not in ptrs and self.plausible(a, True, 64):
+                    th = True
+                elif (a < code_hi and (f.thumb or (a & 3) == 0)
+                      and self.plausible(a, f.thumb, 64)):
+                    th = f.thumb
+                if th is None and not last:
+                    # data inside the hole (a table nothing names): the next
+                    # strong prologue before the following function
+                    b = a + 2
+                    while b < nxt:
+                        if b not in covered:
+                            if (b & 3) == 0 and self.has_prologue(b, False):
+                                th = False
+                                break
+                            if self.has_prologue(b, True):
+                                th = True
+                                break
+                        b += 2
+                    if th is not None:
+                        a = b
+                if th is None:
+                    break
+                if not self.add(a, th, "gap"):
+                    break
+                g = self.funcs[a]
+                self.explore(g, self.funcs)
+                if not g.insns:
+                    break
+                added = True
+                for ia, ins in g.insns.items():
+                    for k in range(0, ins.size, 2):
+                        covered.add(ia + k)
+                for la, n in g.lits.items():
+                    for k in range(0, max(n, 2), 2):
+                        covered.add((la & ~1) + k)
+                for t in g.calls | g.tails:
+                    if self.view.contains(t & ~1):
+                        self.add(t & ~1, bool(t & 1), "call")
+                f = g
+                a = g.end
+        return added
+
+    def code_end(self):
+        """Where code stops: the end of the last function the descent
+        reached from a call or an entry point (rodata follows)."""
+        return max(f.end for f in self.funcs.values())
+
+    def fold_fragments(self):
+        """A Thumb BL target with no prologue that pops registers or the
+        return address, or releases stack, is the tail of its caller reached
+        by a long branch (mwcc duplicates epilogues, so the bytes before it
+        can look like a function end). Drop it; its callers re-explore with
+        the BL as a branch."""
+        found = []
+        for a, f in self.funcs.items():
+            if f.source != "call" or not f.thumb or self.has_prologue(a, True, weak=True):
+                continue
+            first = f.insns.get(a)
+            if first is not None and first.text.startswith("sub sp, "):
+                continue                    # a leaf that builds its own frame
+            for ins in f.insns.values():
+                t = ins.text
+                if t.startswith("pop ") or (t.startswith("add sp, #") and ins.kind == "op"):
+                    found.append(a)
+                    break
+        if not found:
+            return False
+        for a in found:
+            self.fragments.add(a)
+            del self.funcs[a]
+        for b, g in self.funcs.items():
+            if any((c & ~1) in self.fragments for c in g.calls):
+                g.insns = {}
+                g.lits = {}
+                g.data = set()
+                g.calls = set()
+                g.tails = set()
+                g.jt = {}
+                g.longbr = set()
+        return True
+
+    def reexplore_stale(self):
+        """A function explored while a later-dropped start existed took the
+        branch to it as a tail call; explore it again so the block is its
+        own."""
+        for _ in range(4):
+            stale = [a for a, f in self.funcs.items()
+                     if any((t & ~1) not in self.funcs and self.view.contains(t & ~1)
+                            for t in f.tails)]
+            if not stale:
+                return
+            for a in stale:
+                f = self.funcs[a]
+                f.insns = {}
+                f.lits = {}
+                f.data = set()
+                f.calls = set()
+                f.tails = set()
+                f.jt = {}
+                f.longbr = set()
+            self.descend()
+            self.prune_calls()
+
+    def prune_calls(self):
+        """Drop call-sourced functions nothing calls any more (a target
+        recorded before its caller was re-explored, or before a Thumb BL was
+        recognised as a long branch)."""
+        while True:
+            refs = set()
+            for f in self.funcs.values():
+                for t in f.calls | f.tails:
+                    refs.add(t & ~1)
+                for tg in f.jt.values():
+                    refs.update(tg)
+            dead = [a for a, f in self.funcs.items()
+                    if f.source == "call" and a not in refs
+                    and not self.has_prologue(a, f.thumb)]
+            if not dead:
+                return
+            for a in dead:
+                del self.funcs[a]
+
+    def resolve_overlaps(self):
+        """Drop functions that start inside another function's instructions
+        or literal pool (a gap filled before the pool's owner was explored
+        decodes the pool's words as Thumb)."""
+        owner = {}
+        for a in sorted(self.funcs):
+            f = self.funcs[a]
+            for ia, ins in f.insns.items():
+                owner.setdefault(ia, a)
+            for la, n in f.lits.items():
+                for k in range(0, max(n, 2), 2):
+                    owner.setdefault((la & ~1) + k, a)
+        for a in list(self.funcs):
+            o = owner.get(a)
+            if o is not None and o != a and self.funcs[a].source in ("pointer", "gap"):
+                del self.funcs[a]
+
+    def split_detached(self):
+        """A block a function reaches only past the next function's start
+        (Black's MI copy routines branch from one entry over another into
+        their shared unaligned loops) is outside the range emitted for it
+        and inside its neighbour's, which does not hold it: it becomes a
+        function of its own, entered by a tail branch. A block the
+        neighbour does hold is shared code, which emit labels instead."""
+        starts = sorted(self.funcs)
+        added = False
+        for i, a0 in enumerate(starts[:-1]):
+            f = self.funcs[a0]
+            end = starts[i + 1]
+            for ia, ins in list(f.insns.items()):
+                tg = list(f.jt.get(ia, ()))
+                if ins.kind == "b" and ins.target is not None:
+                    tg.append(ins.target)
+                elif ia in f.longbr:
+                    tg.append(ins.target & ~1)
+                for t in tg:
+                    if t < end or t not in f.insns or t in self.funcs:
+                        continue
+                    j = bisect.bisect_right(starts, t) - 1
+                    if t in self.funcs[starts[j]].insns:
+                        continue
+                    added |= self.add(t, f.thumb, "call")
+        return added
+
+
+def module_seeds(rom, name):
+    seeds = []
+    if name == "arm9":
+        seeds.append((rom.arm9_entry, False, "entry"))
+        if rom.arm9_autoload_cb:
+            seeds.append((rom.arm9_autoload_cb & ~1, bool(rom.arm9_autoload_cb & 1),
+                          "entry"))
+    elif name == "arm7":
+        seeds.append((rom.arm7_entry, False, "entry"))
+        if rom.arm7_autoload_cb:
+            seeds.append((rom.arm7_autoload_cb & ~1, bool(rom.arm7_autoload_cb & 1),
+                          "entry"))
+    else:
+        ov = rom.overlay(int(name[2:]))
+        view = rom.module_segment(name)
+        a = ov.sinit
+        while a < ov.sinit_end:
+            data, base = view.lookup(a)
+            if data is None:
+                break
+            v = struct.unpack_from("<I", data, a - base)[0]
+            if v:
+                seeds.append((v & ~1, bool(v & 1), "sinit"))
+            a += 4
+        # The overlay's text starts at its load address.
+        m = Module(rom, name)
+        if ov.data:
+            if m.has_prologue(ov.ram, True, weak=True):
+                seeds.append((ov.ram, True, "entry"))
+            elif m.has_prologue(ov.ram, False, weak=True):
+                seeds.append((ov.ram, False, "entry"))
+            elif m.plausible(ov.ram, True, 64):
+                seeds.append((ov.ram, True, "entry"))
+            elif m.plausible(ov.ram, False, 64):
+                seeds.append((ov.ram, False, "entry"))
+    return seeds
+
+
+def overlay_hints(rom, name, words):
+    ov = rom.overlay(int(name[2:]))
+    lo, hi = ov.ram, ov.ram + len(ov.data)
+    hints = [w for w in words if lo <= (w & ~1) < hi]
+    for other in rom.overlays:
+        if other.id == ov.id:
+            continue
+        if other.ram < hi and lo < other.ram + len(other.data):
+            continue        # never resident together
+        d = other.data
+        for off in range(0, len(d) - 3, 4):
+            w = struct.unpack_from("<I", d, off)[0]
+            if lo <= (w & ~1) < hi:
+                hints.append(w)
+    return hints
+
+
+def discover_all(rom, modules=None):
+    """Run every module. The static goes first; then each overlay, with the
+    pointer-like words of the static and of every overlay that can be
+    resident beside it as hints (validated in the overlay: a prologue, or a
+    function boundary that decodes to a return). A second round adds the
+    call targets the first round found going into each overlay from the
+    static and from the overlays that can be resident beside it, and into
+    the static from every overlay (a static helper only overlays call, such
+    as Black's Thumb MTX_Scale22_ behind the ARM MTX_Identity22_)."""
+    modules = list(modules or rom.modules())
+    want_ov = [n for n in modules if n.startswith("ov")]
+    out = {}
+    static = Module(rom, "arm9")
+    static.run(module_seeds(rom, "arm9"))
+    out["arm9"] = static
+    words = []
+    insn = static.insn_bytes(lits=False)
+    for seg in static.view.segs:
+        for off in range(0, len(seg.data) - 3, 4):
+            if seg.ram + off not in insn:
+                words.append(struct.unpack_from("<I", seg.data, off)[0])
+    calls = [ta | (1 if th else 0) for (_f, ta, th) in static.external_calls]
+    # every overlay takes part in the call census, so the second round sees
+    # calls from overlays the caller did not ask about
+    first = {}
+    for ov in rom.overlays:
+        name = "ov%03d" % ov.id
+        m = Module(rom, name)
+        m.run(module_seeds(rom, name), hints=overlay_hints(rom, name, words) + calls)
+        first[name] = m
+    scalls = [ta | (1 if th else 0) for m in first.values()
+              for (_f, ta, th) in m.external_calls
+              if static.view.contains(ta) and ta not in static.funcs]
+    if scalls:
+        static.run([], hints=scalls)
+    xcalls = {}
+    for name, m in first.items():
+        ov = rom.overlay(int(name[2:]))
+        for (_f, ta, th) in m.external_calls:
+            for other in rom.overlays:
+                if other.id == ov.id:
+                    continue
+                if not (other.ram <= ta < other.ram + len(other.data)):
+                    continue
+                if other.ram < ov.ram + len(ov.data) and ov.ram < other.ram + len(other.data):
+                    continue
+                xcalls.setdefault("ov%03d" % other.id, []).append(ta | (1 if th else 0))
+    for name in want_ov:
+        m = first[name]
+        extra = [c for c in xcalls.get(name, []) if (c & ~1) not in m.funcs]
+        if extra:
+            m.run([], hints=extra)
+        out[name] = m
+    for name in modules:
+        if name not in out:
+            m = Module(rom, name)
+            m.run(module_seeds(rom, name))
+            out[name] = m
+    if "arm9" not in modules:
+        del out["arm9"]
+    return out

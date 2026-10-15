@@ -1,0 +1,5 @@
+# 68 Berry Blender: the Slateport Contest Lobby, nothing else. The Pokeblock Case comes from the little girl
+# (SlateportCity_ContestLobby/scripts.inc:101-110) and the berry from the blender's old man, who gives a Pecha Berry
+# to a player without berries (data/scripts/pokeblocks.inc:76-80,106-111), so the run plays both.
+# inside the entrance (SlateportCity_ContestLobby/map.json warp_events (5,6),(6,6))
+map MAP_SLATEPORT_CITY_CONTEST_LOBBY 5 5

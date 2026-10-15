@@ -1,0 +1,5 @@
+# HeartGold: CONTINUE into the field from a save in New Bark Town (the
+# player free at ~2176).
+1300:start
+1700:start
+2100:a:4:60:2

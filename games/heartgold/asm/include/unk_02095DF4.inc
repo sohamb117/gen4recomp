@@ -1,0 +1,14 @@
+#include <nitro/fs/overlay.h>
+#pragma once
+.public Heap_AllocAtEnd
+.public Heap_Free
+.public sub_0203E30C
+.public FieldSystem_GetSaveData
+.public PokeathlonCourse_LaunchApp
+.public TaskManager_Call
+.public FieldSystem_ApplicationIsRunning
+.public FieldSystem_LoadFieldOverlay
+.public sub_020505C8
+.public TaskManager_GetFieldSystem
+.public TaskManager_GetEnvironment
+.public sub_02095DF4

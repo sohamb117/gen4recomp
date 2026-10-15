@@ -2,6 +2,7 @@
 """pc/tools/dp_ovlabel_lint.py: code calling another overlay by the wrong overlay's label.
 
     dp_ovlabel_lint.py [--allow FILE] SRC...
+    dp_ovlabel_lint.py [--allow FILE] --xmap XMAP [--ovmap FILE] SRC...
 
 SRC is the assembly armrec translates and the decompiled C the build
 compiles (files, or directories searched for *.s and *.c), patched copies
@@ -37,6 +38,34 @@ decompiled sources are), a top-level line naming ovNN_X( without a closing
 function pointer, both bound by name on wasm): the Poketch digital watch
 (ov21) called pokediamond's ov11_02252DB4, a battle overlay label, for the
 resident ov20_02252DB4, and ran battle code on a tap on the watch.
+
+With --xmap (HG/SS, built with armrec --overlay-dispatch), the ROM link map
+is the source of the overlays and their functions instead of the ovNN_X
+names: pokeheartgold names many overlay functions (PokedexApp_MainSeq_19),
+and its overlays are main.lsf's, not directories. Every `.text` symbol the
+xMAP places between an overlay's SDK_OVERLAY.<name>.START and .END is that
+overlay's function at that address; FS_OVERLAY_ID(<name>) (C, and the
+assembly's `.word FS_OVERLAY_ID(OVY_18)`) and SDK_OVERLAY_<name>_ID (asm)
+are loads of the overlay the map numbers <name>. A file's own overlay is
+its path's overlays/NN/ (the staged assembly, the extracted asm bodies) or
+its line in --ovmap (`path ovl`, `-` static: the decompiled C,
+pc/tools/hg_lsf.py c, matched as a path suffix). What is checked is what
+still binds by name:
+
+  * C naming another overlay's function on an indented line (a direct
+    call, or a function pointer: wasm-ld binds both by name);
+  * assembly `.word X` (a literal pool's `ldr =X`, a table) where X is
+    decompiled C of another overlay: armrec stores armrec_ext_X, the C
+    function's host pointer, so a call through it reaches X whichever
+    overlay is resident;
+  * an assembly bl/blx armrec does not dispatch (armrec.py
+    overlay_dispatch_addr: the named overlay overlaps the caller's own).
+    Every other cross-overlay call into an address another overlay can
+    occupy is armrec_dispatch() of the address, resolved by residency.
+
+The rule is the one above, with rivals limited to overlays that can be
+resident beside the referencing file's own (their windows do not overlap
+it).
 """
 import collections, os, re, sys
 
@@ -48,6 +77,15 @@ C_DEF = re.compile(r"^(?!extern\b)[A-Za-z_][^;]*\b(ov(\d+)_([0-9A-Fa-f]{8}))\s*\
 C_REF = re.compile(r"\b(ov(\d+)_([0-9A-Fa-f]{8}))\b")
 C_OVID = re.compile(r"\bFS_OVERLAY_ID\s*\(\s*OVERLAY_(\d+)\s*\)")
 C_COMMENT = re.compile(r"//.*|/\*.*?\*/")
+
+XMAP_OVL = re.compile(r"^#>([0-9A-Fa-f]{8})\s+SDK_OVERLAY\.(\w+)\.(START|END|ID) \(linker command file\)")
+XMAP_SYM = re.compile(r"^\s+([0-9A-Fa-f]{8}) [0-9A-Fa-f]{8} (\.\w+)\s+(\S+)\t\(([^)]+)\)\s*$")
+ANY_START = re.compile(r"^\s*(?:arm|thumb|non_word_aligned_thumb)_func_start\s+(\w+)")
+ANY_CALL = re.compile(r"^\s*blx?\s+([A-Za-z_]\w*)\s*(?:[;@].*)?$")
+WORD = re.compile(r"\.word\s+([A-Za-z_]\w*)")
+IDENT = re.compile(r"\b[A-Za-z_]\w*\b")
+C_OVNAME = re.compile(r"\bFS_OVERLAY_ID\s*\(\s*(\w+)\s*\)")
+S_OVNAME = re.compile(r"\bSDK_OVERLAY_(\w+)_ID\b")
 
 
 def files(args):
@@ -70,6 +108,153 @@ def rel_of(p):
     return p[i:] if i >= 0 else p
 
 
+def load_xmap(path):
+    """({name: [(overlay, addr, object)]} for the overlays' .text symbols,
+    {overlay: (start, end)}, {overlay name: id})."""
+    syms, ranges, ids = collections.defaultdict(list), {}, {}
+    cur = None
+    for line in open(path, errors="replace"):
+        m = XMAP_OVL.match(line)
+        if m:
+            name, val = m.group(2), int(m.group(1), 16)
+            if m.group(3) == "ID":
+                ids[name] = val
+            elif m.group(3) == "START":
+                cur = name
+                ranges[name] = [val, val]
+            else:
+                ranges[name][1] = val
+                cur = None
+            continue
+        if cur is None:
+            continue
+        m = XMAP_SYM.match(line)
+        if m and m.group(2) == ".text" and m.group(3) != ".text" and not m.group(3).startswith(("$", ".")):
+            syms[m.group(3)].append((cur, int(m.group(1), 16) & ~1, m.group(4)))
+    syms = {n: [(ids[o], a, obj) for o, a, obj in v] for n, v in syms.items()}
+    return syms, {ids[o]: tuple(r) for o, r in ranges.items()}, ids
+
+
+def main_xmap(allow, xmap, ovmap_path, args):
+    """The --xmap mode (see the module docstring)."""
+    syms, ranges, ids = load_xmap(xmap)
+    funcs_at = collections.defaultdict(set)
+    for n, hits in syms.items():
+        for o, a, _obj in hits:
+            funcs_at[a].add(o)
+    ovmap = {}
+    if ovmap_path:
+        for line in open(ovmap_path):
+            f = line.split()
+            if len(f) == 2:
+                ovmap[f[0]] = None if f[1] == "-" else int(f[1])
+
+    def overlaps(a, b):
+        if a is None or b is None or a not in ranges or b not in ranges:
+            return False
+        (s1, e1), (s2, e2) = ranges[a], ranges[b]
+        return s1 < e2 and s2 < e1
+
+    def own_of(p):
+        m = OVDIR.search(p)
+        if m:
+            return int(m.group(1))
+        parts = p.split("/")
+        for i in range(len(parts)):
+            k = "/".join(parts[i:])
+            if k in ovmap:
+                return ovmap[k]
+        return None
+
+    def resolve(name, own):
+        """(overlay, addr) of another overlay's function `name`, or None."""
+        hits = syms.get(name)
+        if not hits or any(o == own for o, _a, _obj in hits):
+            return None
+        if len(set(a for _o, a, _obj in hits)) != 1:
+            return None
+        return hits[0][0], hits[0][1]
+
+    def dispatched(ov, addr, own):
+        """Whether armrec --overlay-dispatch turns a call into armrec_dispatch()
+        (armrec.py overlay_dispatch_addr)."""
+        if overlaps(ov, own):
+            return False
+        return any(k not in (ov, own) and s <= addr < e and not overlaps(k, own)
+                   for k, (s, e) in ranges.items())
+
+    paths = sorted(set(files(args)))
+    asm_defined = set()
+    c_objects = set()
+    for p in paths:
+        if p.endswith(".s"):
+            for raw in open(p, errors="replace"):
+                m = ANY_START.match(raw)
+                if m:
+                    asm_defined.add(m.group(1))
+        else:
+            c_objects.add(os.path.basename(p)[:-2] + ".o")
+
+    def is_c(name):
+        return name not in asm_defined and any(obj in c_objects for _o, _a, obj in syms[name])
+
+    refs = []                                # (caller, path, line, name, ov, addr, kind)
+    uses = collections.defaultdict(set)
+    loads = collections.defaultdict(set)
+    for p in paths:
+        own = own_of(p)
+        caller = str(own) if own is not None else os.path.basename(p)
+        is_c_file = p.endswith(".c")
+        for n, raw in enumerate(open(p, errors="replace"), 1):
+            if is_c_file:
+                line = C_COMMENT.sub("", raw)
+                loads[p].update(ids[x] for x in C_OVNAME.findall(line) if x in ids)
+                if not line[:1].isspace():
+                    continue
+                found = [(x, "C") for x in IDENT.findall(line)]
+            else:
+                code = raw.split(";")[0].split("@")[0]
+                loads[p].update(ids[x] for x in S_OVNAME.findall(code) + C_OVNAME.findall(code)
+                                if x in ids)
+                m = ANY_CALL.match(code)
+                found = [(m.group(1), "call")] if m else []
+                found += [(x, "word") for x in WORD.findall(code)]
+            for name, kind in found:
+                r = resolve(name, own)
+                if r is None:
+                    continue
+                ov, addr = r
+                uses[caller].add(ov)
+                if kind == "call" and dispatched(ov, addr, own):
+                    continue
+                if kind == "word" and not is_c(name):
+                    continue
+                refs.append((caller, p, n, name, ov, addr, kind))
+
+    bad = 0
+    seen = set()
+    for caller, p, n, name, ov, addr, kind in refs:
+        if ov in loads[p] or (caller, name) in allow or (p, n, name) in seen:
+            continue
+        seen.add((p, n, name))
+        own = int(caller) if caller.isdigit() else None
+        rivals = sorted(k for k in funcs_at[addr] & (uses[caller] | loads[p])
+                        if k not in (ov, own) and not overlaps(k, own))
+        if not rivals:
+            continue
+        print("%s:%d: %s %s %s (overlay %d), and also uses overlay%s %s, which %s a "
+              "function at 0x%08X too" % (
+                  p, n, "overlay " + caller if own is not None else caller,
+                  {"C": "names", "word": "stores", "call": "calls"}[kind], name, ov,
+                  "s" if len(rivals) > 1 else "", ", ".join(map(str, rivals)),
+                  "have" if len(rivals) > 1 else "has", addr))
+        bad += 1
+    print("  OVLABEL %d by-name references to another overlay that may not be the resident one "
+          "(%d cross-overlay references checked)" % (bad, len(refs)))
+    return 1 if bad else 0
+
+
+
 def main(argv):
     allow = set()
     if len(argv) > 1 and argv[0] == "--allow":
@@ -78,6 +263,11 @@ def main(argv):
             if len(line) == 2:
                 allow.add((line[0], line[1]))
         argv = argv[2:]
+    if len(argv) > 1 and argv[0] == "--xmap":
+        ovmap = None
+        if len(argv) > 3 and argv[2] == "--ovmap":
+            ovmap, argv = argv[3], argv[:2] + argv[4:]
+        return main_xmap(allow, argv[1], ovmap, argv[2:])
 
     # The patched copy of a file replaces the pristine one: key by the
     # path from arm9/ on.

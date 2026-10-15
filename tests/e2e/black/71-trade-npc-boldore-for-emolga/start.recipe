@@ -1,0 +1,5 @@
+# On 21's end save: Boldore (525) lv 30 with Rock Throw (88), Rock Slide (157) in place of Patrat (slot 3): the man
+# in zone 343 asks for Boldore (scr 0686 @0x0073)
+party-set 3 525 30 88 157
+# Route 7 (zone 337), one tile below the house door (zone_event 337 warp 1 (102,260)); Route 7's objects stand at y 0
+location 337 102 0 261

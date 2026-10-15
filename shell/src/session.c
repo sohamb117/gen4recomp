@@ -38,6 +38,7 @@ struct np_session {
 
     uint32_t qs_seq; /* quick save request awaiting its result */
     int qs_pending;
+    uint32_t resets; /* NP_STAT_RESETS when the history was last valid */
     uint64_t reload_armed_until; /* ns: a second F2 before this reloads */
 };
 
@@ -116,6 +117,15 @@ void np_session_frame_done(np_app *app)
         default: np_app_toast(app, "The save failed"); break;
         }
         SDL_Log("quick save %u: %s", s->qs_seq, app->toast);
+    }
+    /* A soft reset rebooted the guest: states of the instance before it are
+     * refused by np_core_state_load, so their history goes. */
+    uint32_t resets = np_core_status(app->core, NP_STAT_RESETS);
+    if (resets != s->resets) {
+        s->resets = resets;
+        if (s->rewind)
+            np_rewind_clear(s->rewind);
+        SDL_Log("soft reset %u: the game rebooted", resets);
     }
     if (!app->opt.rewind_seconds || linked(app) || --s->capture_in > 0)
         return;

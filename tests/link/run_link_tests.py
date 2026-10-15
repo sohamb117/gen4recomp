@@ -11,18 +11,40 @@ fixed; the relay one runs the game's datagrams through server/relay with
 
   tests/link/run_link_tests.py [--game A[:B]] [--keep DIR] [NAME...]
 
---game picks the stations' games (platinum, diamond, pearl; one name for
-both, A:B for a cross-version pair, `all` for every pair below); the
-default is platinum. Each scenario belongs to one pair, because the press
-schedules are timed against what both stations draw. Diamond and Pearl run
-on build/core-dp, Platinum on build/core-plat (linkpair.py has the paths).
+--game picks the stations' games (platinum, diamond, pearl, black, white,
+heartgold, soulsilver; one name for both, A:B for a cross-version pair,
+`all` for every pair below); the default is platinum. Each scenario belongs
+to one pair, because the press schedules are timed against what both
+stations draw. Diamond and Pearl run on build/core-dp, Platinum on
+build/core-plat, Black and White on build/core-bw, HeartGold and SoulSilver
+on build/core-hgss (linkpair.py has the paths).
 
-Skips (exit 0, "SKIP") without a ROM, an np_headless build or np_save4;
-the relay scenario also skips without `go`. About 35 s of lockstep frames
-per 10000 on an idle machine. Interactive work on a scenario's tail goes
-through linkpair.py serve/job (a forked checkpoint, seconds per try).
+Black/White have no lab: their saves come from the e2e chain's milestone
+10 (linkpair.mint_bw), and the trade check is relative to the parties the
+mint produced (A's party slot 1 for B's slot 4). bw_trade_landorus mints
+from the chain's post-game 85 saves instead (bw_mint, linkpair.BW_CHAIN:
+the chain's own players), checks both saves with np_save5 expressions
+(`save`), and, passing, leaves them as e2e end saves (`e2e`: --e2e-out,
+default build/e2e, GAME/link-NAME/end.sav) for tests/e2e/black/88;
+bw_trade_landorus_white swaps the sides for tests/e2e/white/88.
+Neither have HeartGold/SoulSilver: theirs are milestone 04's
+(linkpair.mint_hgss). Their schedules and bw_trade_landorus's were
+recorded by linkbot.py from scenarios/*.json (the e2e bots
+driving two np_gp --lockstep stations), which run with PC_E2E and
+text_instant as the scenarios' env and opts pass them here (opts: a list
+for both stations, or a dict of lists per station). A new milestone 04 save
+(the chain rerun) moves the Union Room's wandering avatars, so these
+schedules are recorded again from their scenarios when it changes.
+
+Skips (exit 0, "SKIP") without a ROM, an np_headless build, np_save4 (or,
+for Black/White, np_save5 and the milestone saves; for HeartGold/SoulSilver
+the milestone saves); the relay scenario also skips without `go`. About 35 s
+of lockstep frames per 10000 on an idle machine. Interactive work on a
+scenario's tail goes through linkpair.py serve/job (a forked checkpoint,
+seconds per try).
 """
 import argparse
+import json
 import os
 import random
 import shutil
@@ -44,6 +66,12 @@ SCENARIOS = [
     dict(name='union_trade', recipes=UNION,
          scheds={'a': 'schedules/trade-a.sched', 'b': 'schedules/trade-b.sched'},
          frames=16800, party=TRADED),
+    # B trades KADABRA: it evolves into ALAKAZAM on A's station after the trade
+    # animation (a link trade evolves, an in-game NPC trade never does:
+    # unk_0203D1B8.c:1026), and A's save keeps the ALAKAZAM.
+    dict(name='union_trade_evolve', recipes={'a': UNION['a'], 'b': 'recipes/union-b-kadabra.recipe'},
+         scheds={'a': 'schedules/trade-evolve-a.sched', 'b': 'schedules/trade-evolve-b.sched'},
+         frames=18500, party={'a': [65, 396], 'b': [387, 396]}),
     # B (CHIMCHAR's Ember) beats A; the WIN/LOSE screen is the same picture on
     # both stations, with WIN on the left for UNIONB. `win` is checked over
     # every dump from dump_from to frames, the bound: at least two dumps must
@@ -67,6 +95,16 @@ SCENARIOS = [
     # ends, so the parties are checked without leaving the trade screen.
     dict(name='dp_trade', games=('diamond', 'diamond'), recipes=DP_UNION, scheds=DP_TRADE,
          frames=11500, party=TRADED),
+    # Diamond's A with Pearl's B: B's slot 0 KADABRA (dp-union-b-kadabra.recipe)
+    # for A's TURTWIG. It evolves into ALAKAZAM on A's station after the trade
+    # animation (EVO_TRADE; "KADABRA is evolving!" ~11100), A dismisses the
+    # "evolved into ALAKAZAM!" text (12400), and the game saves A's ALAKAZAM
+    # and B's TURTWIG (both back on the trade screen by 13000). The dumps
+    # show the arrival, the evolution and the trade screen after it.
+    dict(name='dp_trade_evolve', games=('diamond', 'pearl'),
+         recipes={'a': DP_UNION['a'], 'b': 'recipes/dp-union-b-kadabra.recipe'},
+         scheds={'a': 'schedules/dp-trade-evolve-a.sched', 'b': DP_TRADE['b']},
+         frames=16000, dump_from=10400, dump_every=200, party={'a': [65, 396], 'b': [387, 396]}),
     # As union_battle: B wins, WIN (left) for UNIONB on both stations.
     dict(name='dp_battle', games=('diamond', 'diamond'), recipes=DP_UNION,
          scheds={'a': 'schedules/dp-battle-a.sched', 'b': 'schedules/dp-battle-b.sched'},
@@ -79,6 +117,101 @@ SCENARIOS = [
          recipes={'a': 'recipes/dp-union-a.recipe', 'b': 'recipes/union-b.recipe'},
          scheds={'a': 'schedules/dp-pt-trade-a.sched', 'b': 'schedules/dp-pt-trade-b.sched'},
          frames=13000, party=TRADED),
+    # Black's A with White's B in the Union Room (WM over np_host_net, the
+    # same pc_wm.c model, TWL-SDK 5's WM library on the ARM9). A's party slot 1
+    # for B's slot 4; the game saves both after the trade animation.
+    dict(name='bw_trade', games=('black', 'white'),
+         scheds={'a': 'schedules/bw-trade-a.sched', 'b': 'schedules/bw-trade-b.sched'},
+         frames=17500, trade_slots=(0, 3), dump_from=12500, dump_every=100),
+    # A Single Battle in the Union Room's battle room: both trade a move on
+    # turn 1, A forfeits on turn 2; both stations leave the battle and stand
+    # in the battle room (zone 150) again.
+    dict(name='bw_battle', games=('black', 'white'),
+         scheds={'a': 'schedules/bw-battle-a.sched', 'b': 'schedules/bw-battle-b.sched'},
+         frames=18000, dump_from=13000, dump_every=100,
+         logs={s: ('in_battle 0 -> 1', 'in_battle 1 -> 0', 'map_id 0 -> 150') for s in 'ab'}),
+    # The post-game trade: the stations are the e2e chain's own players after
+    # the credits (linkpair.BW_CHAIN 'landorus': Black's and White's 85 end
+    # saves, the roamers caught; Black's party slot 4 a Boldore). Black first
+    # takes Tornadus out of BOX 1 at Striaton's PC (Sawk in), then trades the
+    # Boldore for White's Thundurus (BOX 1). The Boldore evolves on White's
+    # station by the trade (Gigalith, the same PID); Black holds both roamers,
+    # Tornadus with its own OT, which the Abundant Shrine needs (scr 0752
+    # script 2). Recorded by linkbot.py from scenarios/bw-trade-landorus.json
+    # (PC_E2E and text_instant, as here). The two saves become the e2e
+    # end saves link-bw_trade_landorus (--e2e-out, default build/e2e) that
+    # black/88's [start] continues.
+    dict(name='bw_trade_landorus', games=('black', 'white'), bw_mint='landorus', e2e=True,
+         scheds={'a': 'schedules/bw-trade-landorus-a.sched', 'b': 'schedules/bw-trade-landorus-b.sched'},
+         frames=31970, env={'PC_E2E': '1'}, opts=['text_instant=1'], dump_from=12000, dump_every=100,
+         save={'a': ['s["party"][4]["species"] == 642 and s["party"][4]["tid"] == 43677',
+                     'any(m["species"] == 641 and m["tid"] == 45994 for m in s["party"])',
+                     'not any(m["species"] in (525, 526) for m in s["party"])',
+                     'any(m["species"] == 539 for m in s["boxes"][0]["mons"])'],
+               'b': ['any(m["species"] == 526 and m["pid"] == "0xBEB0B625" for b in s["boxes"] for m in b["mons"])',
+                     'not any(m["species"] in (525, 642) for b in s["boxes"] for m in b["mons"])',
+                     'not any(m["species"] in (525, 642) for m in s["party"])']}),
+    # The same with the sides swapped, for White's Landorus (white/88-89):
+    # both 85 saves as they are (linkpair.BW_CHAIN 'landorus-white'); White
+    # takes Thundurus out of BOX 1 at Striaton's PC (Sawk in); Black offers
+    # BOX 1's Tornadus for White's party slot 4 (Tepig, its PID checked in
+    # Black's BOX 1). Recorded by linkbot.py
+    # from scenarios/bw-trade-landorus-white.json.
+    dict(name='bw_trade_landorus_white', games=('black', 'white'), bw_mint='landorus-white', e2e=True,
+         scheds={'a': 'schedules/bw-trade-landorus-white-a.sched', 'b': 'schedules/bw-trade-landorus-white-b.sched'},
+         frames=32266, env={'PC_E2E': '1'}, opts=['text_instant=1'], dump_from=12000, dump_every=100,
+         save={'a': ['not any(m["species"] == 641 for b in s["boxes"] for m in b["mons"])',
+                     'not any(m["species"] == 641 for m in s["party"])',
+                     'any(m["species"] == 498 and m["pid"] == "0xD54AE63F" for b in s["boxes"] for m in b["mons"])'],
+               'b': ['s["party"][4]["species"] == 641 and s["party"][4]["tid"] == 45994',
+                     'any(m["species"] == 642 and m["tid"] == 43677 for m in s["party"])',
+                     'any(m["species"] == 539 for m in s["boxes"][0]["mons"])']}),
+    # HeartGold's A with SoulSilver's B in the Union Room (the Pokemon
+    # Center's counter, WM over np_host_net, the same pc_wm.c model as D/P's:
+    # HG/SS build D/P's host fragment). Saves minted from the e2e chain's
+    # Violet City (linkpair.mint_hgss); the schedules were recorded by
+    # linkbot.py (scenarios/hgss-trade.json) on np_gp --lockstep stations,
+    # which run with PC_E2E and text_instant, as here. A's party slot 1 for
+    # B's slot 1; the game saves both after the animation.
+    dict(name='hgss_trade', games=('heartgold', 'soulsilver'),
+         scheds={'a': 'schedules/hgss-trade-a.sched', 'b': 'schedules/hgss-trade-b.sched'},
+         frames=13735, trade_slots=(1, 1), env={'PC_E2E': '1'}, opts=['text_instant=1'],
+         dump_from=9000, dump_every=200),
+    # The same trade with B's slot 1 minted KADABRA (linkpair.mint_hgss species): it evolves into ALAKAZAM on
+    # A's station after the animation (scenarios/hgss-trade-evolve.json; B's inputs are hgss_trade's), A
+    # dismisses the evolution's message, and the game saves A's ALAKAZAM and B's SENTRET.
+    dict(name='hgss_trade_evolve', games=('heartgold', 'soulsilver'), species={'b': 64},
+         scheds={'a': 'schedules/hgss-trade-evolve-a.sched', 'b': 'schedules/hgss-trade-b.sched'},
+         frames=17100, trade_slots=(1, 1), evolve={'a': 65}, env={'PC_E2E': '1'}, opts=['text_instant=1'],
+         dump_from=14000, dump_every=200),
+    # The same pair's battle: BATTLE in the Union Room, both enter both
+    # Pokemon (the room's battles take two), then FIGHT and the first move
+    # each turn and the next Pokemon on a faint (linkbot.linked_battle) until
+    # the battle ends and both stations stand in the Union Room (map 2) again.
+    dict(name='hgss_battle', games=('heartgold', 'soulsilver'),
+         scheds={'a': 'schedules/hgss-battle-a.sched', 'b': 'schedules/hgss-battle-b.sched'},
+         frames=20377, env={'PC_E2E': '1'}, opts=['text_instant=1'], dump_from=9000, dump_every=500,
+         logs={s: ('map_id 158 -> 2', 'in_battle 0 -> 1', 'in_battle 1 -> 0') for s in 'ab'}),
+    # HeartGold's A (milestone 04) with Platinum's B (union-b.recipe) in
+    # the Union Room, each game's own WM traffic over the same pc_wm.c model.
+    # B walks in on trade-b.sched (no text_instant, as recorded),
+    # A talks to B, TRADE; A's party slot 1 for B's slot 0 (scenarios/
+    # hg-pt-trade.json); both save after the animation.
+    dict(name='hg_platinum_trade', games=('heartgold', 'platinum'), recipes={'b': UNION['b']},
+         scheds={'a': 'schedules/hg-pt-trade-a.sched', 'b': 'schedules/hg-pt-trade-b.sched'},
+         frames=17046, trade_slots=(1, 0), env={'PC_E2E': '1'}, opts={'a': ['text_instant=1']},
+         dump_from=12000, dump_every=500),
+    # The same with Diamond's or Pearl's B (dp-union-b.recipe), which walks
+    # in on dp-trade-b.sched (scenarios/hg-dp-trade.json; linkbot recorded
+    # the same two schedules against either).
+    dict(name='hg_diamond_trade', games=('heartgold', 'diamond'), recipes={'b': DP_UNION['b']},
+         scheds={'a': 'schedules/hg-dp-trade-a.sched', 'b': 'schedules/hg-dp-trade-b.sched'},
+         frames=15406, trade_slots=(1, 0), env={'PC_E2E': '1'}, opts={'a': ['text_instant=1']},
+         dump_from=11000, dump_every=500),
+    dict(name='hg_pearl_trade', games=('heartgold', 'pearl'), recipes={'b': DP_UNION['b']},
+         scheds={'a': 'schedules/hg-dp-trade-a.sched', 'b': 'schedules/hg-dp-trade-b.sched'},
+         frames=15406, trade_slots=(1, 0), env={'PC_E2E': '1'}, opts={'a': ['text_instant=1']},
+         dump_from=11000, dump_every=500),
 ]
 
 
@@ -86,10 +219,16 @@ def games_of(sc):
     return sc.get('games', ('platinum', 'platinum'))
 
 
-def have_tools(games):
-    paths = [linkpair.SAVE4]
-    for g in games:
+def have_tools(sc):
+    paths = []
+    for g in games_of(sc):
         paths += linkpair.GAMES[g]
+        if g in linkpair.BW_GAMES:
+            paths += [linkpair.SAVE5, linkpair.bw_base_save(g, sc.get('bw_mint'))]
+        elif g in linkpair.HGSS_GAMES:
+            paths += [linkpair.SAVE4, linkpair.hgss_base_save(g)]
+        elif linkpair.SAVE4 not in paths:
+            paths.append(linkpair.SAVE4)
     for path in paths:
         if not os.path.exists(path):
             return path
@@ -119,14 +258,28 @@ def is_red(rgb):
     return r > 180 and g < 120 and b < 120
 
 
-def run(sc, work):
+def run(sc, work, e2e_out=None):
     d = os.path.join(work, sc['name'])
     os.makedirs(d, exist_ok=True)
     games = dict(zip('ab', games_of(sc)))
     saves = {}
     for side in 'ab':
-        saves[side] = linkpair.mint(os.path.join(HERE, sc['recipes'][side]), os.path.join(d, side.upper() + '.sav'),
-                                    games[side], base_dir=work)
+        out = os.path.join(d, side.upper() + '.sav')
+        if games[side] in linkpair.BW_GAMES:
+            saves[side] = linkpair.mint_bw(games[side], side, out, sc.get('bw_mint'))
+        elif games[side] in linkpair.HGSS_GAMES:
+            saves[side] = linkpair.mint_hgss(games[side], side, out, sc.get('species', {}).get(side))
+        else:
+            saves[side] = linkpair.mint(os.path.join(HERE, sc['recipes'][side]), out, games[side], base_dir=work)
+    want_party = dict(sc.get('party', {}))
+    if 'trade_slots' in sc:
+        before = {side: linkpair.party(saves[side], games[side]) for side in 'ab'}
+        sa, sb = sc['trade_slots']
+        want_party = {'a': list(before['a']), 'b': list(before['b'])}
+        want_party['a'][sa], want_party['b'][sb] = before['b'][sb], before['a'][sa]
+        # a trade evolver arrives evolved: `evolve` is the species the receiving side keeps
+        for side, species in sc.get('evolve', {}).items():
+            want_party[side][sa if side == 'a' else sb] = species
     relay_proc = None
     extra = {'a': [], 'b': []}
     if sc.get('relay'):
@@ -147,6 +300,9 @@ def run(sc, work):
         cmd = linkpair.core(games[side]) + ['--frames', str(sc['frames']), '--save', saves[side],
                '--schedule', os.path.join(HERE, sc['scheds'][side]), '--lockstep', '%d:%d' % ports[side],
                '--net-id', linkpair.IDS[side]] + extra[side]
+        opts = sc.get('opts', ())
+        for o in opts.get(side, ()) if isinstance(opts, dict) else opts:
+            cmd += ['-o', o]
         if 'dump_every' in sc:
             cmd += ['--dump', dump, '--dump-every', str(sc['dump_every']), '--dump-from', str(sc['dump_from'])]
         procs[side] = subprocess.Popen(cmd, stdout=open(os.path.join(d, side + '.log'), 'w'),
@@ -155,10 +311,16 @@ def run(sc, work):
     if relay_proc:
         relay_proc.kill()
     fails = ['%s exited %d' % (s, rc) for s, rc in rcs.items() if rc != 0]
-    for side, want in sc.get('party', {}).items():
-        got = linkpair.party(saves[side])
+    for side, want in want_party.items():
+        got = linkpair.party(saves[side], games[side])
         if got != want:
             fails.append('%s party %s, want %s' % (side, got, want))
+    for side, exprs in sc.get('save', {}).items():
+        tool = linkpair.SAVE5 if games[side] in linkpair.BW_GAMES else linkpair.SAVE4
+        s = json.loads(subprocess.run([tool, 'dump', saves[side]], capture_output=True, text=True, check=True).stdout)
+        for expr in exprs:
+            if not eval(expr, {}, {'s': s}):
+                fails.append('%s save: not (%s)' % (side, expr))
     if 'win' in sc:
         x, y = sc['win']
         shown = 0
@@ -172,9 +334,17 @@ def run(sc, work):
         if shown < 2:
             fails.append('%d dumps (from frame %d to %d) show the red WIN label at (%d,%d) on both stations, '
                          'want 2 or more' % (shown, sc['dump_from'], sc['frames'], x, y))
-    for side, needle in sc.get('logs', {}).items():
-        if needle not in open(os.path.join(d, side + '.log')).read():
-            fails.append('%s log lacks "%s"' % (side, needle))
+    for side, needles in sc.get('logs', {}).items():
+        log = open(os.path.join(d, side + '.log')).read()
+        for needle in (needles,) if isinstance(needles, str) else needles:
+            if needle not in log:
+                fails.append('%s log lacks "%s"' % (side, needle))
+    if not fails and sc.get('e2e') and e2e_out:
+        # the stations' saves as e2e end saves: a milestone's [start] from = "link-<name>" continues one
+        for side in 'ab':
+            dest = os.path.join(e2e_out, games[side], 'link-' + sc['name'])
+            os.makedirs(dest, exist_ok=True)
+            shutil.copyfile(saves[side], os.path.join(dest, 'end.sav'))
     return 'FAIL: ' + '; '.join(fails) if fails else 'ok'
 
 
@@ -186,7 +356,7 @@ def pairs(spec):
     b = b or a
     for g in (a, b):
         if g not in linkpair.GAMES:
-            sys.exit('run_link_tests: unknown game %s (platinum, diamond, pearl)' % g)
+            sys.exit('run_link_tests: unknown game %s (%s)' % (g, ', '.join(sorted(linkpair.GAMES))))
     return [(a, b)]
 
 
@@ -195,6 +365,9 @@ def main():
     ap.add_argument('names', nargs='*')
     ap.add_argument('--game', default='platinum', help='A[:B] station games, or all (default platinum)')
     ap.add_argument('--keep', help='work directory to keep (default: a temporary one, removed)')
+    ap.add_argument('--e2e-out', default=os.path.join(linkpair.ROOT, 'build', 'e2e'),
+                    help='where an e2e scenario leaves its stations\' saves (default build/e2e: '
+                         'GAME/link-NAME/end.sav)')
     a = ap.parse_args()
     want = pairs(a.game)
     chosen = [sc for sc in SCENARIOS if games_of(sc) in want and (not a.names or sc['name'] in a.names)]
@@ -205,8 +378,8 @@ def main():
     os.makedirs(work, exist_ok=True)
     failed = 0
     for sc in chosen:
-        missing = have_tools(games_of(sc))
-        res = 'SKIP: %s missing' % missing if missing else run(sc, work)
+        missing = have_tools(sc)
+        res = 'SKIP: %s missing' % missing if missing else run(sc, work, a.e2e_out)
         print('%-24s %-18s %s' % (sc['name'], ':'.join(games_of(sc)), res), flush=True)
         failed += res.startswith('FAIL')
     if not a.keep:

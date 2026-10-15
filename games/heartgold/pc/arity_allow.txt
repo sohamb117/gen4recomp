@@ -1,0 +1,5 @@
+# C -> assembly calls that pass fewer argument words than the callee reads
+# (games/diamond/pc/tools/dp_arity_lint.py): one callee name per line, each
+# with the reason it cannot matter. None: every site found was a defect
+# (pc/patches/src/{scrcmd_battle,field_system,unk_0204A3F4,
+# overlay_44_02235340,overlay_44_0222CDAC}.c.patch).

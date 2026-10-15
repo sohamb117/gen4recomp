@@ -1,0 +1,14 @@
+# Boost on 09's end save (run.py hgss_boost: np_save4 add-mon behind the party, as a gift; the story stays played).
+# Party before: 0 CYNDAQUIL (starter), 1 the aide's Togepi egg (06, scr_seq_0858_T22FS0101.s GiveTogepiEgg) -> size 2.
+# Adds slot 2: the Cut carrier. HM01 is received in this milestone (scr_seq_0092_D36R0101.s:1316-1350) and the Cut
+# tree (16,62) is the only way north out of Ilex Forest; teaching through the Bag is not botted. SCYTHER learns HM01
+# (files/poketool/personal/personal.json hms [1, 6]); lv21 is the area's (TRAINER_RIVAL_SILVER_10: GASTLY 14,
+# ZUBAT 16, CROCONAW 18) and its level-up moves by 21 (wotbl.narc: Quick Attack 1, Pursuit 9, Wing Attack 21) fight
+# behind a fainted lead: Pursuit (Dark) for Gastly/Haunter/Gengar (rival 10/14, Morty 15), Wing Attack (Flying) for
+# Chuck's Primeape/Poliwrath (18).
+# Party after: 3 (CYNDAQUIL, egg, SCYTHER).
+party SPECIES_SCYTHER 21
+party-move 2 0 MOVE_CUT
+party-move 2 1 MOVE_WING_ATTACK
+party-move 2 2 MOVE_PURSUIT
+party-move 2 3 MOVE_QUICK_ATTACK

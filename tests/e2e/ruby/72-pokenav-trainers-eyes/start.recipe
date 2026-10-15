@@ -1,0 +1,7 @@
+# 72 PokeNav Trainer's Eyes: a starter strong enough for Youngster Calvin (TRAINER_CALVIN_1: ZIGZAGOON lv5,
+# src/data/trainer_parties.h:4265-4271) and the PokeNav, beside Calvin on Route 102.
+party SPECIES_MUDKIP 20 ITEM_NONE        # Mudkip lv20: Tackle, Growl, Mud-Slap, Water Gun (level-up moves)
+flag FLAG_SYS_POKEMON_GET                # data/maps/Route101/scripts.inc:220 (the start menu's POKEMON entry)
+flag FLAG_SYS_POKENAV_GET                # data/maps/RustboroCity_DevonCorp_3F/scripts.inc:57 (the start menu's POKENAV)
+# two tiles east of Calvin (Route102/map.json object_events[1] (33,14), facing down, sight 3): out of his sight
+map MAP_ROUTE102 35 14

@@ -1,0 +1,4 @@
+# On 56-hall-of-fame-credits' end save (the real league clear wrote the Hall of Fame extra save and
+# FLAG_GAME_COMPLETED): only the station. PC tiles (12,2)/(12,3) of the shared Pokemon Center interior; the PC
+# answers only facing north (menu-box.recipe)
+map MAP_HEADER_JUBILIFE_CITY_POKECENTER_1F 12 4 FACE_UP

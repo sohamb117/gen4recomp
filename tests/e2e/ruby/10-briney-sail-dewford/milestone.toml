@@ -1,0 +1,77 @@
+# Proves Briney's cottage (sailing intro YES -> VAR_BOARD_BRINEY_BOAT_ROUTE104_STATE 1), the Route 104 boat cutscene
+# (Route104 OnFrame -> the ride along Routes 105/106) and landing in Dewford.
+# Start: Rustboro outside Devon Corp -> end: MAP_DEWFORD_TOWN at the dock, Briney + boat shown there.
+title = "Mr. Briney sails to Dewford"
+priority = "P0"
+version = "both"
+estimate = 4603
+refs = [
+  "data/maps/Route104/map.json warp_events[0] (17,50) -> ROUTE104_MR_BRINEYS_HOUSE",
+  "data/maps/Route104_MrBrineysHouse/scripts.inc:23-39 (first talk: FLAG_MR_BRINEY_SAILING_INTRO, MSGBOX_YESNO)",
+  "data/maps/Route104_MrBrineysHouse/scripts.inc:75-82 (sail: BOARD_BRINEY_BOAT_ROUTE104_STATE 1, warp Route 104 (13,51))",
+  "data/maps/Route104/scripts.inc:6-12,120-157 (OnFrame state 1 -> the ride; FLAG_HIDE_MR_BRINEY_DEWFORD_TOWN / FLAG_HIDE_MR_BRINEY_BOAT_DEWFORD cleared, state back to 0)",
+]
+notes = "No battles. Briney's first talk: the YES/NO (cursor on YES) -> sail. The static route from Rustboro to the cottage door crosses Petalburg Woods (Route 104's north and south halves meet only through it; gba_world_cli route). The ride shows the player on Dewford's map at its end (showobjectat MAP_DEWFORD_TOWN)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 7000
+
+[[step]]
+do = "walk_to"
+x = 17
+z = 50
+map = "MAP_ROUTE104"
+note = "south through Route 104 north, Petalburg Woods and Route 104 south to Briney's cottage door (Route 104 warp 0)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE104_MR_BRINEYS_HOUSE"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 5
+face = "left"
+note = "east of the ring Briney walks round his table (object 1 (5,3), MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT, range 3: the tiles x 6..9, z 3..6 round the table at (7..8,4..5), probe_map); chasing him round it misses on Ruby"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 8
+times = 120
+until = "field=0"
+note = "A facing (9,5), on his ring, until he passes in front and his script starts: sailing intro (Route104_MrBrineysHouse/scripts.inc:23-39)"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 3
+gap = 40
+note = "the intro lines and the YES/NO, YES [INFERENCE: counts]"
+
+[[step]]
+do = "advance_text"
+map = "MAP_ROUTE104"
+note = "BOARD_BRINEY_BOAT_ROUTE104_STATE 1, warp Route 104 (13,51) (:75-82)"
+
+[[step]]
+do = "advance_text"
+map = "MAP_DEWFORD_TOWN"
+max = 6000
+note = "Route 104 OnFrame state 1 -> the boat ride (Route104/scripts.inc:6-12,120-157)"
+
+[[step]]
+do = "advance_text"
+shot = "dewford"
+
+[expect]
+map = "MAP_DEWFORD_TOWN"
+badges = 1
+flags = ["FLAG_BADGE01_GET", "FLAG_MR_BRINEY_SAILING_INTRO", "FLAG_VISITED_DEWFORD_TOWN", "FLAG_HIDE_MR_BRINEY_ROUTE104_HOUSE", "FLAG_HIDE_MR_BRINEY_BOAT_ROUTE104"]
+flags_clear = ["FLAG_HIDE_MR_BRINEY_DEWFORD_TOWN", "FLAG_HIDE_MR_BRINEY_BOAT_DEWFORD"]
+
+[expect.vars]
+VAR_BOARD_BRINEY_BOAT_ROUTE104_STATE = 0

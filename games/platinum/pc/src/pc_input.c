@@ -35,6 +35,8 @@
  */
 
 #include <nitro/types.h>
+#include <nitro/hw/ARM9/mmap_global.h>
+#include <nitro/hw/common/mmap_shared.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,7 +47,7 @@
 extern void pc_tp_set(u16 x, u16 y, int touching);
 
 #define PC_REG_KEYINPUT (*(volatile u16 *)0x04000130u)
-#define PC_XY_BUF       (*(volatile u16 *)0x027FFFA8u)
+#define PC_XY_BUF       (*(volatile u16 *)HW_BUTTON_XY_BUF)
 
 #define PC_KEYPORT_MASK 0x03FFu
 #define PC_XYPORT_MASK  0x2C00u

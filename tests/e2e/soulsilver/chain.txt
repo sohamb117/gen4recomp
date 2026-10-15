@@ -1,0 +1,41 @@
+# SoulSilver story chain: HeartGold's dirs (version = "both"); a SoulSilver-local dir where the scripts branch on the
+# version (GetGameVersion 8): the legendary is Lugia in the Whirl Islands (scr_seq_0104_D40R0107.s), not Ho-Oh.
+# The shared dirs 25 (Silver Wing) and 30 (Tidal Bell) branch inside; their SS-only flags are checked in 31 here.
+../heartgold/01-newgame-cyndaquil-pokegear
+../heartgold/02-cherrygrove-guide-mr-pokemon-pokedex
+../heartgold/03-cherrygrove-rival-elm-officer-catching
+../heartgold/04-route30-31-violet
+../heartgold/05-sprout-tower-elder-li
+../heartgold/06-falkner-zephyr-togepi-egg
+../heartgold/07-route32-union-cave-azalea
+../heartgold/08-slowpoke-well-proton-kurt
+../heartgold/09-bugsy-hive
+../heartgold/10-azalea-rival-ilex-farfetchd-cut
+../heartgold/11-route34-daycare-goldenrod
+../heartgold/12-whitney-plain-squirtbottle
+../heartgold/13-national-park-sudowoodo-ecruteak
+../heartgold/14-burned-tower-rival-beasts
+../heartgold/15-morty-fog
+../heartgold/16-dance-theater-grunt-surf
+../heartgold/17-route38-39-olivine-lighthouse-jasmine
+../heartgold/18-route40-cianwood-chuck-fly-secretpotion
+../heartgold/19-amphy-secretpotion-jasmine-mineral
+../heartgold/20-route42-mahogany-lake-of-rage-gyarados
+../heartgold/21-rocket-hideout-lance-electrodes
+../heartgold/22-pryce-glacier
+../heartgold/23-goldenrod-disguise-radio-tower-petrel
+../heartgold/24-underground-rival-director-card-key
+../heartgold/25-radio-tower-card-key-archer-wing
+../heartgold/26-route44-ice-path-blackthorn
+../heartgold/27-blackthorn-gym-clair
+../heartgold/28-dragons-den-quiz-rising-badge
+../heartgold/29-new-bark-elm-master-ball
+../heartgold/30-ecruteak-rival-kimono-girls-bell
+31-whirl-islands-lugia
+../heartgold/32-route27-tohjo-falls-route26-league-gate
+../heartgold/33-victory-road-rival
+../heartgold/34-e4-will
+../heartgold/35-e4-koga
+../heartgold/36-e4-bruno
+../heartgold/37-e4-karen
+../heartgold/38-champion-lance-hall-of-fame-credits

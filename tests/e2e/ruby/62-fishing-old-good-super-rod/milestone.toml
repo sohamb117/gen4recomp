@@ -1,0 +1,228 @@
+# Proves fishing with each rod: the Old Rod on SELECT, then the Good Rod and the Super Rod registered from the bag's Key
+# Items pocket, each cast hooking a wild Pokemon (FishingWildEncounter: GAME_STAT_FISHING_CAPTURES per hooked battle).
+# The GBA has no fishing trace: A+SELECT every 290 frames casts (SELECT) and reels at the first-round bite of 9 or 10 dots.
+# Start: Petalburg City pond bank (7,20) -> end: MAP_PETALBURG_CITY (7,20), Super Rod registered.
+title = "Fishing: Old Rod, Good Rod and Super Rod"
+priority = "P1"
+version = "both"
+estimate = 81709
+refs = [
+  "src/field_control_avatar.c:250-252,267 (A: interaction script ahead first; SELECT: UseRegisteredKeyItem)",
+  "src/item_use.c:252-266 (ItemUseOutOfBattle_Rod -> StartFishing(secondary id))",
+  "src/field_player_avatar.c:1553-1562 (Fishing3: 60 frames before the dots)",
+  "src/field_player_avatar.c:1564-1580 (Fishing4: dots required Random()%10+1, first round +4, capped at 10)",
+  "src/field_player_avatar.c:1583-1616 (Fishing5: a dot every 20 frames; A during the dots: no bite / got away)",
+  "src/field_player_avatar.c:1619-1628 (Fishing6: first round bites on Random()&1)",
+  "src/field_player_avatar.c:1641-1652 (Fishing8: A within 36/33/30 frames of 'Oh! A bite!' reels)",
+  "src/field_player_avatar.c:1655-1679 (Fishing9: rounds Random()%{1,3,6}+1, Good/Super extra round 10%/30%)",
+  "src/field_player_avatar.c:1691-1722 (Fishing11 -> FishingWildEncounter)",
+  "src/wild_encounter.c:598-617 (FishingWildEncounter: IncrementGameStat(GAME_STAT_FISHING_CAPTURES), StartWildBattle)",
+  "src/start_menu.c:263-275 (POKEMON, BAG, PLAYER, SAVE, OPTION, EXIT; the cursor is kept between openings)",
+  "src/item_menu.c:221-227 (Key Items popup: USE, -, REGISTER, CANCEL: RIGHT selects REGISTER)",
+  "src/data/wild_encounters.h:58-72,2875 (PetalburgCity_Ruby_FishingMons / PetalburgCity_Sapphire_FishingMons)",
+]
+notes = "Timing (traced with peeks of the fishing task, Ruby): SELECT at frame 0, dots from frame 62, a bite after D dots at 62+20*(D+1): 9 dots 262, 10 dots 282 (Random()%10+4 capped at 10: 10 has 4/10). A at 290 is inside both reel windows for every rod, so a cast hooks with 1/2 (bite) x 1/2 (9 or 10 dots) for the Old Rod; the Good and Super Rods also need a single round (Fishing9), 0.3 and 0.117. A failed cast's message closes on the next A, the press after recasts: every cast keeps its reel at +290. The run is deterministic, so the cast count is fixed: Ruby and Sapphire both hook a Goldeen (Old Rod, frame 6008), a Magikarp (Good Rod, 17026) and a Corphish (Super Rod, 80486; about 70 casts, most of the estimate). A probe field for the fishing task's state (a reel on 'Oh! A bite!') would cut the Super Rod's casts to one or two."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 122600
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 3
+gap = 20
+note = "turn in place to the water at (6,20)"
+
+[[step]]
+do = "press"
+keys = "A+SELECT"
+hold = 2
+gap = 288
+times = 120
+until = "in_battle=1"
+note = "Old Rod: cast (SELECT), A 290 frames later at the 9/10-dot bite; a missed cast's message closes on the next A"
+
+[[step]]
+do = "wait_frames"
+n = 200
+shot = "old-rod-battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 3
+gap = 30
+note = "start menu, cursor on POKEMON"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 3
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 90
+note = "BAG: the Items pocket"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 3
+gap = 30
+note = "wraps to Key Items: OLD ROD (SEL), GOOD ROD, SUPER ROD"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 3
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 30
+note = "GOOD ROD: USE / REGISTER / CANCEL"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 3
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 40
+shot = "good-rod-registered"
+
+[[step]]
+do = "press"
+keys = "B"
+hold = 3
+gap = 90
+note = "the bag closes to the start menu"
+
+[[step]]
+do = "press"
+keys = "B"
+hold = 3
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A+SELECT"
+hold = 2
+gap = 288
+times = 400
+until = "in_battle=1"
+note = "Good Rod casts"
+
+[[step]]
+do = "wait_frames"
+n = 200
+shot = "good-rod-battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "press"
+keys = "START"
+hold = 3
+gap = 30
+note = "the cursor stays on BAG"
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 90
+note = "the bag reopens on Key Items, cursor on GOOD ROD"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 3
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 30
+note = "SUPER ROD: USE / REGISTER / CANCEL"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 3
+gap = 20
+
+[[step]]
+do = "press"
+keys = "A"
+hold = 3
+gap = 40
+shot = "super-rod-registered"
+
+[[step]]
+do = "press"
+keys = "B"
+hold = 3
+gap = 90
+
+[[step]]
+do = "press"
+keys = "B"
+hold = 3
+gap = 30
+
+[[step]]
+do = "press"
+keys = "A+SELECT"
+hold = 2
+gap = 288
+times = 600
+until = "in_battle=1"
+note = "Super Rod casts"
+
+[[step]]
+do = "wait_frames"
+n = 200
+shot = "super-rod-battle"
+
+[[step]]
+do = "auto_battle"
+snap = true
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_PETALBURG_CITY"
+position = [7, 20]
+battles = 3
+save = [
+  's["game_stats"][12] >= 3',
+  's["game_stats"][8] >= 3',
+  's["bag"]["registered"] == 264',
+]

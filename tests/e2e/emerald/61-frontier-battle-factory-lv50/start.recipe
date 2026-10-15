@@ -1,0 +1,7 @@
+# Battle Frontier Battle Factory, Level 50 singles: the Factory lends its own rental Pokemon, so the player's party
+# only has to exist (the attendant saves and restores it: special SavePlayerParty / LoadPlayerParty). Placed in the
+# lobby below the singles attendant; in play the S.S. Tidal brings the player to the Battle Frontier after the Hall of
+# Fame (data/maps/SlateportCity_Harbor/scripts.inc).
+flag FLAG_SYS_POKEMON_GET              # data/maps/Route101/scripts.inc (the starter)
+party SPECIES_SWAMPERT 50 ITEM_NONE
+map MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY 4 8   # BattleFrontier_BattleFactoryLobby/map.json object_events[0] singles attendant (4,7): the tile below her

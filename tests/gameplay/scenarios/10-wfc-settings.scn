@@ -1,0 +1,11 @@
+# Scenario 10: NINTENDO WFC SETTINGS on the main menu. WFCSettings_StartApplication
+# runs the WFC utility (DWC_StartUtility, which returns as if the player left
+# without saving) and then always calls OS_ResetSystem: the guest reboots to
+# the boot screens and the title, and CONTINUE loads the save (Sandgem Town).
+# Regression for the reset that stopped the core.
+RECIPE=recipes/sandgem.recipe
+SCHEDULE=schedules/wfc-settings.press
+FRAMES=4400
+SHOTS=2000,2100,2500,3400,3600,3700,4399
+EXPECT_MAP=418
+EXPECT_LOG='resets 0 -> 1'

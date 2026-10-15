@@ -1,0 +1,187 @@
+# Underground bags: lab-stocked spheres/traps/goods (the recipe), enter the Underground, bury the Prism Sphere (sets
+# FLAG_SPHERE_ACQUIRED, despite the name), set the Smoke Trap on the next tile, look at the goods, GO UP.
+# Start: Oreburgh with kit + stash. End: Oreburgh, one sphere and one trap fewer in the bags.
+title = "Underground: spheres, traps and goods"
+priority = "P2"
+estimate = 3487
+refs = [
+  "src/underground/spheres.c:378-385",
+  "src/underground/vendors.c:232",
+  "generated/vars_flags.txt:4183",
+  "generated/sphere_types.txt",
+  "generated/traps.txt",
+  "generated/goods.txt",
+  "res/field/scripts/scripts_eterna_city_underground_man_house.s:213-215",
+  "pc/tests/corpus/ug-stash.recipe",
+  "pc/tests/corpus/ug-stash.spec",
+  "pc/src/pc_lab.c:950-990",
+  "pc/src/pc_lab.c:1958-2062",
+  "pc/tests/pc_corpus.py:495-513",
+  "pc/tests/corpus/ug-enter.recipe",
+  "pc/tests/corpus/ug-enter.spec",
+  "pc/replays/lab-ug-enter.txt",
+  "src/item_use_functions.c:365-367",
+  "src/underground/comm_manager.c:82",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 9000
+clock = "2009-03-22 21:00:00"
+
+[[step]]
+do = "press"
+keys = "Y"
+hold = 24
+note = "use the registered Explorer Kit"
+
+[[step]]
+do = "advance_text"
+max = 5000
+note = "'DS Wireless Communications', the save YES, overwrite YES, the hole, Roark's first-visit intro; the player is left free at (168,375)"
+shot = "underground"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+note = "the Underground menu: TRAPS, SPHERES, GOODS, TREASURES, GQ, GO UP, CLOSE (the cursor on TRAPS)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 10
+note = "SPHERES"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "the sphere list: Prism Sphere 12, Red Sphere 04, CLOSE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "the Prism Sphere: BURY / TRASH / CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "BURY: 'The Prism Sphere 12 was buried right in front of you.'"
+shot = "buried"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "back to the sphere list (Red Sphere 04, CLOSE)"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 30
+times = 2
+note = "the menu, then closed"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 2
+gap = 20
+note = "turn left without stepping: the tile in front of the player now holds nothing"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+note = "the menu (the cursor stays on SPHERES)"
+
+[[step]]
+do = "press"
+keys = "UP"
+gap = 10
+note = "TRAPS"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "the trap list: Smoke Trap, Digger Drill, CLOSE"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "the Smoke Trap: BURY / TRASH / CANCEL"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "BURY: 'The Smoke Trap was set in the ground.'"
+shot = "trap-set"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 30
+note = "the message closes; the player is free (one more A would face the trap and disengage it)"
+
+[[step]]
+do = "press"
+keys = "X"
+gap = 30
+note = "the menu (the cursor on TRAPS)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 10
+times = 2
+note = "GOODS"
+
+[[step]]
+do = "press"
+keys = "A"
+gap = 40
+note = "the goods list: the TV"
+shot = "goods"
+
+[[step]]
+do = "press"
+keys = "B"
+gap = 30
+note = "back to the menu (the cursor on GOODS)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+gap = 10
+times = 3
+note = "GO UP"
+shot = "go-up"
+
+[[step]]
+do = "press"
+keys = "A"
+
+[[step]]
+do = "advance_text"
+max = 2000
+map = 45
+note = "the return to Oreburgh"
+
+[[step]]
+do = "wait_field"
+shot = "oreburgh"
+
+[expect]
+map = 45
+flags = ["FLAG_SPHERE_ACQUIRED"]
+# np_save4 underground: the recipe stocks 2 spheres, 2 traps, 1 good; the Prism Sphere is buried, the Smoke Trap set
+save = ['[x["type"] for x in s["underground"]["spheres"]] == [3]', 'len(s["underground"]["traps"]) == 1',
+        'len(s["underground"]["goods"]) == 1']

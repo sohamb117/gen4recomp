@@ -1,0 +1,50 @@
+#ifndef POKEHEARTGOLD_MATH_UTIL_H
+#define POKEHEARTGOLD_MATH_UTIL_H
+
+#include "heap.h"
+#include "sys_task.h"
+
+u16 GF_DegreeToSinCosIdxNoWrap(u16 deg);
+fx32 GF_SinDegNoWrap(u16 deg);
+fx32 GF_CosDegNoWrap(u16 deg);
+fx32 GF_SinDeg(u16 deg);
+fx32 GF_CosDeg(u16 deg);
+u16 GF_DegreeToSinCosIdxNoWrap(u16 deg);
+u16 GF_DegreeToSinCosIdx(u16 deg);
+fx32 GF_SinDegFX32(fx32 deg);
+fx32 GF_CosDegFX32(fx32 deg);
+u32 PRandom(u32 seed);
+void MTX22_2DAffine(MtxFx22 *mtx, u16 radians, fx32 x, fx32 y, u8 type);
+u32 Math_CalcArraySum(const void *data, u32 size);
+u16 GF_CalcCRC16(const void *data, u32 size);
+void GF_CRC16Init(enum HeapID heapID);
+u16 LCRandom(void);
+void SetLCRNGSeed(u32 seed);
+u32 GetLCRNGSeed(void);
+void SetMTRNGSeed(u32 seed);
+u32 MTRandom(void);
+void _MonEncryptSegment(u16 *data, u32 size, u32 seed);
+void _MonDecryptSegment(u16 *data, u32 size, u32 seed);
+void Task_AntipiracyMath(SysTask *task_unused, void *data_unused);
+
+static inline u16 LCRandRange(const u16 maximum) {
+    GF_ASSERT(maximum != 0);
+    if (maximum <= 1) {
+        return 0;
+    } else {
+        u16 result = LCRandom() % maximum;
+        return result;
+    }
+}
+
+#define SetVec(dest, vecx, vecy, vecz) \
+    {                                  \
+        (dest).x = (vecx);             \
+        (dest).y = (vecy);             \
+        (dest).z = (vecz);             \
+    }
+
+#define SetVecFx16(dest, x, y, z) SetVec(dest, x, y, z)
+#define SetVecFx32(dest, x, y, z) SetVec(dest, x, y, z)
+
+#endif // POKEHEARTGOLD_MATH_UTIL_H

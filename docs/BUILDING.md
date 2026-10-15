@@ -97,6 +97,33 @@ tests/gameplay/run.sh --perf
 tests/gameplay/run.sh --game pearl --soak 50000
 ```
 
+### Several worktrees on one Mac: the gate, gate cores, the compile cache
+
+Parallel work happens in git worktrees beside this checkout
+(`../nativeplat-<name>`), all building on one 16 GB machine:
+
+- New worktree: `git worktree add -b NAME ../nativeplat-NAME main &&
+  tools/worktree_seed.sh ../nativeplat-NAME` (APFS clones of the ROM builds,
+  SDK downloads and game build trees; `.cache` is linked).
+- Builds and long runs go through `tools/heavy.sh` (2 build slots, 6 run
+  slots; nothing starts while the disk has less than 2 GiB free).
+- Gate a branch with `tools/gate.sh` (`--dry-run` prints the plan). It runs
+  only the `tests/dp/regress.sh` cases whose core inputs (regress.sh's
+  header) the branch changes, plus the e2e checks. A selected core runs
+  from the shared gate cores (`~/Library/Caches/nativeplat-gate-cores`,
+  `NP_GATE_CORES`) when its inputs are unchanged since they were built, and
+  is built in the worktree otherwise. After core inputs change on main,
+  `tools/gate.sh --refresh-cores` rebuilds the gate cores, incrementally.
+- Compiles go through `tools/ccache.sh` (its header has the settings): one
+  2.5 GB cache in `~/Library/Caches/nativeplat-ccache` shared by every
+  worktree, used when ccache is installed (`brew install ccache`) and at
+  least 8 GiB is free when a build starts (a make run, a cmake configure).
+  Nothing to do in a new worktree: what main or another worktree compiled
+  hits. `NP_NO_CCACHE=1` turns it off;
+  `CCACHE_DIR=~/Library/Caches/nativeplat-ccache ccache -s` shows the hits.
+  ccache caches C compiles (the decompiled and host C, armrec's C, wasm2c's
+  output), not the IR->object step of the D/P/HG/BW bridge or gbabuild.
+
 ## 4. macOS app
 
 Development build (Homebrew SDL3):

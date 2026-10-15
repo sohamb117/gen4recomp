@@ -243,6 +243,41 @@ enum lab_verb {
     LAB_POKETCH,         /* app id: enable, register, select */
     LAB_POKETCH_STEPS,   /* pedometer count; registers the app so the write sticks */
     LAB_POKETCH_HISTORY, /* party slot, enqueued the way a catch is */
+    /*
+     * A party mon's IVs and EVs, one stat a line (STAT 0..5 = HP ATK DEF
+     * SPEED SPATK SPDEF, the save's order). Pokemon_CalcStats recomputes
+     * the stats the way a level-up does, and the current HP is then set to
+     * the new maximum, so a station starts with a healthy mon whose numbers
+     * are the game's own arithmetic. Shared with Diamond/Pearl's lab.
+     */
+    LAB_PARTY_IV,     /* party slot, stat, 0..31 */
+    LAB_PARTY_EV,     /* party slot, stat, 0..255 */
+    /*
+     * A party mon's level and held item, for an e2e milestone's boost on
+     * top of a played save (tests/e2e/AUTHORING.md, Boosts). The level
+     * sets the experience to the species' base for that level, then
+     * Pokemon_CalcStats and a full HP, the way party-iv does; no evolution
+     * and no moves are learned (party-move sets those).
+     */
+    LAB_PARTY_LEVEL,  /* party slot, 1..100 */
+    LAB_PARTY_ITEM,   /* party slot, held item */
+    /* The fateful-encounter bit an event (Mystery Gift) mon carries: the
+     * Regi ruins' statues check for an event Regigigas in the party
+     * (ScrCmd_CheckPartyHasFatefulEncounterRegigigas). */
+    LAB_PARTY_FATEFUL, /* party slot */
+    /* Pokedex entries through the game's own encounter/capture marking,
+     * on a scratch mon of the species (ScrCmd's SetSeenMon does the same). */
+    LAB_DEX_SEEN,     /* species */
+    LAB_DEX_CAUGHT,   /* species */
+};
+
+static const enum PokemonDataParam LAB_IV_PARAMS[6] = {
+    MON_DATA_HP_IV, MON_DATA_ATK_IV, MON_DATA_DEF_IV,
+    MON_DATA_SPEED_IV, MON_DATA_SPATK_IV, MON_DATA_SPDEF_IV,
+};
+static const enum PokemonDataParam LAB_EV_PARAMS[6] = {
+    MON_DATA_HP_EV, MON_DATA_ATK_EV, MON_DATA_DEF_EV,
+    MON_DATA_SPEED_EV, MON_DATA_SPATK_EV, MON_DATA_SPDEF_EV,
 };
 
 struct lab_op {
@@ -362,6 +397,13 @@ static const struct lab_verb_row LAB_VERBS[] = {
     { "poketch",         LAB_POKETCH,         1, 0 },
     { "poketch-steps",   LAB_POKETCH_STEPS,   1, 0 },
     { "poketch-history", LAB_POKETCH_HISTORY, 1, 0 },
+    { "party-iv",        LAB_PARTY_IV,        3, 0 },
+    { "party-ev",        LAB_PARTY_EV,        3, 0 },
+    { "party-level",     LAB_PARTY_LEVEL,     2, 0 },
+    { "party-item",      LAB_PARTY_ITEM,      2, 0 },
+    { "party-fateful",   LAB_PARTY_FATEFUL,   1, 0 },
+    { "dex-seen",        LAB_DEX_SEEN,        1, 0 },
+    { "dex-caught",      LAB_DEX_CAUGHT,      1, 0 },
 };
 
 static void lab_parse(const char *path)
@@ -783,7 +825,94 @@ static void lab_apply(SaveData *saveData, int pass)
             break;
         case LAB_VAR: {
             u16 *var = VarsFlags_GetVarAddress(varsFlags, (u16)op->a);
-            if (var != NULL) *var = (u16)op->b;
+            if (var == NULL) {
+                fprintf(stderr, "pc_lab: var: no saved var %d\n", op->a);
+                exit(2);
+            }
+            *var = (u16)op->b;
+            break;
+        }
+        case LAB_PARTY_IV:
+        case LAB_PARTY_EV: {
+            const int iv = op->verb == LAB_PARTY_IV;
+            Pokemon *mon;
+            u8 value = (u8)op->c;
+            u16 hp;
+
+            if (op->a < 0 || op->a >= Party_GetCurrentCount(party)) {
+                fprintf(stderr, "pc_lab: %s: no party slot %d\n", iv ? "party-iv" : "party-ev", op->a);
+                exit(2);
+            }
+            if (op->b < 0 || op->b > 5 || op->c < 0 || op->c > (iv ? 31 : 255)) {
+                fprintf(stderr, "pc_lab: %s: stat %d value %d out of range\n",
+                        iv ? "party-iv" : "party-ev", op->b, op->c);
+                exit(2);
+            }
+            mon = Party_GetPokemonBySlotIndex(party, op->a);
+            Pokemon_SetValue(mon, iv ? LAB_IV_PARAMS[op->b] : LAB_EV_PARAMS[op->b], &value);
+            Pokemon_CalcStats(mon);
+            hp = (u16)Pokemon_GetValue(mon, MON_DATA_MAX_HP, NULL);
+            Pokemon_SetValue(mon, MON_DATA_HP, &hp);
+            break;
+        }
+        case LAB_PARTY_LEVEL:
+        case LAB_PARTY_ITEM: {
+            const int lvl = op->verb == LAB_PARTY_LEVEL;
+            Pokemon *mon;
+
+            if (op->a < 0 || op->a >= Party_GetCurrentCount(party)) {
+                fprintf(stderr, "pc_lab: %s: no party slot %d\n", lvl ? "party-level" : "party-item", op->a);
+                exit(2);
+            }
+            mon = Party_GetPokemonBySlotIndex(party, op->a);
+            if (lvl) {
+                u32 exp;
+                u8 level = (u8)op->b;
+                u16 hp;
+
+                if (op->b < 1 || op->b > MAX_POKEMON_LEVEL) {
+                    fprintf(stderr, "pc_lab: party-level: level %d out of range\n", op->b);
+                    exit(2);
+                }
+                exp = Pokemon_GetSpeciesBaseExpAt(Pokemon_GetValue(mon, MON_DATA_SPECIES, NULL), op->b);
+                Pokemon_SetValue(mon, MON_DATA_EXPERIENCE, &exp);
+                Pokemon_SetValue(mon, MON_DATA_LEVEL, &level); /* CalcStats reads the stored level */
+                Pokemon_CalcStats(mon);
+                hp = (u16)Pokemon_GetValue(mon, MON_DATA_MAX_HP, NULL);
+                Pokemon_SetValue(mon, MON_DATA_HP, &hp);
+            } else {
+                u16 item = (u16)op->b;
+                Pokemon_SetValue(mon, MON_DATA_HELD_ITEM, &item);
+            }
+            break;
+        }
+        case LAB_PARTY_FATEFUL: {
+            u8 fateful = TRUE;
+
+            if (op->a < 0 || op->a >= Party_GetCurrentCount(party)) {
+                fprintf(stderr, "pc_lab: party-fateful: no party slot %d\n", op->a);
+                exit(2);
+            }
+            Pokemon_SetValue(Party_GetPokemonBySlotIndex(party, op->a), MON_DATA_FATEFUL_ENCOUNTER, &fateful);
+            break;
+        }
+        case LAB_DEX_SEEN:
+        case LAB_DEX_CAUGHT: {
+            Pokemon *mon;
+
+            if (op->a < 1 || op->a > NATIONAL_DEX_COUNT) {
+                fprintf(stderr, "pc_lab: dex: no species %d\n", op->a);
+                exit(2);
+            }
+            mon = Pokemon_New(LAB_HEAP);
+            Pokemon_Init(mon);
+            Pokemon_InitWith(mon, op->a, 50, INIT_IVS_RANDOM, FALSE, 0, OTID_NOT_SET, 0);
+            if (op->verb == LAB_DEX_SEEN) {
+                Pokedex_Encounter(SaveData_GetPokedex(saveData), mon);
+            } else {
+                Pokedex_Capture(SaveData_GetPokedex(saveData), mon);
+            }
+            Heap_Free(mon);
             break;
         }
         case LAB_NATIONAL_DEX:
@@ -2020,11 +2149,11 @@ void pc_lab_underground_frame(unsigned long long frame)
     if (frame < sUgFrame) return;
 
     fs = pc_lab_field_system();
-    /* The hole animation is on screen at frame ~4900 and a communication
-     * error (leftover title WM, no PXI tag 10) covers it ~100 frames
-     * later. The field task is still the map change, so lab_field_settled
-     * is false for the whole window. Mining_StartGameForLab is a SysTask,
-     * not a field task, and only needs the map and MiningEnv. */
+    /* The hole animation is on screen at frame ~4900, then Roark's intro
+     * script runs. The field task is the map change and then that script,
+     * so lab_field_settled is false for the whole window.
+     * Mining_StartGameForLab is a SysTask, not a field task, and only needs
+     * the map and MiningEnv. */
     if (fs == NULL || fs->location == NULL
             || fs->location->mapHeaderID != MAP_HEADER_UNDERGROUND) {
         if (frame > sUgFrame + 6000) {

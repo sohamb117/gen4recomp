@@ -1,0 +1,27 @@
+# Ruby/Sapphire from the quick save made in the house 1F (littleroot.sched,
+# quick save at frame 10000): CONTINUE, upstairs, set the clock (A, UP to
+# YES, A), Mom's lines, downstairs, the Petalburg Gym report on TV, then out
+# of the front door into Littleroot (5,9). tests/rse/first_battle.sh quick
+# saves at 4700.
+400:start:5
+700:start:5
+900:a:5
+1000:a:5
+1100:up:80
+1300:down:16
+1330:left:32
+1370:up:4
+1390:a:5
+1720:a:5
+1760:a:5
+1800:a:5
+1880:a:5
+1920:up:5
+1940:a:5
+2000:a:5:40:12
+2500:a:5:40:9
+2900:right:32
+2940:up:16
+3100:a:5:40:33
+4450:right:64
+4520:down:64

@@ -1,0 +1,25 @@
+NP_OPT_CAMERA_ZOOM / NP_OPT_CAMERA_TILT (pc/src/pc_bw_camera.c): the field
+map's calls of GFL_G3D_CAMERA_Switching (sub_02048AE8) go to
+PcBw_CameraSwitch, which loads the field camera's view seen from the
+options' distance and pitch (other cameras pass through).
+
+--- a/arm9/overlays/21/asm/ndsrec_ov021_002.s
++++ b/arm9/overlays/21/asm/ndsrec_ov021_002.s
+@@ -4886,7 +4886,7 @@
+ 	add r1, sp, #0x4
+ 	bl sub_02048B78
+ 	ldr r0, [r5, #0x4]
+-	bl sub_02048AE8
++	bl PcBw_CameraSwitch
+ 	add sp, #0x38
+ 	pop {r4-r6, pc}
+ _ov021_0219546A: ; 0x0219546A
+@@ -4948,7 +4948,7 @@
+ 	add r1, r5, r4
+ 	bl sub_02048B78
+ 	ldr r0, [r5, #0x4]
+-	bl sub_02048AE8
++	bl PcBw_CameraSwitch
+ 	pop {r3-r5, pc}
+ _ov021_021954EA: ; 0x021954EA
+ 	.byte 0x00, 0x00

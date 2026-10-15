@@ -1,0 +1,14 @@
+# Boost on 28's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# HP and PP refilled (party-level, the four moves set again, as 20's boost gave them).
+# For TRAINER_RIVAL_CANALAVE_CITY_TURTWIG (STARAPTOR 36, FLOATZEL 35, HERACROSS 37, ROSERADE 35, INFERNAPE 38:
+# Rock Slide on Staraptor, Earthquake on Infernape/Floatzel... Crunch/Seed Bomb otherwise) and Route 218's trainers.
+party-level 0 63
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_ROCK_SLIDE
+# Field moves: Surf (HM03, 28) on Bibarel for Route 218's water; a Staraptor carrying Fly (HM02, 22) for the flight
+# from Celestic to Jubilife (Fly needs the Cobble Badge, Surf the Fen Badge: src/field_move_tasks.c:414).
+party-move 2 2 MOVE_SURF
+party SPECIES_STARAPTOR 45 ITEM_NONE
+party-move 3 0 MOVE_FLY

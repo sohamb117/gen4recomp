@@ -1,0 +1,6 @@
+# On 59b's end save (game complete, the Poketch and the league party, played): the National Dex, which no chained
+# milestone plays (110 is a lab station; Pal Park opens after it, Oak's speech scr_seq 0990 @0x058F-0x0601).
+national-dex 1
+flag 0x2B2
+# below the entrance door (306,909) = MAP_ROUTE_221 warp 1 (the entrance's ON_FRAME scene would hold a map line there)
+map MAP_ROUTE_221 306 910 FACE_UP

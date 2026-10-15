@@ -733,6 +733,15 @@ void np_wasi_close_files(np_core *c) {
     c->content_root = NULL;
 }
 
+void np_wasi_reboot(np_core *c) {
+    for (uint32_t i = 0; i < NP_WASI_MAX_FILES; i++)
+        if (c->files[i].kind != NP_WASI_FREE && !c->files[i].preopen) file_close(&c->files[i]);
+    /* the old instance may have closed the preopen itself */
+    if (c->content_root && c->files[0].kind == NP_WASI_FREE && file_open(c->content_root, &c->files[0]) == WASI_ESUCCESS)
+        c->files[0].preopen = 1;
+    np_wasi_init(c);
+}
+
 /* ---- file descriptors ------------------------------------------------ */
 
 uint32_t w2c_wasi__snapshot__preview1_fd_close(struct w2c_wasi__snapshot__preview1 *w, uint32_t fd) {

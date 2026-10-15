@@ -1,0 +1,43 @@
+# Level-up evolution at the end of a battle: CATERPIE lv6 fights wild Pokemon in Route 202's tall grass (Dragon
+# Rage, 40 fixed, one-shots every lv2-4 there) until it reaches lv7, and evolves into METAPOD after the battle that
+# levels it (evolution allowed, never B).
+# Start: MAP_ROUTE_202 (163,818) above the grass. End: MAP_ROUTE_202, slot 0 METAPOD lv7.
+title = "Level-up evolution after battle: Caterpie -> Metapod"
+priority = "P1"
+version = "both"
+estimate = 11399
+refs = [
+  "maps.h:347",
+  "map_header.c:427",
+  "games/diamond/files/fielddata/encountdata/d_enc_data/narc_0141.bin",
+  "games/diamond/files/fielddata/encountdata/p_enc_data/narc_0141.bin",
+  "games/diamond/files/poketool/personal/evo.json",
+  "zone_event 0328 object 0",
+  "tests/e2e/tools/probe_map.py (Route 202 grass x 162..165, z 819..824)",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 17100
+
+[[step]]
+do = "grind"
+x = 163
+z = 820
+level = 7
+note = "wild battles in the grass (163,820)/(164,820) until the lead is lv7; the last one ends in the evolution scene"
+
+[[step]]
+do = "wait_field"
+shot = "evolved"
+
+[expect]
+map = "MAP_ROUTE_202"
+battles = 1
+party = ["SPECIES_METAPOD"]
+save = ['s["party"][0]["species"] == 11', 's["party"][0]["level"] >= 7']
+
+[[shots]]
+frames = [9200, 9600, 10000, 10400, 10800, 11200]   # the fifth battle's end: lv7, the evolution scene (until 11381)

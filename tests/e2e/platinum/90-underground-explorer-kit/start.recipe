@@ -1,0 +1,9 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26090
+money 3000
+
+var VAR_PLAYER_STARTER SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+# Eterna reached; no badge gate in the Underground Man script (scripts_eterna_city_underground_man_house.s:17-35)
+warp MAP_HEADER_ETERNA_CITY_UNDERGROUND_MAN_HOUSE 0

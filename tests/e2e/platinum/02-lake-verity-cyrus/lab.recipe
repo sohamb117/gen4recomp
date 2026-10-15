@@ -1,0 +1,27 @@
+# Platinum story 02-lake-verity-cyrus: standalone start (--lab, or no end save from 01).
+# Standard header + lab party + the cumulative state after 01 (pt_story_early.md table),
+# then the milestone's start. Names resolve through pc/tests/pc_lab.py; flag/var lines cite the script that sets them.
+name GQ
+gender GENDER_MALE
+trainer-id 31415
+money 20000
+var VAR_PLAYER_STARTER SPECIES_TURTWIG  # rival teams use the *_TURTWIG variants (scripts_route_203.s:71-74, scripts_jubilife_city.s:907-914; src/system_vars.c:67-72)
+# Early party (pt_story_early.md): no mandatory battles before Jubilife; Tackle beats wild Starly/Bidoof.
+party SPECIES_TURTWIG 8 ITEM_NONE
+party-move 0 0 MOVE_TACKLE
+# -- 01 new game, starter --
+var VAR_PLAYER_HOUSE_SPECIAL_PROGRAM_STATE 1  # scripts_twinleaf_town_player_house_2f.s:28
+var VAR_PLAYER_HOUSE_RIVAL_STATE 1  # scripts_twinleaf_town_player_house_2f.s:128
+flag FLAG_HIDE_TWINLEAF_TOWN_PLAYER_HOUSE_2F_RIVAL  # scripts_twinleaf_town_player_house_2f.s:127
+flag FLAG_TALKED_TO_MOM  # scripts_twinleaf_town_player_house_1f.s:39
+var VAR_TWINLEAF_TOWN_RIVAL_TRIGGER_STATE 1  # scripts_twinleaf_town.s:424
+flag FLAG_RIVAL_LEFT_HOME  # scripts_twinleaf_town_rival_house_2f.s:28
+var VAR_RIVAL_HOUSE_STATE 1  # scripts_twinleaf_town_rival_house_2f.s:29
+var VAR_TWINLEAF_TOWN_GUITARIST_TRIGGER_STATE 2  # scripts_twinleaf_town_rival_house_2f.s:30
+flag FLAG_HIDE_ROUTE_201_BRIEFCASE  # scripts_route_201.s:278
+flag FLAG_HIDE_ROUTE_201_PROF_ROWAN  # scripts_route_201.s:301
+flag FLAG_HIDE_ROUTE_201_COUNTERPART  # scripts_route_201.s:334
+var VAR_FOLLOWER_RIVAL_STATE 2  # scripts_route_201.s:401
+var VAR_PLAYER_HOUSE_STATE 5  # Twinleaf OnTransition, scripts_twinleaf_town.s:32
+# -- start --
+map MAP_HEADER_TWINLEAF_TOWN 116 886 FACE_DOWN  # the game's first respawn tile, src/location.c:16-20

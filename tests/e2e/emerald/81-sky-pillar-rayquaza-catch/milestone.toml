@@ -1,0 +1,268 @@
+# Proves Emerald's Sky Pillar after the Sootopolis crisis (VAR_SKY_PILLAR_STATE 2): Route 131's island, the entrance,
+# the outside ledge Wallace opened, 1F, 2F's cracked floors crossed on the Mach Bike at top speed, 3F, 4F's cracks
+# dropped through to 3F's middle stairs, 5F and the top, where RAYQUAZA lv70 waits again (emerald/39 only woke it):
+# the battle, FLAG_DEFEATED_RAYQUAZA.
+# Start: MAP_ROUTE131 (36,7) -> end: MAP_SKY_PILLAR_TOP, beside Rayquaza's spot (14,6).
+title = "Sky Pillar: the cracked-floor climb and Rayquaza's battle"
+priority = "P2"
+estimate = 12069
+refs = [
+  "data/maps/Route131/scripts.inc:5-12 (LAYOUT_ROUTE131_SKY_PILLAR), map.json warp_events[0] (36,6) -> SKY_PILLAR_ENTRANCE",
+  "data/maps/SkyPillar_Entrance/map.json warp_events[1] (14,4) -> SKY_PILLAR_OUTSIDE",
+  "data/maps/SkyPillar_Outside/scripts.inc:20-27 (OnLoad: FLAG_WALLACE_GOES_TO_SKY_PILLAR opens the door (14,4..5)); map.json warp_events[1] (14,5) -> SKY_PILLAR_1F",
+  "data/maps/SkyPillar_1F/map.json warp (10,1) -> 2F; SkyPillar_2F/map.json (3,1) -> 3F; SkyPillar_3F (11,1) -> 4F, (7,1) -> 4F's north-west corner; SkyPillar_4F (3,1) -> 5F; SkyPillar_5F (10,1) -> TOP",
+  "data/maps/SkyPillar_2F/scripts.inc:7-23, SkyPillar_4F/scripts.inc:7-23 (clean floors only while VAR_SKY_PILLAR_STATE < 2; the hole warps to the floor below)",
+  "src/field_tasks.c (cracked floor: a step onto MB_CRACKED_FLOOR below PLAYER_SPEED_FASTEST makes a hole); src/bike.c (the Mach Bike's speed table)",
+  "data/maps/SootopolisCity/scripts.inc:552 (VAR_SKY_PILLAR_STATE 2)",
+  "data/maps/SkyPillar_Top/scripts.inc:17-29 (state >= 2, FLAG_DEFEATED_RAYQUAZA clear: FLAG_HIDE_SKY_PILLAR_TOP_RAYQUAZA_STILL cleared); map.json object_events[1] (14,6) the still RAYQUAZA (object 1 is the sleeping one, hidden)",
+  "data/maps/SkyPillar_Top/scripts.inc:37-64 (setwildbattle SPECIES_RAYQUAZA 70, BattleSetup_StartLegendaryBattle; won or caught -> FLAG_DEFEATED_RAYQUAZA)",
+  "data/maps/SkyPillar_Top/map.json coord_events (14,9) VAR_SKY_PILLAR_RAYQUAZA_CRY_DONE 0 (the story's wake scene)",
+]
+notes = "Ruby's dir (ruby/81) fails on Emerald at the entrance: Emerald puts the outside ledge (SKY_PILLAR_OUTSIDE) between the entrance and 1F, whose door the static world does not show open, so the climb starts with explicit warps; the top's catchable Rayquaza is object 2 (R/S: 1). The floors' layouts are R/S's tile for tile (tests/e2e/tools/gba_world_cli.py map MAP_SKY_PILLAR_2F/4F on both games), so the Mach Bike holds are ruby/81's probe-searched ones. Rayquaza is knocked out by auto_battle (FLAG_DEFEATED_RAYQUAZA either way)."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 18200
+
+[[step]]
+do = "walk_to"
+x = 36
+z = 6
+note = "the Sky Pillar door (Route131/map.json warp_events[0])"
+shot = "sky-pillar-island"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 4
+note = "the entrance's stairs (14,4) -> SKY_PILLAR_OUTSIDE"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_OUTSIDE"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 5
+shot = "outside"
+note = "the door Wallace opened (14,5) -> SKY_PILLAR_1F (OnLoad setmetatile, FLAG_WALLACE_GOES_TO_SKY_PILLAR)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_1F"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 2
+map = "MAP_SKY_PILLAR_2F"
+on_battle = "flee"
+shot = "2f"
+
+[[step]]
+do = "walk_to"
+x = 12
+z = 2
+face = "down"
+note = "2F: above column 12 (rows 5-6 and 11-12 are MB_CRACKED_FLOOR 0xD2: tools/gba_world_cli.py map MAP_SKY_PILLAR_2F)"
+
+[[step]]
+do = "press"
+keys = "SELECT"
+gap = 60
+note = "the registered Mach Bike (item_use.c ItemUseOutOfBattle_Bicycle): mount"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 90
+gap = 40
+note = "down column 12 to (12,13): the Mach Bike reaches SPEED_FASTEST on its third tile (bike.c MachBikeTransition_TrySpeedUp, bikeFrameCounter 0,1,2) before the first crack (12,5); the cracks behind turn to holes (field_tasks.c:669-711)"
+shot = "2f-bike"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 90
+gap = 40
+note = "row 13 west to (0,13): (11..6,13) run-up, cracks (5..3,13) at top speed"
+
+[[step]]
+do = "press"
+keys = "SELECT"
+gap = 60
+note = "dismount"
+
+[[step]]
+do = "walk_to"
+x = 1
+z = 13
+face = "up"
+note = "below column 1: (1,12),(1,11) run-up, cracks (1,10..7)"
+
+[[step]]
+do = "press"
+keys = "SELECT"
+gap = 60
+note = "mount"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 39
+gap = 0
+note = "up column 1 to (1,7) at top speed (probe: the step into (1,7) starts at frame 38)"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 4
+gap = 0
+note = "turn east at (1,7) without slowing (GetMachBikeTransition: MACH_TRANS_KEEP_MOVING): crack (2,7) at top speed; (1,7) is boxed in by cracks and walls (probe-searched window: UP 38-39 x RIGHT 3-5 all reach (2,2))"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 40
+gap = 30
+note = "north up column 2 to (2,2)"
+
+[[step]]
+do = "press"
+keys = "SELECT"
+gap = 60
+note = "dismount"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 2
+map = "MAP_SKY_PILLAR_4F"
+on_battle = "flee"
+note = "2F (3,1) -> 3F (3,2), around 3F's outer ring (no cracks) to (11,1) -> 4F (11,2)"
+shot = "4f"
+
+[[step]]
+do = "press"
+keys = "SELECT"
+gap = 60
+note = "4F (11,2): mount (the stairs leave the player facing down)"
+
+[[step]]
+do = "press"
+keys = "DOWN"
+hold = 55
+gap = 0
+note = "down column 11: run-up (11,3),(11,4), cracks (11,5..7) and (11,11..12) at top speed (probe: the step into (11,12) starts by frame 56)"
+
+[[step]]
+do = "press"
+keys = "LEFT"
+hold = 31
+gap = 0
+note = "turn west at (11,12) (probe window DOWN 53-56): row 12's cracks (10,8,6,4) at top speed to (3,12)"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 60
+gap = 30
+note = "turn north at (3,12) (probe window LEFT 30-33): column 3's cracks (3,11),(3,9..7) to (3,4) below the wall"
+shot = "4f-bike"
+
+[[step]]
+do = "press"
+keys = "SELECT"
+gap = 60
+note = "dismount"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 6
+face = "up"
+note = "below column 2: the row-4 strip (4..9,4) east of (3,4) starts with a crack (4,4), so the run-up comes from the south"
+
+[[step]]
+do = "press"
+keys = "SELECT"
+gap = 60
+note = "mount"
+
+[[step]]
+do = "press"
+keys = "UP"
+hold = 20
+gap = 0
+note = "(2,5),(2,4): two run-up tiles"
+
+[[step]]
+do = "press"
+keys = "RIGHT"
+hold = 12
+gap = 250
+note = "turn east at (2,4): (3,4), crack (4,4) at top speed, (5,4); then no key: MachBikeTransition_TrySlowDown drops a speed per tile, so the next crack (6,4) or (7,4) is entered below SPEED_FASTEST and the floor gives way (VAR_ICE_STEP_COUNT 0 -> CaveHole_CheckFallDownHole -> warphole to SkyPillar_4F's setholewarp MAP_SKY_PILLAR_3F, same x,y) into 3F's walled middle (5..9,2..4) with the stairs (7,1) (probe window: UP 18-24 x RIGHT 6-16 all land on 3F (6,4) or (7,4))"
+shot = "3f-middle"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_3F"
+
+[[step]]
+do = "walk_to"
+x = 3
+z = 2
+map = "MAP_SKY_PILLAR_5F"
+on_battle = "flee"
+note = "3F (7,1) -> 4F (7,2), the walled north-west corner of 4F to (3,1) -> 5F (3,2)"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 1
+on_battle = "flee"
+note = "5F (no cracks: behaviour 0x08 throughout) to the stairs (10,1) -> MAP_SKY_PILLAR_TOP"
+
+[[step]]
+do = "wait_map"
+map = "MAP_SKY_PILLAR_TOP"
+
+[[step]]
+do = "steps"
+route = [[12, 15], [12, 11], [14, 11], [14, 7]]
+face = "up"
+interact = true
+note = "the top's floor is cracked around the stairs (behaviour 0xD2, which walk_to never plans onto): a fixed route over solid tiles from the stairs' arrival (16,15) to (14,7), then A on RAYQUAZA (SkyPillar_Top/map.json object_events[1] (14,6), object 2): setwildbattle SPECIES_RAYQUAZA 70, BattleSetup_StartLegendaryBattle (SkyPillar_Top/scripts.inc:37-48)"
+
+[[step]]
+do = "wait_battle"
+max = 1500
+
+[[step]]
+do = "wait_frames"
+n = 240
+shot = "rayquaza"
+
+[[step]]
+do = "auto_battle"
+note = "the legendary battle; Walrein's Ice moves"
+
+[[step]]
+do = "advance_text"
+shot = "after"
+
+[expect]
+map = "MAP_SKY_PILLAR_TOP"
+flags = ["FLAG_DEFEATED_RAYQUAZA", "FLAG_LANDMARK_SKY_PILLAR"]
+battles = 1
+save = ['s["game_stats"][8] >= 1']
+
+[expect.vars]
+VAR_SKY_PILLAR_STATE = 2

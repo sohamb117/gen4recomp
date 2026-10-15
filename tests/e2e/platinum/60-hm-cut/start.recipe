@@ -1,0 +1,12 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26060
+money 3000
+
+# Cut needs BADGE_ID_FOREST (src/field_move_tasks.c:332) and a mon with MOVE_CUT
+# (FindPartySlotWithMove, scripts_field_moves.s:27). Copy of pc/tests/corpus/hm-cut.recipe.
+badge BADGE_ID_FOREST
+party SPECIES_BIBAREL 30 ITEM_NONE
+party-move 0 0 MOVE_CUT
+# facing the tree LOCALID_CUT_TREE_1 at (304,521) (events_eterna_city.json)
+map MAP_HEADER_ETERNA_CITY 304 522 FACE_UP

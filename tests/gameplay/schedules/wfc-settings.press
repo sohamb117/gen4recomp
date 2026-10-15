@@ -1,0 +1,12 @@
+# Title, the main menu, DOWN DOWN A on NINTENDO WFC SETTINGS: the utility
+# returns at once (pc_dwc_connect.c DWC_StartUtility) and the game resets;
+# after the reboot, the title and CONTINUE.
+1250:start
+1400:a
+1900:down
+1960:down
+2040:a
+3311:start
+3461:a
+3561:a
+3661:a

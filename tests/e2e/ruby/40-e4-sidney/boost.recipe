@@ -1,0 +1,11 @@
+# Party strength for Sidney (src/data/trainer_parties.h:3347 gTrainerParty_Sidney: MIGHTYENA 46, SHIFTRY 48, CACTURNE 46,
+# SHARPEDO 48, ABSOL 49).
+# No Pokemon Center between the League's rooms: a player restores HP and PP from the bag between battles (the bag
+# holds Full Restores, 38); auto_battle uses no items, so each room's boost does it: the level (HP full, stats
+# recomputed) and the lead's four moves set again (PP full). The moves: TM26 Earthquake, HM03 Surf, TM13 Ice Beam
+# and HM07 Waterfall, all in Marshtomp's TM/HM learnset (src/data/pokemon/tmhm_learnsets.h:6289-6299).
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_SURF
+party-move 0 2 MOVE_ICE_BEAM
+party-move 0 3 MOVE_WATERFALL
+party-level 0 72

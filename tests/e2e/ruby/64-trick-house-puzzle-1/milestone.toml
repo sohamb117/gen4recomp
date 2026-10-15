@@ -1,0 +1,182 @@
+# Proves the Trick House's first challenge: "You're being watched", the Trick Master found beneath the desk (6,3),
+# the hole behind the scroll (YES), Puzzle 1's Cut maze and trainers to the scroll's secret code and the door, the Trick
+# Master's Rare Candy in the end room (VAR_TRICK_HOUSE_ROOMS_COMPLETED 1), and the corridor back to Route 110.
+# Start: Route 110 (11,67) -> end: MAP_ROUTE110 (11,67).
+title = "Trick House: the Trick Master and Puzzle 1"
+priority = "P1"
+version = "both"
+estimate = 12661
+refs = [
+  "data/maps/Route110/map.json warp_events[1] (11,66) -> ROUTE110_TRICK_HOUSE_ENTRANCE",
+  "data/maps/Route110_TrickHouseEntrance/scripts.inc:7-26 (OnTransition: STATE_3 0 -> ENTRANCE_STATE 0), :140-156 (Trick Master hidden at (6,3))",
+  "data/maps/Route110_TrickHouseEntrance/map.json coord_events (4,7),(5,6),(6,6),(7,7) ENTRANCE_STATE 0 -> TrickMasterHiding",
+  "data/maps/Route110_TrickHouseEntrance/scripts.inc:718-729 (TrickMasterHiding: 'You're being watched', ENTRANCE_STATE 1)",
+  "data/maps/Route110_TrickHouseEntrance/scripts.inc:229-265 (TrickMaster STATE_3 0 -> FoundTrickMaster: ENTRANCE_STATE_2 1, warp in place)",
+  "data/maps/Route110_TrickHouseEntrance/scripts.inc:202-223 (OnFrame BeginChallenge: the Trick Master jumps away, STATE_3 1, STATE_2 0)",
+  "data/maps/Route110_TrickHouseEntrance/scripts.inc:474-523 (the scroll door (5,1): STATE_3 1 -> 'go in the hole?' YES -> MAP_ROUTE110_TRICK_HOUSE_PUZZLE1 (0,21))",
+  "data/maps/Route110_TrickHousePuzzle1/map.json (Sally (13,21), Eddie (13,7), Robin (3,8), 15 Cut trees, scroll bg (14,8), stairs warp (13,1) -> END)",
+  "data/maps/Route110_TrickHousePuzzle1/scripts.inc:14-24 (Scroll: PUZZLE_1_STATE 0 -> 1) -> Route110_TrickHouseEntrance/scripts.inc:702-716 ('found a scroll')",
+  "src/field_control_avatar.c:468 (MB_TRICK_HOUSE_PUZZLE_DOOR -> Route110_TrickHousePuzzle_EventScript_Door)",
+  "data/maps/Route110_TrickHouseEntrance/scripts.inc:597-606 (Puzzle1 door: PUZZLE_1_STATE 1 -> 2, stairs at (13,1))",
+  "data/maps/Route110_TrickHouseEnd/scripts.inc:43-71 (Trick Master, ROOMS_COMPLETED 0 -> CompletedPuzzle1: giveitem ITEM_RARE_CANDY)",
+  "data/maps/Route110_TrickHouseEnd/scripts.inc:182-190 (TrickMasterExit: addvar VAR_TRICK_HOUSE_ROOMS_COMPLETED 1)",
+  "data/maps/Route110_TrickHouseCorridor/scripts.inc:5-7 (TRICK_HOUSE_STATE 1) -> Entrance OnTransition :39-43 (STATE_3 5)",
+]
+notes = "Lead: Swampert 40 with Cut (slot 4); Sally (TRAINER_SALLY 611: Oddish), Eddie (TRAINER_EDDIE 332: Zigzagoon) and Robin (TRAINER_ROBIN 612: Skitty) are fought where walk_to meets them. talk_to finds the hidden Trick Master (hideobjectat keeps the object) and talks from (6,2)."
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 19000
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 66
+note = "the Trick House door -> ENTRANCE (5,7)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 6
+on_text = "stop"
+note = "coord event (5,6), ENTRANCE_STATE 0: 'You're being watched...'"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "being-watched"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "the hidden Trick Master at (6,3), beneath the desk"
+
+[[step]]
+do = "wait_frames"
+n = 60
+shot = "trick-master-found"
+
+[[step]]
+do = "advance_text"
+note = "warp in place, BeginChallenge: the Trick Master jumps away (STATE_3 1)"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 2
+face = "up"
+interact = true
+note = "the scroll (5,1): 'go in the hole behind the scroll?'"
+
+[[step]]
+do = "advance_text"
+note = "YES (the cursor's default) -> MAP_ROUTE110_TRICK_HOUSE_PUZZLE1 (0,21)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE110_TRICK_HOUSE_PUZZLE1"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 9
+hm = true
+face = "up"
+interact = true
+note = "Cut through the maze to the scroll (14,8); the trainers in sight are fought"
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "found-scroll"
+
+[[step]]
+do = "advance_text"
+note = "PUZZLE_1_STATE 1: the secret code memorized"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 2
+hm = true
+face = "up"
+interact = true
+note = "the locked door (13,1)"
+
+[[step]]
+do = "advance_text"
+shot = "door-open"
+note = "PUZZLE_1_STATE 2: stairs at (13,1)"
+
+[[step]]
+do = "walk_to"
+x = 13
+z = 1
+note = "the stairs -> MAP_ROUTE110_TRICK_HOUSE_END (10,1)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE110_TRICK_HOUSE_END"
+
+[[step]]
+do = "wait_field"
+
+[[step]]
+do = "talk_to"
+id = 1
+note = "'You've made it to me?'"
+
+[[step]]
+do = "wait_frames"
+n = 30
+shot = "trick-master-end"
+
+[[step]]
+do = "advance_text"
+note = "ITEM_RARE_CANDY; the Trick Master spins away, ROOMS_COMPLETED 1"
+
+[[step]]
+do = "walk_to"
+x = 2
+z = 1
+note = "the end room's exit (2,1) -> CORRIDOR"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE110_TRICK_HOUSE_CORRIDOR"
+
+[[step]]
+do = "walk_to"
+x = 4
+z = 23
+note = "the corridor's bottom -> ENTRANCE (5,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE110_TRICK_HOUSE_ENTRANCE"
+
+[[step]]
+do = "walk_to"
+map = "MAP_ROUTE110"
+x = 11
+z = 67
+shot = "route110"
+
+[expect]
+map = "MAP_ROUTE110"
+battles = 1
+flags = ["FLAG_LANDMARK_TRICK_HOUSE"]
+save = ['any(i["item"] == 68 and i["qty"] >= 1 for i in s["bag"]["items"])']
+
+[expect.vars]
+VAR_TRICK_HOUSE_ROOMS_COMPLETED = 1
+VAR_TRICK_HOUSE_PUZZLE_1_STATE = 2
+VAR_TRICK_HOUSE_ENTRANCE_STATE_3 = 5

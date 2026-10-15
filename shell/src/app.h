@@ -52,7 +52,7 @@ typedef enum np_pending_kind {
     NP_PENDING_SAV_IMPORT, /* add a .sav as a slot of pending_game */
     NP_PENDING_SAV_EXPORT, /* write slot pending_slot of pending_game to path */
     NP_PENDING_MESSAGE,    /* a dialog failed; path holds the message */
-    NP_PENDING_GIFT_IMPORT, /* a .pgt/.pcd for the open save editor */
+    NP_PENDING_GIFT_IMPORT, /* a .pgt/.pcd/.pgf for the open save editor */
     NP_PENDING_CARD_EXPORT, /* PNG of the open save; pending_card is the np_card_kind */
     NP_PENDING_SYNC_FOLDER, /* path is the folder picked for sync */
     NP_PENDING_MOD_INSTALL, /* a package .zip for mods.c */
@@ -212,7 +212,10 @@ typedef struct np_app {
 
     np_core *core;
     np_game game;
-    char slot[NP_SLOT_NAME_MAX + 1]; /* save slot of the running game */
+    /* Whose cartridge and save slot the session runs on: `game`, or for
+     * Poké Transfer's child station (NP_GAME_POKETRANSFER) the Gen 4 card. */
+    np_game card_game;
+    char slot[NP_SLOT_NAME_MAX + 1]; /* save slot of the running game (of card_game) */
     SDL_IOStream *rom_io;
     SDL_IOStream *gba_io; /* the cartridge in the GBA slot while a core runs */
     np_host host;
@@ -244,6 +247,10 @@ void np_app_toast(np_app *app, const char *fmt, ...);
 int np_app_start_game(np_app *app, np_game game, const char *slot);
 /* Boots the last used slot, or a new "Slot 1" when the game has none. */
 int np_app_continue(np_app *app, np_game game);
+/* Poké Transfer's child station: the poketransfer core with Gen 4 game
+ * `card`'s cartridge and save slot `slot` in its slot 1. It waits for
+ * Black/White's lab on local wireless, which must be on. */
+int np_app_start_poke_transfer(np_app *app, np_game card, const char *slot);
 /* Reboots the running game from its slot's last save. */
 int np_app_reload_game(np_app *app);
 void np_app_stop_game(np_app *app);
@@ -252,7 +259,8 @@ void np_app_request(np_app *app, np_pending_kind kind, const char *path);
 void np_app_open_rom_dialog(np_app *app);
 void np_app_open_sav_import_dialog(np_app *app, np_game game);
 void np_app_open_sav_export_dialog(np_app *app, np_game game, const char *slot);
-void np_app_open_gift_import_dialog(np_app *app);
+/* The gift file kinds `game` takes: .pgt/.pcd (Gen 4) or .pgf (Gen 5). */
+void np_app_open_gift_import_dialog(np_app *app, np_game game);
 void np_app_open_card_export_dialog(np_app *app, int kind);
 void np_app_open_sync_folder_dialog(np_app *app);
 void np_app_open_mod_install_dialog(np_app *app);
@@ -306,6 +314,10 @@ void np_sync_hit(np_app *app, int id);
 /* mods.c: runtime content packages, per game (mods/<game>/) */
 /* The content root for `game`'s core into out; 0 if it exists, else -1. */
 int np_mods_content_root(const np_app *app, np_game game, char *out, size_t n);
+/* The file that makes a package loadable by `game`'s core, relative to the
+ * package: the DS cores' cooked ".cooked/digest", a GBA core's data patch
+ * "<game id>.ips" (games/gba-common/pc/src/gba_mods.c). */
+void np_mods_payload(np_game game, char *out, size_t n);
 void np_mods_install(np_app *app, const char *zip_path);
 /* Opens the page; `banner` explains a boot error, or NULL. */
 void np_mods_open(np_app *app, const char *banner);
@@ -382,7 +394,7 @@ int np_touchedit_key(np_app *app, const SDL_KeyboardEvent *k);
 void np_touchedit_command(np_app *app, np_menu_cmd cmd);
 
 /* skin.c: Delta controller skins */
-void np_skin_apply(np_app *app);    /* loads opt.skin (none if "") */
+void np_skin_apply(np_app *app);    /* loads the running console's skin (opt.skin / opt.skin_gba; none if "") */
 void np_skin_install(np_app *app, const char *path);
 void np_skin_cycle(np_app *app, int dir); /* next/previous installed, or none */
 const char *np_skin_name(void);          /* the loaded skin, or NULL */
@@ -449,7 +461,7 @@ int np_editor_event(np_app *app, const SDL_Event *e);
  * returns NULL on success or an error to show on the text page. */
 const char *np_editor_text_done(np_app *app, const char *text);
 void np_editor_text_cancel(np_app *app);
-/* Adds a .pgt/.pcd file to the open save as a Mystery Gift. */
+/* Adds a gift file (.pgt/.pcd, or .pgf for Black/White) to the open save. */
 void np_editor_import_gift(np_app *app, const char *path);
 /* Writes a Trainer Card or Pokedex diploma PNG (np_card_kind) of the open save. */
 void np_editor_export_card(np_app *app, int kind, const char *path);

@@ -1,0 +1,8 @@
+# Boost on 08's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# A Cut carrier for the Dreamyard's tree (zone_event 152 object 8 at (23,26), scr 0867 script 5: Cmd116 0x8010, 0xF
+# finds the party member that knows Cut), which stands on Bianca's trigger 0 (23,26). Fennel gave HM01
+# (scr 0020 @0x006A); no bot teaches an HM through the Bag, so the carrier comes with it: Patrat (504, HM01
+# compatible [INFERENCE]) at 14 with Cut (15) and Tackle (33).
+party 504 14
+party-move 3 0 15
+party-move 3 1 33

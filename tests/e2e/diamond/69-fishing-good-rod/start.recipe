@@ -1,0 +1,15 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 30069
+money 3000
+# the Good Rod: the Route 209 fisherman gives ITEM_GOOD_ROD (scr_seq 0406 @0x01CF SetVar 0x8004 then the common give) and sets flag 0xA2 (scr_seq 0406 @0x0266)
+flag 0xA2
+item ITEM_GOOD_ROD 1
+# Y uses the registered item (Bag_GetRegisteredItem, arm9/asm/unk_0205CE48.s:1393; the rod's Y entry, :27-29)
+register-item ITEM_GOOD_ROD
+# GARCHOMP Dragon Claw one-shots any fish of the table (d_enc_data 0145 good rod, rate 50 @0x150)
+party SPECIES_GARCHOMP 70 ITEM_NONE
+party-move 0 0 MOVE_DRAGON_CLAW
+# the river bank (180,604), surfable water at (180,603) north of it (tools/probe_map.py); the rod's use check wants
+# the faced tile water (sub_0205D860, arm9/asm/unk_0205CE48.s:1330-1373)
+map MAP_ROUTE_205_SOUTH 180 604 FACE_UP

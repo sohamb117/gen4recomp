@@ -1,0 +1,9 @@
+# Boost on 52's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# The chain's lone fighter is Torterra (Staraptor carries the HMs, Riolu is level 1). After the gym's seven trainers
+# its PP was spent and Volkner (trdata.json #320: RAICHU 46, AMBIPOM 47, OCTILLERY 47, LUXRAY 49) won in 10 turns.
+# Level 85 and its moves set again (PP full): Earthquake (2x on Raichu/Luxray), Stone Edge, Seed Bomb (2x on
+# Octillery); slot 2 keeps Rock Climb (Victory Road, 55).
+party-level 0 85
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_STONE_EDGE
+party-move 0 3 MOVE_SEED_BOMB

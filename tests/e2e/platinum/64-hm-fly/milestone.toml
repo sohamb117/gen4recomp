@@ -1,0 +1,40 @@
+# HM02 Fly from the party menu: Hearthome -> Solaceon on the town map.
+# Start: Hearthome City spawn tile (0x1D1,0x2BA). End: Solaceon Town fly tile (566,657).
+# No corpus station; the town-map cursor path is not recorded yet.
+title = "HM02 Fly: Hearthome to Solaceon"
+priority = "P1"
+estimate = 2561
+refs = [
+  "res/field/events/events_veilstone_city_galactic_warehouse.json",
+  "res/field/scripts/scripts_visible_items.s:1751-1755",
+  "src/field_move_tasks.c:373",
+  "src/field_move_tasks.c:377-389",
+  "src/field_move_tasks.c:392-406",
+  "src/field_move_tasks.c:194-222",
+  "src/spawn_locations.c:25-48",
+  "src/spawn_locations.c:32",
+  "src/spawn_locations.c:38",
+  "generated/vars_flags.txt:2492",
+  "src/start_menu.c:379-382",
+  "pc/tests/corpus/hearthome.recipe",
+  "pc/replays/lab-menu-party.txt",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 3900
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_SOLACEON_TOWN"
+note = "X, POKEMON, STARAPTOR, FLY, the town map's cursor from Hearthome's block to Solaceon's (bots.py fly; fly-map.ppm is the town map before A)"
+shot = "landed"
+
+[expect]
+map = 433
+position = [566, 657]
+badge = ["BADGE_ID_COBBLE"]
+flags = ["FLAG_FIRST_ARRIVAL_SOLACEON_TOWN"]
+save = ['s["location"]["map"] == 433']

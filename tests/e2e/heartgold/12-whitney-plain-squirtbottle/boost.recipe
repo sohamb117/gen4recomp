@@ -1,0 +1,6 @@
+# Boost on 11's end save (run.py addmon_boost: np_save4 set-level on members the party holds; stats recalculated,
+# HP full, moves unchanged).
+# Whitney's MILTANK 19 (Rollout, Milk Drink) beat QUILAVA 21 and SCYTHER 22 in SoulSilver's chained run on
+# hgss-play3's 4d9380ac6 core (HeartGold's passed with a level more). Both to 25.
+party-level 0 25
+party-level 2 25

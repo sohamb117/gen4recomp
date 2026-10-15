@@ -1,0 +1,11 @@
+# Boost on 38's end save (AUTHORING.md, Boosts): party strength only, the story stays played.
+# HP and PP refilled for the HQ's grunts (a dozen on the way) and TRAINER_GALACTIC_BOSS_CYRUS_GALACTIC_HQ (SNEASEL 44,
+# CROBAT 44, HONCHKROW 46; res/trainers/data/galactic_boss_cyrus_galactic_hq.json): Stone Edge for the flyers.
+party-level 0 86
+party-move 0 0 MOVE_EARTHQUAKE
+party-move 0 1 MOVE_CRUNCH
+party-move 0 2 MOVE_SEED_BOMB
+party-move 0 3 MOVE_STONE_EDGE
+party-level 1 30
+party-level 2 60
+party-level 3 65

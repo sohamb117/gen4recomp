@@ -1,31 +1,6 @@
 --- a/src/underground/comm_manager.c
 +++ b/src/underground/comm_manager.c
-@@ -69,14 +69,20 @@
- {
-     FieldCommunicationManager *fieldCommMan = FieldCommManager_Get();
- 
--    if (fieldCommMan != NULL) {
--        return;
--    }
--
-+    /* pc port: CONTINUE's main-menu wireless search can leave a comm
-+     * manager up. Returning here skipped first-visit setup, and the
-+     * leftover error (PXI tag 10 has no responder) became the
-+     * "communication error / return to title" screen after the hole
-+     * animation. StartUnderground retasks that manager; doNotConnect
-+     * is raised first so the retasked task takes the solo path. */
-     CommManager_StartUnderground(FieldSystem_GetSaveData(fieldSystem));
-     FieldCommManager_Init(fieldSystem);
- 
-     fieldCommMan = FieldCommManager_Get();
-+    if (fieldCommMan == NULL) {
-+        return;
-+    }
-+
-     Heap_Create(HEAP_ID_APPLICATION, HEAP_ID_UNDERGROUND, HEAP_SIZE_UNDERGROUND);
- 
-     if (!SystemFlag_CheckHasSeenUndergroundRoarkIntro(SaveData_GetVarsFlags(fieldCommMan->fieldSystem->saveData))) {
-@@ -353,7 +359,7 @@
+@@ -353,7 +353,7 @@
              CommPlayerMan_ResumeFieldSystem();
          }
  
@@ -34,7 +9,7 @@
  
          CommPlayer_SendPos(FALSE);
  
-@@ -431,7 +437,7 @@
+@@ -431,7 +431,7 @@
      }
  
      if (CommInfo_IsDataFinishedReading()) {
@@ -43,7 +18,7 @@
          UndergroundPlayer_SendHeldFlagOwnerInfo();
          CommManUnderground_SetFieldCommManTask(CommManUnderground_WaitForFlagDataReceiptTaskClient, 200);
          return;
-@@ -461,7 +467,7 @@
+@@ -461,7 +461,7 @@
  static void CommManUnderground_WaitForTrapDataReceiptTaskClient(void)
  {
      if (Traps_HaveLinksReceivedPlacedTraps()) {
@@ -52,7 +27,7 @@
          Traps_ClearLinksReceivedPlacedTraps();
          SecretBases_SendBaseInfo();
          CommManUnderground_SetFieldCommManTask(CommManUnderground_WaitForBaseDataReceiptTaskClient, 0);
-@@ -474,7 +480,7 @@
+@@ -474,7 +474,7 @@
  static void CommManUnderground_WaitForBaseDataReceiptTaskClient(void)
  {
      if (SecretBases_HaveLinksReceivedBaseData()) {

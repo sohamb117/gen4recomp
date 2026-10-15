@@ -1,0 +1,13 @@
+name GQ
+gender GENDER_MALE
+trainer-id 26111
+money 3000
+# post-game: story-cleared only sets the trainer-info bit (pc_lab.c:798-800); every script gate
+# checks FLAG_GAME_COMPLETED (src/clear_game.c:204-206, scrcmd_system_flags.c:151, system_flags.c:69-71)
+story-cleared 1
+flag FLAG_GAME_COMPLETED
+party SPECIES_GARCHOMP 100 ITEM_NONE
+# Water/Dragon takes 2x from Dragon
+party-move 0 0 MOVE_DRAGON_CLAW
+# below the rift bg events (33,16..17) (scripts_spear_pillar_palkia.s:34-46)
+map MAP_HEADER_SPEAR_PILLAR_PALKIA 33 18 FACE_UP

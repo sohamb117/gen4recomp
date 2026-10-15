@@ -1,0 +1,5 @@
+# Party strength for May at Rustboro (src/data/trainer_parties.h sParty_MayRustboroMudkip: WINGULL 13,
+# TREECKO 15) after Route 116's and the tunnel's battles: the chained Marshtomp keeps its own moves but Water Gun's
+# PP is nearly spent by then. Levels and moves only.
+party-level 0 26    # Treecko's Absorb is 4x on Water/Ground: the level carries it
+party-move 0 1 MOVE_MUD_SHOT   # Marshtomp's level-16 move (src/data/pokemon/level_up_learnsets.h)

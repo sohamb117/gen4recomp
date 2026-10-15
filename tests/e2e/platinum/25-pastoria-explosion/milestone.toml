@@ -1,0 +1,48 @@
+# Proves the explosion coord event (the post-Wake OnFrame scene is played at the end of 24).
+# Start: Pastoria gym door (589,827), VAR_PASTORIA_CITY_STATE 4 -> end: Pastoria, state 5.
+
+title = "Pastoria: Wake and rival scene, Great Marsh explosion"
+priority = "P0"
+estimate = 2795
+refs = [
+  "scripts_init_pastoria_city.s:9",
+  "scripts_pastoria_city.s:457-526",
+  "scripts_pastoria_city.s:619-640",
+  "scripts_pastoria_city.s:725-746",
+  "scripts_pastoria_city.s:459",
+  "scripts_pastoria_city.s:522",
+  "scripts_pastoria_city.s:477",
+  "scripts_pastoria_city.s:519",
+  "scripts_pastoria_city.s:488",
+  "scripts_pastoria_city.s:524",
+  "scripts_pastoria_city.s:660",
+  "scripts_pastoria_city.s:681",
+  "scripts_pastoria_city.s:694",
+  "scripts_pastoria_city.s:699",
+  "scripts_pastoria_city.s:700",
+  "scripts_pastoria_city.s:701",
+  "scripts_pastoria_city.s:904-917",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+
+[run]
+frames = 4200
+
+[[step]]
+do = "walk_to"
+x = 610
+z = 810
+note = "coord2 (610,810), state 4 -> CoordEvent_Bomb (:619-640); branches on x 609/611/612"
+
+[[step]]
+do = "advance_text"
+max = 6000
+shot = "pastoria_explosion"
+
+[expect]
+map = "MAP_HEADER_PASTORIA_CITY"
+vars = { VAR_PASTORIA_CITY_STATE = 5 }
+flags = ["FLAG_PASTORIA_CITY_GRUNT_M_MOVED_EAST"]

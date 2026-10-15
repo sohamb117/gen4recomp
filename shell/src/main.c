@@ -24,6 +24,7 @@
 
 #include "app.h"
 #include "card.h"
+#include "edsave.h"
 #include "fx.h"
 #include "net.h"
 #include "png.h"
@@ -49,17 +50,17 @@ static int host_rom_read(void *user, uint32_t offset, void *dst, uint32_t len)
 static int host_save_load(void *user, void *dst, uint32_t len)
 {
     np_app *app = user;
-    return np_storage_save_load(app->game, app->slot, dst, len);
+    return np_storage_save_load(app->card_game, app->slot, dst, len);
 }
 
 static int host_save_store(void *user, const void *src, uint32_t len)
 {
     np_app *app = user;
-    int r = np_storage_save_store(app->game, app->slot, src, len);
+    int r = np_storage_save_store(app->card_game, app->slot, src, len);
     if (r)
         np_app_toast(app, "Saving failed: %s", SDL_GetError());
     else
-        np_sync_slot(app, app->game, app->slot);
+        np_sync_slot(app, app->card_game, app->slot);
     return r;
 }
 
@@ -162,7 +163,7 @@ static int test_save_load(void *user, void *dst, uint32_t len)
     np_app *app = user;
     np_autotest *t = &app->autotest;
     if (t->storage) {
-        int r = np_storage_save_load(app->game, app->slot, dst, len);
+        int r = np_storage_save_load(app->card_game, app->slot, dst, len);
         t->loads += r == 1;
         return r;
     }
@@ -180,11 +181,11 @@ static int test_save_store(void *user, const void *src, uint32_t len)
     np_app *app = user;
     np_autotest *t = &app->autotest;
     if (t->storage) {
-        int r = np_storage_save_store(app->game, app->slot, src, len);
+        int r = np_storage_save_store(app->card_game, app->slot, src, len);
         if (!r) {
             t->saves++;
             t->save_len = len;
-            np_sync_slot(app, app->game, app->slot);
+            np_sync_slot(app, app->card_game, app->slot);
         }
         return r;
     }
@@ -207,6 +208,8 @@ void np_app_toast(np_app *app, const char *fmt, ...)
     SDL_vsnprintf(app->toast, sizeof app->toast, fmt, ap);
     va_end(ap);
     app->toast_until = SDL_GetTicksNS() + 3 * SDL_NS_PER_SECOND;
+    if (app->autotest.active) /* the run's log is its evidence */
+        SDL_Log("autotest: frame %d toast: %s", app->autotest.ran, app->toast);
 }
 
 int np_app_speed(const np_app *app)
@@ -408,13 +411,18 @@ int np_app_gba_inserted(const np_app *app) { return app->gba_io != NULL; }
 static int open_core(np_app *app, np_game game, const char *slot, const np_host *host)
 {
     app->game = game;
+    np_skin_apply(app); /* each console has its own skin */
     SDL_strlcpy(app->slot, slot, sizeof app->slot);
     app->host = *host;
     /* A slot bound to a cart boots exactly its packages; any active set
      * also pins local wireless to stations running the same set. */
     char pc_mods[NP_CART_MAX_PKGS * (NP_MOD_ID_MAX + 1) + 16];
-    uint32_t realm;
-    if (np_carts_for_boot(app, game, slot, pc_mods, sizeof pc_mods, &realm)) {
+    uint32_t realm = 0;
+    pc_mods[0] = '\0';
+    /* Carts and content packages are the card game's; Poké Transfer's child
+     * program takes none. */
+    int transfer = game == NP_GAME_POKETRANSFER;
+    if (!transfer && np_carts_for_boot(app, game, slot, pc_mods, sizeof pc_mods, &realm)) {
         SDL_Log("%s", app->status);
         return -1;
     }
@@ -424,7 +432,7 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     }
     /* Runtime content packages, read by the core at boot (mods.c). */
     app->host.content_root =
-        np_mods_content_root(app, game, app->mods_root, sizeof app->mods_root) ? NULL : app->mods_root;
+        transfer || np_mods_content_root(app, game, app->mods_root, sizeof app->mods_root) ? NULL : app->mods_root;
     insert_gba(app);
     /* PC_* variables configure the port layer (debug switches such as
      * PC_TP_DEBUG); pass the process's own through, as np_headless does. */
@@ -440,8 +448,8 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     app->core = np_core_create(game, &app->host, options);
     SDL_free(env);
     if (!app->core) {
-        SDL_snprintf(app->status, sizeof app->status, "Could not start %s: %s", np_game_title(game),
-                     np_core_create_error());
+        SDL_snprintf(app->status, sizeof app->status, "Could not start %s: %s",
+                     transfer ? "Poke Transfer" : np_game_title(game), np_core_create_error());
         SDL_Log("%s", app->status);
         eject_gba(app);
         return -1;
@@ -450,8 +458,12 @@ static int open_core(np_app *app, np_game game, const char *slot, const np_host 
     np_app_open_page(app, NP_PAGE_NONE);
     app->have_frame = 0;
     app->ff_toggle = app->ff_hold = 0;
-    char title[96];
-    SDL_snprintf(title, sizeof title, "nativeplat - Pokemon %s - %s", np_game_title(game), slot);
+    char title[128];
+    if (transfer)
+        SDL_snprintf(title, sizeof title, "nativeplat - Poke Transfer - the %s card - %s", np_game_title(app->card_game),
+                     slot);
+    else
+        SDL_snprintf(title, sizeof title, "nativeplat - Pokemon %s - %s", np_game_title(game), slot);
     SDL_SetWindowTitle(app->window, title);
     np_app_apply_video_options(app);
     np_session_begin(app);
@@ -515,6 +527,7 @@ int np_app_start_game(np_app *app, np_game game, const char *slot)
     np_host host;
     if (open_rom(app, path, &host))
         return -1;
+    app->card_game = game;
     if (open_core(app, game, slot, &host)) {
         SDL_CloseIO(app->rom_io);
         app->rom_io = NULL;
@@ -529,12 +542,13 @@ int np_app_start_game(np_app *app, np_game game, const char *slot)
     return 0;
 }
 
-int np_app_continue(np_app *app, np_game game)
+/* `game`'s last used slot, else its most recently written one; -1 when it
+ * has none. */
+static int pick_slot(np_app *app, np_game game, char name[NP_SLOT_NAME_MAX + 1])
 {
     app->slots_game = game;
     np_app_refresh_slots(app, NULL);
     const np_slot_list *l = &app->slots;
-    /* The last used slot, else the most recently written one. */
     int pick = np_slot_list_find(l, app->opt.last_slot[game]);
     if (pick < 0 && l->count) {
         pick = 0;
@@ -542,10 +556,16 @@ int np_app_continue(np_app *app, np_game game)
             if (l->slot[i].mtime > l->slot[pick].mtime)
                 pick = i;
     }
+    if (pick < 0)
+        return -1;
+    SDL_strlcpy(name, l->slot[pick].name, NP_SLOT_NAME_MAX + 1);
+    return 0;
+}
+
+int np_app_continue(np_app *app, np_game game)
+{
     char name[NP_SLOT_NAME_MAX + 1];
-    if (pick >= 0) {
-        SDL_strlcpy(name, l->slot[pick].name, sizeof name);
-    } else {
+    if (pick_slot(app, game, name)) {
         np_slot_default_name(NULL, 0, name);
         if (np_storage_slot_create(game, name)) {
             SDL_snprintf(app->status, sizeof app->status, "Cannot create a save slot: %s", SDL_GetError());
@@ -555,12 +575,45 @@ int np_app_continue(np_app *app, np_game game)
     return np_app_start_game(app, game, name);
 }
 
+int np_app_start_poke_transfer(np_app *app, np_game card, const char *slot)
+{
+    close_core(app);
+    if (!np_game_is_gen4(card)) {
+        SDL_snprintf(app->status, sizeof app->status,
+                     "Poke Transfer reads a Diamond, Pearl, Platinum, HeartGold or SoulSilver card.");
+        return -1;
+    }
+    if (!np_core_available(NP_GAME_POKETRANSFER)) {
+        SDL_snprintf(app->status, sizeof app->status, "The Poke Transfer core is not included in this build.");
+        return -1;
+    }
+    if (!app->opt.lan_enabled || !app->opt.station_id) {
+        SDL_snprintf(app->status, sizeof app->status,
+                     "Poke Transfer arrives over local wireless from Black or White: turn it on in Options.");
+        return -1;
+    }
+    char path[1100];
+    np_storage_rom_path(card, path, sizeof path);
+    np_host host;
+    if (open_rom(app, path, &host))
+        return -1;
+    app->card_game = card;
+    if (open_core(app, NP_GAME_POKETRANSFER, slot, &host)) {
+        SDL_CloseIO(app->rom_io);
+        app->rom_io = NULL;
+        return -1;
+    }
+    SDL_Log("started the Poke Transfer station, the %s card, save slot \"%s\"", np_game_id(card), slot);
+    app->status[0] = '\0';
+    return 0;
+}
+
 void np_app_stop_game(np_app *app)
 {
     close_core(app);
     app->view = NP_VIEW_LAUNCHER;
     app->have_frame = 0;
-    app->launcher_sel = app->game;
+    app->launcher_sel = np_launcher_card(app->card_game);
     SDL_SetWindowTitle(app->window, "nativeplat");
     np_input_release_all(app);
     np_app_apply_video_options(app);
@@ -612,13 +665,22 @@ void np_app_launch(np_app *app, const np_launch *req)
         return;
     }
     np_game game = (np_game)req->game;
-    app->launcher_sel = game;
-    if (!np_core_available(game)) {
-        launch_fail(app, "The %s core is not included in this build.", np_game_title(game));
+    app->launcher_sel = np_launcher_card(game);
+    if (!np_core_available(req->poke_transfer ? NP_GAME_POKETRANSFER : game)) {
+        launch_fail(app, "The %s core is not included in this build.",
+                    req->poke_transfer ? "Poke Transfer" : np_game_title(game));
         return;
     }
     if (!np_storage_rom_present(game)) {
         launch_fail(app, "Import your %s cartridge first.", np_game_title(game));
+        return;
+    }
+    if (req->poke_transfer && !req->slot[0]) {
+        char name[NP_SLOT_NAME_MAX + 1];
+        if (pick_slot(app, game, name))
+            launch_fail(app, "%s has no save slot for Poke Transfer to read.", np_game_title(game));
+        else if (np_app_start_poke_transfer(app, game, name))
+            launch_fail(app, "%s", app->status);
         return;
     }
     if (!req->slot[0]) {
@@ -640,7 +702,7 @@ void np_app_launch(np_app *app, const np_launch *req)
     }
     char name[NP_SLOT_NAME_MAX + 1];
     SDL_strlcpy(name, app->slots.slot[idx].name, sizeof name);
-    if (np_app_start_game(app, game, name))
+    if (req->poke_transfer ? np_app_start_poke_transfer(app, game, name) : np_app_start_game(app, game, name))
         launch_fail(app, "%s", app->status);
 }
 
@@ -682,10 +744,12 @@ static int autotest_dialog(np_app *app, const char *what)
 
 void np_app_open_rom_dialog(np_app *app)
 {
-    static const SDL_DialogFileFilter filters[] = {{"Nintendo DS ROM (*.nds)", "nds"}};
+    static const SDL_DialogFileFilter filters[] = {{"Nintendo DS or Game Boy Advance ROM (*.nds, *.gba)", "nds;gba"},
+                                                   {"Nintendo DS ROM (*.nds)", "nds"},
+                                                   {"Game Boy Advance ROM (*.gba)", "gba"}};
     app->dialog_kind = NP_PENDING_ROM;
     if (!autotest_dialog(app, "ROM import"))
-        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 3, NULL, false);
 }
 
 void np_app_open_sav_import_dialog(np_app *app, np_game game)
@@ -697,12 +761,15 @@ void np_app_open_sav_import_dialog(np_app *app, np_game game)
         SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
 }
 
-void np_app_open_gift_import_dialog(np_app *app)
+void np_app_open_gift_import_dialog(np_app *app, np_game game)
 {
-    static const SDL_DialogFileFilter filters[] = {{"Mystery Gift (*.pgt, *.pcd)", "pgt;pcd"}};
+    /* The filters must outlive the dialog: one static list per kind. */
+    static const SDL_DialogFileFilter gen4[] = {{"Mystery Gift (*.pgt, *.pcd)", "pgt;pcd"}};
+    static const SDL_DialogFileFilter gen5[] = {{"Wonder Card (*.pgf)", "pgf"}};
     app->dialog_kind = NP_PENDING_GIFT_IMPORT;
     if (!autotest_dialog(app, "gift import"))
-        SDL_ShowOpenFileDialog(dialog_done, app, app->window, filters, 1, NULL, false);
+        SDL_ShowOpenFileDialog(dialog_done, app, app->window, np_save_gen_of(game) == 5 ? gen5 : gen4, 1, NULL,
+                               false);
 }
 
 void np_app_open_card_export_dialog(np_app *app, int kind)
@@ -781,7 +848,7 @@ static void import_rom(np_app *app, const char *path)
         SDL_strlcpy(app->status, r.message, sizeof app->status);
     SDL_Log("import %s: %s", path, app->status);
     if (r.ok)
-        app->launcher_sel = r.game;
+        app->launcher_sel = np_launcher_card(r.game);
 }
 
 /* A new cartridge or save takes effect when the core next boots: the
@@ -914,7 +981,7 @@ static void handle_drop(np_app *app, const char *data)
         np_app_request(app, NP_PENDING_MOD_INSTALL, data);
         return;
     }
-    if (has_extension(data, "pgt") || has_extension(data, "pcd")) {
+    if (has_extension(data, "pgt") || has_extension(data, "pcd") || has_extension(data, "pgf")) {
         if (app->page != NP_PAGE_EDITOR) {
             np_app_toast(app, "Open a save in the editor, then drop the gift there");
             return;
@@ -958,10 +1025,11 @@ static void take_screenshot(np_app *app)
     if (!app->have_frame)
         return;
     uint32_t w = app->frame.width, h = app->frame.height;
+    int screens = app->frame.screen[1] ? 2 : 1; /* a GBA core has one */
     uint32_t *buf = SDL_malloc((size_t)w * h * 2 * 4);
     if (!buf)
         return;
-    for (int s = 0; s < 2; s++)
+    for (int s = 0; s < screens; s++)
         for (uint32_t y = 0; y < h; y++)
             SDL_memcpy(buf + ((size_t)s * h + y) * w, app->frame.screen[s] + (size_t)y * app->frame.stride, w * 4);
     SDL_Time now;
@@ -979,7 +1047,7 @@ static void take_screenshot(np_app *app)
         if (!np_storage_exists(path))
             break;
     }
-    if (write_png(path, buf, w, h * 2, w))
+    if (write_png(path, buf, w, h * (uint32_t)screens, w))
         np_app_toast(app, "Screenshot failed: %s", SDL_GetError());
     else
         np_app_toast(app, "Saved %s", rel);
@@ -1093,8 +1161,11 @@ static void run_game(np_app *app)
 static void draw_screens(np_app *app)
 {
     /* Each DS pixel is an s x s block, s = height / 192; widescreen frames
-     * are wider than 256 blocks with the DS picture centred. */
-    uint32_t s = app->have_frame && app->frame.height >= 192 ? app->frame.height / 192 : 1;
+     * are wider than 256 blocks with the DS picture centred. A GBA frame is
+     * one 240x160 screen (times s), shown alone. */
+    int gba = app->have_frame && !app->frame.screen[1];
+    uint32_t base_h = gba ? NP_GBA_SCREEN_H : NP_SCREEN_H;
+    uint32_t s = app->have_frame && app->frame.height >= base_h ? app->frame.height / base_h : 1;
     int screen_w = app->have_frame ? (int)(app->frame.width / s) : 256;
     float frames[8];
     /* During a battle the battle layout, if one is chosen, replaces the
@@ -1105,7 +1176,12 @@ static void draw_screens(np_app *app)
                            app->opt.rotation,
                            app->opt.scale,
                            screen_w,
-                           np_skin_frames(app, frames) ? frames : NULL};
+                           np_skin_frames(app, frames) ? frames : NULL,
+                           gba ? NP_GBA_SCREEN_H : 0};
+    if (gba) {
+        lp.mode = NP_LAYOUT_TOP_ONLY;
+        lp.swap = 0;
+    }
     np_layout_compute(&app->layout, &lp, app->out_w, app->out_h);
     for (int i = 0; i < 2; i++)
         np_fx_draw_screen(app, i);
@@ -1291,7 +1367,8 @@ static int is_option_key(const char *k)
     static const char *const keys[] = {"layout", "rotation", "swap", "scale", "filter", "fx1", "fx2", "curvature",
                                        "perf", "lan", "peer", "station", "render_scale", "widescreen", "zoom",
                                        "tilt", "instant_text", "fix_bugs", "rewind_seconds", "battle_layout",
-                                       "music_filter", "ui_scale", "reduce_motion", "skin", "controls", "clock"};
+                                       "music_filter", "ui_scale", "reduce_motion", "skin", "skin_gba", "controls",
+                                       "clock"};
     for (size_t i = 0; i < SDL_arraysize(keys); i++)
         if (!SDL_strcmp(k, keys[i]))
             return 1;
@@ -1413,6 +1490,8 @@ static int parse_autotest(np_app *app, const char *spec, int options_only, int *
             SDL_strlcpy(t->gba_save, v, sizeof t->gba_save);
         else if (!SDL_strcmp(kv, "skin"))
             SDL_strlcpy(app->opt.skin, v, sizeof app->opt.skin);
+        else if (!SDL_strcmp(kv, "skin_gba"))
+            SDL_strlcpy(app->opt.skin_gba, v, sizeof app->opt.skin_gba);
         else if (!SDL_strcmp(kv, "touch")) {
             int x, y;
             if (SDL_sscanf(v, "%dx%d", &x, &y) != 2 || x < 0 || x > 255 || y < 0 || y > 191)
@@ -1481,8 +1560,17 @@ static int parse_autotest(np_app *app, const char *spec, int options_only, int *
 
 static void fill_test_header(np_autotest *t, np_game game)
 {
-    static const char *const titles[NP_GAME_COUNT] = {"POKEMON D", "POKEMON P", "POKEMON PL"};
-    static const char *const codes[NP_GAME_COUNT] = {"ADAE", "APAE", "CPUE"};
+    static const char *const titles[NP_GAME_COUNT] = {
+        [NP_GAME_DIAMOND] = "POKEMON D", [NP_GAME_PEARL] = "POKEMON P",   [NP_GAME_PLATINUM] = "POKEMON PL",
+        [NP_GAME_BLACK] = "POKEMON B",   [NP_GAME_WHITE] = "POKEMON W",   [NP_GAME_RUBY] = "POKEMON RUBY",
+        [NP_GAME_HEARTGOLD] = "POKEMON HG", [NP_GAME_SOULSILVER] = "POKEMON SS",
+        [NP_GAME_SAPPHIRE] = "POKEMON SAPP", [NP_GAME_EMERALD] = "POKEMON EMER"};
+    static const char *const codes[NP_GAME_COUNT] = {
+        [NP_GAME_DIAMOND] = "ADAE", [NP_GAME_PEARL] = "APAE", [NP_GAME_PLATINUM] = "CPUE", [NP_GAME_BLACK] = "IRBO",
+        [NP_GAME_HEARTGOLD] = "IPKE", [NP_GAME_SOULSILVER] = "IPGE",
+        [NP_GAME_WHITE] = "IRAO",   [NP_GAME_RUBY] = "AXVE",  [NP_GAME_SAPPHIRE] = "AXPE", [NP_GAME_EMERALD] = "BPEE"};
+    if (!np_game_known(game))
+        game = NP_GAME_PLATINUM;
     SDL_memset(t->header, 0, sizeof t->header);
     SDL_memcpy(t->header, titles[game], SDL_strlen(titles[game]));
     SDL_memcpy(t->header + 0x0C, codes[game], 4);
@@ -1547,6 +1635,7 @@ static int autotest_boot(np_app *app, np_game game)
     np_autotest *t = &app->autotest;
     if (autotest_slot(app, game))
         return -1;
+    app->card_game = game;
     np_host host;
     if (t->boot == NP_AT_ROM) {
         if (open_rom(app, t->rom, &host))
@@ -1814,7 +1903,7 @@ static void startup_launch(np_app *app, int argc, char *argv[])
         return;
     }
     int g = app->opt.last_game;
-    if (app->opt.startup_continue && g >= 0 && g < NP_GAME_COUNT && np_core_available((np_game)g) &&
+    if (app->opt.startup_continue && np_game_known((np_game)g) && np_core_available((np_game)g) &&
         np_storage_rom_present((np_game)g))
         np_app_continue(app, (np_game)g);
 }

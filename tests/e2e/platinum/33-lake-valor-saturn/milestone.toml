@@ -1,0 +1,103 @@
+# Proves the drained-lake warp choice (FLAG_GALACTIC_LEFT_LAKE_VALOR unset) and the Saturn battle.
+# Fly to Veilstone, south through the Route 214 gate and down Route 214 to Valor Lakefront.
+# Start: Canalave City (32's end; the lab at the Pokemon Center door (58,722)) -> end: Valor Cavern (316), Saturn beaten.
+
+title = "Lake Valor (drained): Saturn in Valor Cavern"
+priority = "P0"
+estimate = 21863
+refs = [
+  "scripts_valor_lakefront.s:19-42",
+  "scripts_valor_cavern.s:13",
+  "scripts_valor_cavern.s:87",
+  "scripts_valor_cavern.s:88",
+  "scripts_valor_cavern.s:89",
+  "events_lake_valor_drained.json",
+]
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+boost = "boost.recipe"
+
+[run]
+frames = 32800
+
+[[step]]
+do = "fly"
+map = "MAP_HEADER_VEILSTONE_CITY"
+note = "lands at the Pokemon Center (717,612) (src/spawn_locations.c:40)"
+
+[[step]]
+do = "walk_to"
+x = 718
+z = 638
+note = "south gate (events_veilstone_city warp 11) -> Route 214 gate (5,2)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_214_GATE_TO_VEILSTONE_CITY"
+
+[[step]]
+do = "walk_to"
+x = 5
+z = 12
+note = "gate south exit (warp 1) -> Route 214 (718,645)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_ROUTE_214"
+
+[[step]]
+do = "walk_to"
+max = 3000
+on_battle = "flee"
+via = [[718, 665], [726, 665], [726, 678], [727, 678], [727, 685], [725, 685], [725, 690], [732, 690], [732, 697], [731, 697],
+       [731, 708], [733, 708], [733, 719], [730, 719], [730, 743], [727, 743], [727, 759], [723, 759]]
+x = 723
+z = 770
+note = "south down Route 214 into Valor Lakefront (tools/pt_route.py; 27 walked it north); its trainers were beaten on the way north, wild battles fled"
+
+[[step]]
+do = "walk_to"
+x = 717
+z = 761
+note = "lake warp (717,761) -> LAKE_VALOR_DRAINED (scripts_valor_lakefront.s:19-42)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_LAKE_VALOR_DRAINED"
+
+[[step]]
+do = "walk_to"
+x = 32
+z = 32
+max = 9000
+note = "cavern hole, events_lake_valor_drained.json warp1; sight trainers 417/418/425 fought on the way ([INFERENCE] which)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_HEADER_VALOR_CAVERN"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 20
+face = "up"
+interact = true
+note = "Saturn obj1 (14,19) (scripts_valor_cavern.s)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+shot = "saturn_valor"
+note = "TRAINER_COMMANDER_SATURN_VALOR_CAVERN (408)"
+
+[[step]]
+do = "advance_text"
+
+[expect]
+map = "MAP_HEADER_VALOR_CAVERN"
+flags = ["FLAG_DEFEATED_COMMANDER_SATURN_VALOR_CAVERN", "FLAG_HIDE_LAKE_VALOR_GALACTIC"]
+battles = 1

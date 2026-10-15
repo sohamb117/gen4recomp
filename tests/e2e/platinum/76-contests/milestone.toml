@@ -1,0 +1,60 @@
+# Super Contest, Normal rank Cool, entered at the Contest Hall's official receptionist and played through
+# (dress-up, dance and acting rounds). ROSELIA with every condition at 255 takes first place.
+# Start: Contest Hall lobby (16,5) below the receptionist. End: after the contest, Super Cool ribbon on slot 0.
+title = "Contests: Normal Cool, first place"
+priority = "P1"
+estimate = 42777
+refs = [
+  "res/field/events/events_hearthome_city.json",
+  "res/field/scripts/scripts_contests.s:178-470",
+  "res/field/scripts/scripts_contest_hall_lobby.s:38",
+  "res/field/scripts/scripts_contest_hall_lobby.s:85",
+  "generated/pokemon_contest_ranks.txt",
+  "generated/pokemon_contest_types.txt",
+  "src/applications/party_menu/main.c:1128-1153",
+  "src/contest.c:90-121",
+  "src/contest.c:214-253",
+  "src/contest.c:1536-1582",
+  "generated/vars_flags.txt:2415-2419",
+  "pc/src/pc_lab.c:902-911",
+  "pc/src/pc_lab.c:1829-1956",
+  "pc/src/pc_lab.c:1855-1913",
+  "pc/src/pc_lab.c:1908",
+  "pc/tests/corpus/contest-win.recipe",
+  "pc/tests/corpus/contest-win.spec",
+  "pc/tests/corpus/contest-cool.recipe",
+  "pc/tests/corpus/contest-master.recipe",
+  "pc/replays/lab-contest.txt",
+  "pc/tests/pc_corpus.py:346",
+]
+
+[start]
+recipe = "start.recipe"
+
+[run]
+frames = 64200
+clock = "2009-03-22 21:00:00"
+
+[[step]]
+do = "press"
+keys = "A"
+times = 12
+gap = 60
+note = "the official contest's receptionist: Welcome, ENTER, NORMAL RANK, COOL CONTEST, ROSELIA, ENTER, accepted, this way"
+shot = "to-the-stage"
+
+[[step]]
+do = "schedule"
+file = "contest.sched"
+note = "the tuxedo, the MC, dress-up, dance and acting rounds, the results"
+
+[[step]]
+do = "advance_text"
+max = 4000
+note = "the ribbon, back to the lobby"
+
+[expect]
+save = ['s["party"][0]["super_contest_ribbons"] & 1 == 1']   # MON_DATA_SUPER_COOL_RIBBON: Normal rank Cool, first place
+
+[[shots]]
+frames = [3000, 5600, 9000, 12000, 16000, 22000, 28000, 34000, 39000, 42000]   # the MC, dress-up, the dance, acting turns, the results, the ribbon

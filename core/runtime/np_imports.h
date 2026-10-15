@@ -38,6 +38,8 @@ uint32_t w2c_np__host_gba_save_load(struct w2c_np__host *h, uint32_t dst, uint32
 uint32_t w2c_np__host_gba_save_store(struct w2c_np__host *h, uint32_t src, uint32_t len);
 void w2c_np__host_log(struct w2c_np__host *h, uint32_t text, uint32_t len);
 void w2c_np__host_trap(struct w2c_np__host *h, uint32_t text, uint32_t len);
+void w2c_np__host_reset(struct w2c_np__host *h, uint32_t carry, uint32_t len);
+uint32_t w2c_np__host_reset_carry(struct w2c_np__host *h, uint32_t dst, uint32_t cap);
 
 /* module "wasi_snapshot_preview1": the subset in np_wasi.c */
 uint32_t w2c_wasi__snapshot__preview1_args_get(struct w2c_wasi__snapshot__preview1 *w, uint32_t argv,

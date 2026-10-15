@@ -79,12 +79,15 @@ void w2c_np__host_vblank(struct w2c_np__host *h, uint32_t desc) {
         np_rt_fail(c, "vblank: descriptor magic/version 0x%08x/%u, want 0x%08x/%u", d->magic, d->version,
                    NP_FRAME_MAGIC, NP_GUEST_ABI_VERSION);
     /* Any size from the DS's own up to 8x it (render scale 4 of a 342-wide
-     * picture is 1368x768); both screens share the geometry. */
-    if (d->width < NP_SCREEN_W || d->width > NP_SCREEN_W * 8 || d->height < NP_SCREEN_H ||
+     * picture is 1368x768); both screens share the geometry. A single
+     * screen (screen[1] == 0) is the GBA's 240x160, up to 8x. */
+    uint32_t min_w = d->screen[1] ? NP_SCREEN_W : NP_GBA_SCREEN_W;
+    uint32_t min_h = d->screen[1] ? NP_SCREEN_H : NP_GBA_SCREEN_H;
+    if (d->width < min_w || d->width > NP_SCREEN_W * 8 || d->height < min_h ||
         d->height > NP_SCREEN_H * 8 || d->stride < d->width || d->stride > NP_SCREEN_W * 8)
         np_rt_fail(c, "vblank: bad screen geometry %ux%u stride %u", d->width, d->height, d->stride);
     check_pixels(c, d, 0);
-    check_pixels(c, d, 1);
+    if (d->screen[1]) check_pixels(c, d, 1);
     if (d->audio_ring_frames) {
         if ((d->audio_ring_frames & (d->audio_ring_frames - 1)) != 0 || d->audio_ring_frames > (1u << 24) ||
             (d->audio_ring & 3) != 0 || !np_rt_guest(c, d->audio_ring, d->audio_ring_frames * 4))
@@ -116,6 +119,15 @@ uint32_t w2c_np__host_rom_read(struct w2c_np__host *h, uint32_t offset, uint32_t
 uint32_t w2c_np__host_save_load(struct w2c_np__host *h, uint32_t dst, uint32_t len) {
     np_core *c = h->core;
     uint8_t *p = guest_range(c, dst, len, "save_load");
+    if (c->kept_chip_len) {
+        /* The chip as the instance before a soft reset left it: what the
+         * console's card holds, whatever the host managed to store. */
+        if (len != c->kept_chip_len)
+            np_rt_fail(c, "save_load: a %u-byte chip after a soft reset that kept %u bytes", len, c->kept_chip_len);
+        memcpy(p, c->kept_chip, len);
+        c->kept_chip_len = 0;
+        return 1;
+    }
     if (!c->host.save_load) return 0;
     int r = c->host.save_load(c->host.user, p, len);
     return r > 0 ? 1u : r == 0 ? 0u : (uint32_t)-1;
@@ -124,22 +136,9 @@ uint32_t w2c_np__host_save_load(struct w2c_np__host *h, uint32_t dst, uint32_t l
 uint32_t w2c_np__host_save_store(struct w2c_np__host *h, uint32_t src, uint32_t len) {
     np_core *c = h->core;
     const uint8_t *p = guest_range(c, src, len, "save_store");
-    if (c->host.save_store && c->host.save_store(c->host.user, p, len) == 0) {
-        c->save_dirty = 0; /* anything pending is older than this image */
-        return 0;
-    }
-    /* Keep a copy so np_core_save_flush can retry; the guest may consider
-     * the chip clean after this call. */
-    if (len > c->pending_save_cap) {
-        uint8_t *grown = realloc(c->pending_save, len);
-        if (!grown) return (uint32_t)-1;
-        c->pending_save = grown;
-        c->pending_save_cap = len;
-    }
-    memcpy(c->pending_save, p, len);
-    c->pending_save_len = len;
-    c->save_dirty = 1;
-    return (uint32_t)-1;
+    /* A failed store is kept for np_core_save_flush to retry; the guest may
+     * consider the chip clean after this call. */
+    return np_rt_store_save(c, p, len) == 0 ? 0 : (uint32_t)-1;
 }
 
 /* ---- GBA slot -------------------------------------------------------- */
@@ -233,4 +232,25 @@ void w2c_np__host_trap(struct w2c_np__host *h, uint32_t text, uint32_t len) {
     const char *s = (const char *)np_rt_guest(c, text, len);
     if (!s) np_rt_fail(c, "guest trap (message outside memory)");
     np_rt_fail(c, "guest trap: %.*s", (int)(len > 400 ? 400 : len), s);
+}
+
+/* ---- soft reset ------------------------------------------------------ */
+
+/* The driver does the work (np_rt_reboot): this fiber's stack, like every
+ * other guest fiber's, is abandoned with the instance. */
+void w2c_np__host_reset(struct w2c_np__host *h, uint32_t carry, uint32_t len) {
+    np_core *c = h->core;
+    if (len > NP_RESET_CARRY_MAX) np_rt_fail(c, "reset: a %u-byte carry, at most %u", len, NP_RESET_CARRY_MAX);
+    memcpy(c->reset_carry, guest_range(c, carry, len, "reset"), len);
+    c->reset_carry_len = len;
+    c->state = NP_RT_RESET;
+    np_rt_switch(c, &c->driver);
+    np_rt_fail(c, "reset: a discarded instance resumed");
+}
+
+uint32_t w2c_np__host_reset_carry(struct w2c_np__host *h, uint32_t dst, uint32_t cap) {
+    np_core *c = h->core;
+    uint32_t n = c->reset_carry_len < cap ? c->reset_carry_len : cap;
+    memcpy(guest_range(c, dst, n, "reset_carry"), c->reset_carry, n);
+    return c->reset_carry_len;
 }

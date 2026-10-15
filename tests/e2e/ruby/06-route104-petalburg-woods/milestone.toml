@@ -1,0 +1,75 @@
+# Proves Route 104 south, Petalburg Woods' Devon researcher coord scene with TRAINER_PETALBURG_WOODS_GRUNT (Ruby: a
+# Magma grunt, Sapphire: an Aqua grunt; Great Ball, VAR_PETALBURG_WOODS_STATE 1) and Route 104 north into Rustboro.
+# Start: Petalburg (15,9) -> end: MAP_RUSTBORO_CITY in front of the Pokemon Center (16,39).
+title = "Route 104 and Petalburg Woods: the grunt and the Devon researcher"
+priority = "P0"
+version = "both"
+estimate = 17054
+refs = [
+  "data/maps/PetalburgWoods/map.json coord_events (26,23)/(27,23) VAR_PETALBURG_WOODS_STATE=0",
+  "data/maps/PetalburgWoods/scripts.inc:9-40 (scene, trainerbattle_no_intro TRAINER_PETALBURG_WOODS_GRUNT)",
+  "data/maps/PetalburgWoods/scripts.inc:84-116 (grunt leaves, Great Ball, researcher leaves, WOODS_STATE 1)",
+  "constants/version.inc (TRAINER_PETALBURG_WOODS_GRUNT: Ruby TRAINER_GRUNT_36, Sapphire TRAINER_GRUNT_9)",
+  "data/maps/Route104/map.json warp_events[4..7] (10,38)/(32,42) -> woods south doors; [2] (10,30) north door",
+  "data/maps/PetalburgWoods/map.json warp_events[0] (14,5) -> Route 104 (10,30)",
+  "data/maps/RustboroCity/map.json warp_events[3] (16,38) -> POKEMON_CENTER_1F",
+]
+notes = "Grunt: Ruby TRAINER_GRUNT_36 (575) / Sapphire TRAINER_GRUNT_9 (10): POOCHYENA 9 in both (pokeruby constants/version.inc maps the script's TRAINER_PETALBURG_WOODS_GRUNT per version; scripts and maps are shared, only the grunt's graphics/text differ). Route 104/woods trainers: Billy (SEEDOT 6, TAILLOW 8), Cindy, Lyle, James (woods), Haley, Winston, Gina & Mia (DOUBLE: LOTAD 8, SEEDOT 8; needs 2 mons, else skipped). The static route enters the woods by Route 104's (10,38) door (gba_world_cli route)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 25600
+
+[[step]]
+do = "walk_to"
+x = 26
+z = 23
+map = "MAP_PETALBURG_WOODS"
+on_text = "stop"
+shot = "grunt"
+note = "Petalburg west exit, Route 104's south half into the woods (Route 104 warp 4 (10,38)), onto the coord event (26,23) at VAR_PETALBURG_WOODS_STATE 0"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_PETALBURG_WOODS_GRUNT (Ruby GRUNT_36 / Sapphire GRUNT_9): POOCHYENA 9 (PetalburgWoods/scripts.inc:33)"
+
+[[step]]
+do = "advance_text"
+note = "Great Ball, researcher leaves, VAR_PETALBURG_WOODS_STATE 1 (:84-116)"
+
+[[step]]
+do = "walk_to"
+x = 14
+z = 5
+note = "north door (woods warp 0) -> Route 104 (10,30)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_ROUTE104"
+
+[[step]]
+do = "walk_to"
+x = 16
+z = 39
+map = "MAP_RUSTBORO_CITY"
+note = "Route 104 north half (Haley, Winston, Gina & Mia by the bridge) into Rustboro, to the Pokemon Center door (Rustboro warp 3 (16,38))"
+
+[[step]]
+do = "heal"
+x = 16
+z = 38
+note = "Rustboro Pokemon Center (warp 3)"
+
+[expect]
+map = "MAP_RUSTBORO_CITY"
+flags = ["FLAG_VISITED_RUSTBORO_CITY", "FLAG_HIDE_EVIL_TEAM_PETALBURG_WOODS", "FLAG_HIDE_DEVON_PETALBURG_WOODS"]
+battles = 1
+
+[expect.vars]
+VAR_PETALBURG_WOODS_STATE = 1

@@ -1,0 +1,215 @@
+# Proves Surf + Waterfall up Route 223 and the Victory Road HM floors to the League's north side.
+# Start: Sunyshore (855,743) after Jasmine -> end: Pokemon League outside, Victory Road exit (853,582).
+
+title = "Route 223 and Victory Road to the Pokemon League"
+priority = "P0"
+version = "both"
+estimate = 112547
+refs = [
+  "maps.h:472",
+  "map_header.c:552",
+  "zone_event 0446 objects 0-11,14",
+  "maps.h:176",
+  "zone_event 0171 warp 0",
+  "zone_event 0171 warp 2",
+  "zone_event 0171 warp 3",
+  "maps.h:248",
+  "zone_event 0237 warp 7",
+  "zone_event 0237 warp 8",
+  "zone_event 0237 warps 0-6",
+  "zone_event 0238 warps 0-2",
+  "zone_event 0239 warps 0-2",
+  "scr_seq 0719 @0x0000",
+  "scr_seq 0259 @0x0026",
+  "scr_seq 0259 @0x002A",
+  "scr_seq 0177 @0x001A",
+  "zone_event 0238 object 7",
+  "zone_event 0239 object 1",
+]
+notes = "Victory Road 1F/2F/B1F are tile for tile Platinum's (same warps, boulders, rocks: dp_script.py events), so the route is Platinum 49's (tools/pt_cave.py, each floor checked there). Route 223: 12 swimmers/sailor lv 37-44 (zone_event 0446). Victory Road trainers lv 43-49 incl. two doubles: Al & Kay #237 2F (57,19-20), Jo & Pat #236 B1F (33,43-44). The back area (1F_BACK_1..3, Route 224) is post-game. Encounter banks of Route 223 and Victory Road are the same in D and P (version-diff)."
+
+[start]
+from = "prev"
+lab = "lab.recipe"
+boost = "boost.recipe"
+
+[run]
+frames = 168900
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 12000
+surf = true
+via = [[855, 711], [848, 711], [848, 657], [841, 657], [841, 658], [837, 658], [837, 646], [843, 646], [843, 616], [846, 616],
+       [846, 606]]
+x = 845
+z = 606
+note = "Sunyshore north beach, Surf up Route 223 (its swimmers fought) to the waterfall's foot (tools/pt_route.py 855,743 845,606 ... --surf)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 4000
+surf = true
+x = 845
+z = 599
+note = "Waterfall (845,604) up (the Beacon Badge), onto the League's south shore"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+x = 851
+z = 597
+note = "Victory Road entrance, zone_event 0171 warp 2 -> VICTORY_ROAD_1F (15,78)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 8000
+hm = true
+via = [[15, 76], [15, 64], [15, 62], [18, 62], [31, 62], [34, 62], [34, 48], [36, 48]]
+x = 36
+z = 54
+note = "1F: Rock Climb ledges, the wall (36,49..52) down (tools/pt_cave.py VICTORY_ROAD_1F 15,77 VICTORY_ROAD_2F ... --climb --smash)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 4000
+dirs = [["L", "x25"]]
+note = "west along row 54, under the bridge deck x 28-29 (z 45..58): walk_to's A* (no levels) climbed onto the deck at (28,53) and stuck there"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 8000
+hm = true
+via = [[25, 56], [12, 56], [12, 43], [9, 43], [9, 37], [5, 37]]
+x = 4
+z = 37
+note = "to the west stairs (4,37) -> 2F (20,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_2F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 4000
+hm = true
+via = [[16, 16], [16, 21], [17, 21]]
+x = 17
+z = 27
+note = "2F: Rock Smash (16,19)/(17,19), down to the three boulders (16,28),(17,28),(16,29)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 6000
+dirs = [["F", "D"], ["D", "z28"], ["L", "x16"], ["D", "z29"], ["L", "x15"], ["D", "z31"]]
+note = "Strength (using it pushes (17,28) south to (17,29)); a move into a boulder pushes it and the player stays, so each leg is a coordinate target (the next try walks into the vacated tile): (16,28) west to (15,28), (16,29) south to (16,30); through to (15,31) (Platinum 49's route)"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 3000
+x = 5
+z = 31
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 6000
+dirs = [["D", "z32"], ["L", "x3"], ["D", "z34"], ["R", "x4"], ["F", "R"], ["R", "x5"], ["U", "z33"]]
+note = "boulder (5,32) south to (5,33), round by (3,32)..(4,34), Rock Smash (5,34), push it back north to (5,32): row 33 opens east"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 4000
+hm = true
+via = [[9, 33], [9, 37], [14, 37], [14, 36], [21, 36], [21, 37]]
+x = 22
+z = 37
+note = "Rock Smash (9,36), the south passage (Ace Trainer Sydney (15,37) sees the walk)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 3000
+dirs = [["R", "x23"]]
+note = "boulder (23,37) east to (24,37), into its tile: the x 23 column north opens"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 4000
+via = [[23, 37], [23, 32], [22, 32], [22, 26]]
+x = 23
+z = 26
+note = "north up the column (Veteran Clayton (23,29) sees it) to the stairs (23,26) -> 1F (7,47)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 6000
+hm = true
+via = [[7, 48], [8, 48], [22, 48]]
+x = 22
+z = 53
+note = "1F: along the bridge deck (rows 47-48), off its end (22,48) down the Rock Climb wall (22,49..52)"
+
+[[step]]
+do = "moves"
+on_battle = "flee"
+max = 8000
+dirs = [["L", "x17"], ["U", "z42"], ["R", "x42"], ["U", 1], ["R", 1]]
+note = "west, north up the passage under the bridge, east to the B1F stairs (42,41), entered going east -> B1F (4,39): walk_to's A* plans these legs back up the wall (the probe's grid has no levels)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_B1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 10000
+surf = true
+hm = true
+via = [[16, 39], [16, 30], [19, 30], [19, 22], [24, 22], [24, 5], [4, 5], [4, 22]]
+x = 3
+z = 22
+note = "B1F: Surf north, Waterfall (24,10) up, west along the top pool, south down x 4 to the stairs (3,22) -> 1F (41,24) (pt_cave.py ... --surf --waterfall)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_VICTORY_ROAD_1F"
+
+[[step]]
+do = "walk_to"
+on_battle = "flee"
+max = 6000
+hm = true
+via = [[29, 24], [29, 37], [38, 37], [38, 32], [38, 18], [38, 6], [35, 6], [35, 4]]
+x = 34
+z = 4
+note = "1F: Rock Climb (38,33..36) up, the bridge north, the exit mats (33..34,4) entered going west (Platinum's is (34,6); D/P's room is two rows taller there) -> Pokemon League"
+
+[[step]]
+do = "wait_map"
+map = "MAP_POKEMON_LEAGUE"
+shot = "league"
+
+[expect]
+map = "MAP_POKEMON_LEAGUE"
+flags = ["0x9CA"]

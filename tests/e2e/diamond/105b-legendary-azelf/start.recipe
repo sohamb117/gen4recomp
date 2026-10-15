@@ -1,0 +1,12 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31105
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+# hidden at new game (scr_seq 0377 @0x001E), cleared after the Spear Pillar story (scr_seq 0230 @0x0FD8)
+clear-flag 0x1FE
+party SPECIES_GARCHOMP 100 ITEM_NONE
+party-move 0 0 MOVE_CRUNCH
+# below Azelf (16,14) (zone_event 0303 object 0); [INFERENCE] (16,15) walkable
+map MAP_VALOR_CAVERN 16 15 FACE_UP

@@ -1,0 +1,59 @@
+# Diamond side systems (standalone, start.recipe; version = "both" dirs serve Pearl too: pearl/systems.txt).
+# 71b continues 71's end save and 73 continues 72's (run them in this order with one --out); the post-game ones
+# (93, 94, 95, 95b, 103, 106, 108, 111, 112) continue the chain's 59b (--out at the chain's output).
+# Fishing (68-70) reads the FishingTask's state from guest RAM (bots.py _dp_fish_cast: D/P has no PC_TRACE_FISH).
+68-fishing-old-rod
+69-fishing-good-rod
+70-fishing-super-rod
+71-honey-tree-slather
+71b-honey-tree-encounter
+72-day-care-deposit-and-egg
+73-egg-hatch-and-flame-body
+74-level-up-evolution-after-battle
+# 75's trade-evolution half is the link case tests/link dp_trade_evolve (Pearl's Kadabra evolves on Diamond's station).
+75-trade-evolution
+78-amity-square
+80-trophy-garden
+81-game-corner
+90-underground-explorer-kit
+91-underground-dig-spheres-traps
+92-underground-secret-base
+93-battle-zone-ferry-fight-area
+94-battle-zone-route-225-north-gate
+95-stark-mountain-buck-magma-stone
+95b-stark-mountain-buck-house
+96-battle-park-battle-tower
+97-gts-offline
+98-jubilife-tv
+99-vs-seeker
+100-poketch-apps
+101-roamer-mesprit
+102-roamer-cresselia
+103-legendary-dialga-palkia
+104-legendary-giratina-turnback
+105-legendary-uxie-azelf
+105b-legendary-azelf
+106-legendary-heatran
+107-legendary-regigigas
+108-rotom-old-chateau
+109-spiritomb-hallowed-tower
+110-national-dex-upgrade
+111-pal-park
+112-hall-of-fame-pc-and-game-complete
+
+# Still planned (dirs present, status = "planned"): 60-67 (the HM field uses), 76 (Super Contest: first place needs
+# the D/P `party-condition` recipe line), 77 (Poffin making: the guest traps when the cooking app closes,
+# tests/e2e/DEFECTS.md), 79 (Great Marsh).
+#
+# Not systems here (Platinum's systems.txt has them; Diamond and Pearl do not have the feature):
+# - The Battle Frontier (Platinum 98-102): D/P's Battle Park has only the Battle Tower (96).
+# - The roaming legendary birds (Platinum 110): D/P's roamers are Mesprit and Cresselia (101, 102); Save_CreateRoamerByID
+#   makes only ids 0-2 (0x1E1 Mesprit, 0x1E8 Cresselia, 0x1EB; arm9/asm/unk_020603B0.s:211-229).
+# - The Regi trio (Platinum 116): no Rock Peak, Iceberg or Iron Ruins maps (include/constants/maps.h); the three come
+#   only by Pal Park migration, which 107 stands in for with its party (CheckRegis compares species only).
+# - The Distortion World and Iron Island's tag battle as a system (Platinum 31b): D/P play Iron Island in the chain (37).
+# - Pal Park's migration itself: tests/mac feature_matrix `palpark` (111's notes).
+# Excluded, D/P have them: online-only (the GTS online, the Wi-Fi Club, Wi-Fi Battle Tower; 97 covers the offline GTS),
+# event-only (Darkrai: Newmoon Island needs the Member Card's flag 0x13C, 102's notes; Shaymin: Oak's Letter; Arceus:
+# the Azure Flute; FEATURE_PARITY's Mystery Gift row delivers the cards, the encounters are not milestones), the
+# Underground's flag capture (mission 5 needs a second player; 92's notes).

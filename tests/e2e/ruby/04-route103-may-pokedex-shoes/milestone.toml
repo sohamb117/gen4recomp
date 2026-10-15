@@ -1,0 +1,123 @@
+# Proves Route 103 (May, TRAINER_MAY_1 for VAR_STARTER_MON 2), May's Oldale goodbye, the lab Pokedex + 5 Poke Balls
+# (FLAG_ADVENTURE_STARTED) and Mom's Running Shoes at Littleroot's north exit.
+# Start: Birch's lab -> end: MAP_LITTLEROOT_TOWN north exit (11,2), FLAG_RECEIVED_RUNNING_SHOES.
+title = "Route 103: first May battle, the Pokedex, the Running Shoes"
+priority = "P0"
+version = "both"
+estimate = 14109
+refs = [
+  "data/maps/LittlerootTown_ProfessorBirchsLab/map.json warp_events[0] (6,12)",
+  "data/maps/Route103/map.json object_events[1] rival VAR_0 (10,2)",
+  "data/maps/Route103/scripts.inc:10-33 (male -> May, switch VAR_STARTER_MON: 2 -> Route103_EventScript_14EC7D)",
+  "data/maps/Route103/scripts.inc:61-64 (trainerbattle_no_intro TRAINER_MAY_1)",
+  "data/maps/Route103/scripts.inc:118-129 (ROUTE103_STATE 1, BIRCH_LAB_STATE 4, FLAG_DEFEATED_RIVAL_ROUTE103, OLDALE_STATE 1)",
+  "data/maps/OldaleTown/map.json coord_events (8..10,19) VAR_OLDALE_STATE=1",
+  "data/maps/OldaleTown/scripts.inc:225-278 (RivalTrigger: OLDALE_STATE 2, FLAG_HIDE_RIVAL_OLDALE_TOWN)",
+  "data/maps/LittlerootTown/scripts.inc:16-17,27-30 (else Littleroot's OnTransition finishes it)",
+  "data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc:22,68-73,116-135 (GivePokedex: BIRCH_LAB_STATE 5, FLAG_ADVENTURE_STARTED, ROUTE102_ACCESSIBLE 1, RIVAL_STATE 4, LITTLEROOT_STATE 3)",
+  "data/maps/LittlerootTown/map.json coord_events (10..11,2)/(8..11,9) VAR_LITTLEROOT_STATE=3",
+  "data/maps/LittlerootTown/scripts.inc:367-430,859-873 (GiveRunningShoes: FLAG_RECEIVED_RUNNING_SHOES, FLAG_SYS_B_DASH, LITTLEROOT_STATE 4)",
+]
+notes = "May: TRAINER_MAY_1 (529): TREECKO 5 (Treecko resists Water; Mudkip lv5-6 Tackle/Mud-Slap carries it). The Oldale scene (VAR_OLDALE_STATE 1) fires on (8..10,19) going south, else Littleroot's OnTransition finishes it. Oldale's west gate (0,10) opens with VAR_ROUTE102_ACCESSIBLE (OldaleTown/scripts.inc:10-15)."
+
+[start]
+from = "prev"
+
+[run]
+frames = 21200
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 12
+note = "lab exit mat (warp 0) -> Littleroot (7,16)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN"
+
+[[step]]
+do = "walk_to"
+x = 10
+z = 3
+map = "MAP_ROUTE103"
+note = "north through Route 101 and Oldale to Route 103, the tile below May (10,2) ((10,5) is a ledge)"
+
+[[step]]
+do = "talk_to"
+id = 2
+note = "May (object 2) -> Route103_EventScript_14EB92 -> TRAINER_MAY_1 (Route103/scripts.inc:10-33,61-64)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "auto_battle"
+snap = true
+note = "TRAINER_MAY_1 (529): TREECKO 5"
+
+[[step]]
+do = "advance_text"
+note = "BIRCH_LAB_STATE 4, FLAG_DEFEATED_RIVAL_ROUTE103, OLDALE_STATE 1 (Route103/scripts.inc:118-129)"
+
+[[step]]
+do = "walk_to"
+x = 9
+z = 19
+map = "MAP_OLDALE_TOWN"
+on_text = "stop"
+note = "Oldale south (8..10,19) RivalTrigger -> May leaves, OLDALE_STATE 2 (OldaleTown/scripts.inc:225-278)"
+
+[[step]]
+do = "advance_text"
+
+[[step]]
+do = "walk_to"
+x = 7
+z = 16
+map = "MAP_LITTLEROOT_TOWN"
+note = "lab door (Littleroot warp 2) -> lab (6,12)"
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN_PROFESSOR_BIRCHS_LAB"
+
+[[step]]
+do = "advance_text"
+shot = "pokedex"
+note = "OnFrame BIRCH_LAB_STATE 4 -> GivePokedexEvent: Pokedex, 5 Poke Balls from May, FLAG_ADVENTURE_STARTED, LITTLEROOT_STATE 3 (LittlerootTown_ProfessorBirchsLab/scripts.inc:22,68-73,116-135)"
+
+[[step]]
+do = "walk_to"
+x = 6
+z = 12
+
+[[step]]
+do = "wait_map"
+map = "MAP_LITTLEROOT_TOWN"
+
+[[step]]
+do = "walk_to"
+x = 11
+z = 2
+on_text = "stop"
+note = "LITTLEROOT_STATE 3 GiveRunningShoes triggers (8..11,9) / (10..11,2)"
+
+[[step]]
+do = "advance_text"
+shot = "running-shoes"
+note = "Mom: FLAG_RECEIVED_RUNNING_SHOES, FLAG_SYS_B_DASH, LITTLEROOT_STATE 4 (LittlerootTown/scripts.inc:859-873)"
+
+[expect]
+map = "MAP_LITTLEROOT_TOWN"
+flags = ["FLAG_DEFEATED_RIVAL_ROUTE103", "FLAG_ADVENTURE_STARTED", "FLAG_SYS_POKEDEX_GET", "FLAG_RECEIVED_RUNNING_SHOES", "FLAG_SYS_B_DASH", "FLAG_VISITED_OLDALE_TOWN", "FLAG_HIDE_RIVAL_OLDALE_TOWN"]
+party = ["SPECIES_MUDKIP"]
+battles = 1
+
+[expect.vars]
+VAR_BIRCH_LAB_STATE = 5
+VAR_LITTLEROOT_RIVAL_STATE = 4
+VAR_LITTLEROOT_STATE = 4
+VAR_ROUTE103_STATE = 1
+VAR_OLDALE_STATE = 2
+VAR_ROUTE102_ACCESSIBLE = 1

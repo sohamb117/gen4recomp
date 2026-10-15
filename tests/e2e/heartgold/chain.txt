@@ -1,0 +1,46 @@
+# HeartGold story chain (Ethan, starter CYNDAQUIL), new game -> Hall of Fame, credits and the game's own reset.
+# Order = the scripts' gating: Sprout Tower before Falkner (the gym guy), the aide's egg before Route 32, the Slowpoke
+# Well before Bugsy and Ilex, the Burned Tower before Morty (VAR_UNK_4079), the three mid-game badges then Pryce before
+# the Radio Tower (VAR_MIDGAME_BADGES -> VAR_SCENE_ROCKET_TAKEOVER), the Radio Tower before Route 44 (VAR_UNK_407A),
+# the Rising Badge before Elm's Master Ball and the Kimono Girls (VAR_SCENE_ELMS_LAB 8 -> VAR_UNK_4079 3), and the
+# legendary before New Bark's east exit to Route 27 (VAR_SCENE_NEW_BARK_EAST_EXIT 3).
+# Shared dirs are version = "both"; 31 is HeartGold's Ho-Oh (SoulSilver: ../soulsilver/31-whirl-islands-lugia).
+# HG/SS lab recipes are not written yet: each milestone starts from the previous one's end save.
+01-newgame-cyndaquil-pokegear
+02-cherrygrove-guide-mr-pokemon-pokedex
+03-cherrygrove-rival-elm-officer-catching
+04-route30-31-violet
+05-sprout-tower-elder-li
+06-falkner-zephyr-togepi-egg
+07-route32-union-cave-azalea
+08-slowpoke-well-proton-kurt
+09-bugsy-hive
+10-azalea-rival-ilex-farfetchd-cut
+11-route34-daycare-goldenrod
+12-whitney-plain-squirtbottle
+13-national-park-sudowoodo-ecruteak
+14-burned-tower-rival-beasts
+15-morty-fog
+16-dance-theater-grunt-surf
+17-route38-39-olivine-lighthouse-jasmine
+18-route40-cianwood-chuck-fly-secretpotion
+19-amphy-secretpotion-jasmine-mineral
+20-route42-mahogany-lake-of-rage-gyarados
+21-rocket-hideout-lance-electrodes
+22-pryce-glacier
+23-goldenrod-disguise-radio-tower-petrel
+24-underground-rival-director-card-key
+25-radio-tower-card-key-archer-wing
+26-route44-ice-path-blackthorn
+27-blackthorn-gym-clair
+28-dragons-den-quiz-rising-badge
+29-new-bark-elm-master-ball
+30-ecruteak-rival-kimono-girls-bell
+31-bell-tower-ho-oh
+32-route27-tohjo-falls-route26-league-gate
+33-victory-road-rival
+34-e4-will
+35-e4-koga
+36-e4-bruno
+37-e4-karen
+38-champion-lance-hall-of-fame-credits

@@ -1,0 +1,20 @@
+name GQ
+gender PLAYER_GENDER_MALE
+trainer-id 31092
+money 3000
+# chosen starter: Save_VarsFlags_GetStarter reads var 0x4030 (games/diamond/arm9/asm/unk_0205F314.s:86-93)
+var 0x4030 SPECIES_TURTWIG
+party SPECIES_TURTWIG 15 ITEM_NONE
+# kit owned and registered to Y (scr_seq 0089 @0x0044-0x0054 gives it; register-item = Bag_SetRegisteredItem)
+item ITEM_EXPLORER_KIT 1
+register-item ITEM_EXPLORER_KIT
+flag 0x79
+# mentor accepted (scr_seq 0089 @0x0070)
+flag 0x113
+# missions 0-2 done: entered / dug / buried (unk_0205EC84.c:96/100/104), mission 2 given (scr_seq 0089 @0x00D7)
+flag 0x96E
+flag 0x96F
+flag 0x970
+flag 0x111
+var 0x40B6 2
+warp MAP_ETERNA_UNDERGROUND_MAN_HOUSE 0

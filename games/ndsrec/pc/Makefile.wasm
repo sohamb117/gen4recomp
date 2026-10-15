@@ -1,0 +1,232 @@
+# A ROM-only Diamond core: every line of game and SDK code recompiled from
+# the cartridge image by tools/ndsrec + armrec, no decompilation involved,
+# linked with the machine model Diamond/Pearl and Platinum share.
+#
+#   make -f pc/Makefile.wasm -j6                 build/pc-wasm/ndsrec-diamond.wasm
+#   make -f pc/Makefile.wasm ROM=other.nds ...   another NitroSDK ROM
+#
+# (run from games/ndsrec). The inputs are the ROM and the primitive map:
+#
+#   1. tools/ndsrec/sigs.py learns signatures for the functions and objects
+#      tools/ndsrec/primitives.txt names (the host's replacements and what
+#      it names) from Diamond's ROM and link map, and matches them in ROM:
+#      $(NDSREC_OUT)/primitives.syms. Nothing else of the link map is used.
+#   2. tools/ndsrec/ndsrec.py emit writes the whole ARM9 side of ROM as
+#      armrec-ready assembly under $(NDSREC_OUT)/asm, naming only what the
+#      map names (sub_XXXXXXXX / ovNN_XXXXXXXX otherwise), plus the
+#      host-override list.
+#   3. armrec translates all of it (pc/mk/ndsrec.mk); the map's `override`
+#      functions are dropped and every call and dispatch to them reaches
+#      the host's C.
+#   4. Diamond's host fragment (games/diamond/pc/mk/host.mk: Platinum's
+#      machine model + games/diamond/pc/src) and bridge (bridge.mk) are
+#      used as they are, by reference. The two link values the boot takes
+#      from the xMAP there come from crt0's literal pool here
+#      (`ndsrec.py lcf`, written in the xMAP's form).
+#
+# Steps 1-3 write the file list the rest of the build is made of, so `all`
+# runs make twice: stage 1 (map, assembly, armrec), then the link.
+
+ROOT    := $(abspath $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))/..)
+SELF    := $(abspath $(lastword $(MAKEFILE_LIST)))
+NPROOT  := $(abspath $(ROOT)/../..)
+PLAT    := $(NPROOT)/games/platinum
+DP      := $(NPROOT)/games/diamond
+ARMREC  := $(PLAT)/tools/armrec
+NDSREC  := $(NPROOT)/tools/ndsrec
+# Diamond's pc/ directory: host.mk and bridge.mk read their sources, shadow
+# headers and D-specific host files from here.
+PCDIR   := $(DP)/pc
+MYPC    := $(ROOT)/pc
+
+TOOLCHAINS ?= $(NPROOT)/.cache/toolchains
+WASI_SDK   ?= $(TOOLCHAINS)/wasi-sdk
+WABT       ?= $(TOOLCHAINS)/wabt
+PYTHON     ?= python3
+
+VER     ?= diamond
+ROM     ?= $(DP)/build/diamond.us/pokediamond.us.nds
+# Where the signatures are learned: a ROM whose link map is known.
+LEARN_ROM  ?= $(DP)/build/diamond.us/pokediamond.us.nds
+LEARN_XMAP ?= $(DP)/arm9/build/diamond.us/arm9.elf.xMAP
+
+BUILD  := $(ROOT)/build/pc-wasm/$(VER)
+OBJ    := $(BUILD)/obj
+TARGET := $(ROOT)/build/pc-wasm/ndsrec-$(VER).wasm
+
+# VER=poketransfer: Poké Transfer's Download Play child, which Black and
+# White send from the Poké Transfer Lab to a second DS (docs/BW_PLAN.md
+# "Poké Transfer"). It is a file of their cartridge, dl_rom/child_r_eng.srl
+# (the same bytes in both), recompiled as an image of its own; BW_ROM is the
+# player's Black or White ROM (a path without spaces, e.g. a symlink under
+# build/). The cartridge the child's station has in slot 1 is the Gen 4
+# game it reads, served by the runtime as any core's ROM.
+ifeq ($(VER),poketransfer)
+ROM := $(BUILD)/child_r_eng.srl
+$(ROM): $(BW_ROM) $(NDSREC)/ndsrec.py $(NDSREC)/nds.py
+	@mkdir -p $(dir $@)
+	$(PYTHON) $(NDSREC)/ndsrec.py extract $(BW_ROM) dl_rom/child_r_eng.srl --out $@
+endif
+
+# Compiles go through tools/ccache.sh when it says so (its header).
+CCACHE := $(shell $(NPROOT)/tools/ccache.sh --enabled)
+CC  := $(strip $(CCACHE) $(WASI_SDK)/bin/clang --target=wasm32-wasip1)
+NM  := $(WASI_SDK)/bin/llvm-nm
+
+WASM_ABI := -fno-short-enums -fsigned-char -fno-common -std=gnu99 \
+            -fms-extensions -fno-strict-aliasing -fwrapv -w \
+            -Wno-error=implicit-function-declaration -Wno-error=implicit-int \
+            -Wno-error=int-conversion -Wno-error=incompatible-pointer-types \
+            -Wno-error=incompatible-function-pointer-types \
+            -Wno-error=return-type -Wno-error=return-mismatch
+OPT    ?= -O2
+HW_OPT ?= -O3
+
+np_abi_const = $(shell printf '%d' $$(sed -n 's/^\#define $(1) \(0x[0-9A-Fa-f]*\)u.*/\1/p' $(NPROOT)/core/include/np_guest_abi.h))
+NP_C_BASE := $(call np_abi_const,NP_GUEST_C_BASE)
+NP_MEMORY := $(call np_abi_const,NP_GUEST_MEMORY_BYTES)
+WASM_MAP  := $(BUILD)/ndsrec-$(VER).map
+LDFLAGS   := -Wl,--global-base=$(NP_C_BASE) -Wl,--no-stack-first \
+             -Wl,--initial-memory=$(NP_MEMORY) -Wl,--max-memory=$(NP_MEMORY) \
+             -Wl,-z,stack-size=1048576 -Wl,-Map=$(WASM_MAP)
+LDLIBS    := -lm
+
+.DEFAULT_GOAL := all
+.PHONY: all stage1 link clean
+.SECONDEXPANSION:
+
+OBJS :=
+# host.mk's overlay-statics table walks the decompiled overlays' objects;
+# there are none here.
+GAME_OBJS :=
+include $(PCDIR)/mk/bridge.mk
+include $(MYPC)/mk/ndsrec.mk
+include $(PCDIR)/mk/host.mk
+
+# What the host layer reaches in Diamond's decompiled game half that a
+# recompiled ROM does not have (pc/src/pc_ndsrec_hooks.c).
+MY_OBJS := $(OBJ)/ndsrec/pc_ndsrec_hooks.o
+# Black/White: the field status, F1 quick save and the e2e probe
+# (pc/src/pc_bw_e2e.c), instant text (pc/src/pc_bw_text.c, reached through
+# pc/patches/<VER>/), the field camera's zoom / tilt (pc/src/pc_bw_camera.c,
+# also through pc/patches/<VER>/), the fix-bugs rule (pc/src/pc_bw_rules.c,
+# the same way), content packages as a ROM view (pc/src/pc_bw_romview.c,
+# below), and B/W's sound-archive players for the
+# music / effects volumes (pc/src/pc_bw_snd.c, in place of D/P's
+# pc_dp_snd.c).
+BW := $(filter black white,$(VER))
+MY_OBJS += $(if $(BW),$(addprefix $(OBJ)/ndsrec/,pc_bw_e2e.o pc_bw_text.o pc_bw_camera.o pc_bw_rules.o pc_bw_romview.o pc_bw_snd.o))
+$(OBJ)/ndsrec/pc_bw_%.o: HOST_CFLAGS += $(if $(filter white,$(VER)),-DPC_BW_VER_WHITE)
+# Content packages as a ROM view (pc/src/pc_bw_romview.c): Platinum's
+# pc_card_rom.c sends its cartridge reads there under PC_BW_ROMVIEW, which
+# only the Black/White builds define.
+HOST_CFLAGS += $(if $(BW),-DPC_BW_ROMVIEW)
+$(OBJ)/ndsrec/%.o: $(MYPC)/src/%.c $(BRIDGE_DEPS) $(HOST_PRE)
+	$(call BRIDGE_COMPILE,$(HOST_CFLAGS) $(HOST_DEPFLAGS))
+# Poké Transfer's child (VER=poketransfer), a Download Play child: its
+# station first receives it from the parent (pc/src/pc_pt_dlplay.c, over
+# NitroSDK 4.2's own ARM9 WM library and multiboot child, compiled here), checks
+# it against the image this build recompiled (pc_pt_image.c, generated: hashes
+# and sizes only), and boots it; pc_card_rom.c leaves the slot-1 card's header
+# where a child finds it under PC_MB_CHILD. pc/src/pc_pt_child.c has what the
+# child does not link.
+ifeq ($(VER),poketransfer)
+HOST_CFLAGS += -DPC_MB_CHILD
+PT_IMAGE_C := $(BUILD)/gen/pc_pt_image.c
+$(PT_IMAGE_C): $(ROM) $(NDSREC)/ndsrec.py $(NDSREC)/nds.py
+	@mkdir -p $(dir $@)
+	$(PYTHON) $(NDSREC)/ndsrec.py mbimage-c $(ROM) --prefix pc_pt_child --out $@
+$(OBJ)/ndsrec/pc_pt_image.o: $(PT_IMAGE_C)
+	@mkdir -p $(dir $@)
+	$(CC) $(WASM_ABI) $(OPT) -c -o $@ $<
+# The SDK pieces of the firmware's Download Play client: the ARM9 WM library,
+# the multiboot child and what it shares with the parent side (whose parent
+# half stays unreferenced), the owner information, and the SHA-1
+# (pc_dgt.c). WMi_StartMP is renamed because the child's own recompiled WM
+# library has that name (a primitive). mb_child.c's one lvalue cast, which
+# only mwcc takes (`pCwork = NULL;`, pCwork being `((MB_CommCWork *)mbc)`),
+# is compiled from a copy that says `mbc = NULL;`. The multiboot sources
+# receive the ROM header at the NITRO address (pc_pt_fw_mb.h).
+PTFW_CFLAGS = $(HOST_CFLAGS) -I$(HOST_NSDK)/libraries/mb/include -I$(HOST_NSDK)/libraries/wm/src \
+              -I$(HOST_NSDK)/libraries/wm/include \
+              -DWMi_StartMP=ptfw_WMi_StartMP
+PTFW_SRCS := wm/src/wm_system wm/src/wm_standard wm/src/wm_mp wm/src/wm_sync wm/src/wm_etc \
+             mb/src/mb_wm_base mb/src/mb_common mb/src/mb_block mb/src/mb_gameinfo mb/src/mb_fileinfo \
+             os/src/os_ownerInfo
+PTFW_OBJS := $(addprefix $(OBJ)/ptfw/,$(addsuffix .o,$(PTFW_SRCS))) $(OBJ)/ptfw/mb/src/mb_child.o
+$(OBJ)/ptfw/mb/%.o: PTFW_CFLAGS += -include $(MYPC)/src/pc_pt_fw_mb.h
+$(OBJ)/ptfw/%.o: $(HOST_NSDK)/libraries/%.c $(BRIDGE_DEPS) $(HOST_PRE)
+	@mkdir -p $(dir $@)
+	$(call BRIDGE_COMPILE,$(PTFW_CFLAGS) $(HOST_DEPFLAGS))
+PTFW_MB_CHILD_C := $(BUILD)/ptfw-src/mb_child.c
+$(PTFW_MB_CHILD_C): $(HOST_NSDK)/libraries/mb/src/mb_child.c $(SELF)
+	@mkdir -p $(dir $@)
+	grep -q '^		pCwork = NULL;$$' $< && sed 's/^		pCwork = NULL;$$/		mbc = NULL;/' $< > $@.tmp && mv $@.tmp $@
+$(OBJ)/ptfw/mb/src/mb_child.o: $(PTFW_MB_CHILD_C) $(BRIDGE_DEPS) $(HOST_PRE)
+	@mkdir -p $(dir $@)
+	$(call BRIDGE_COMPILE,$(PTFW_CFLAGS) -I$(HOST_NSDK)/libraries/mb/src $(HOST_DEPFLAGS))
+$(OBJ)/ndsrec/pc_pt_dlplay.o $(OBJ)/ndsrec/pc_pt_fw_os.o: HOST_CFLAGS += -I$(HOST_NSDK)/libraries/mb/include
+MY_OBJS += $(addprefix $(OBJ)/ndsrec/,pc_pt_child.o pc_pt_dlplay.o pc_pt_fw_os.o pc_pt_image.o) \
+           $(PTFW_OBJS) $(HOST_OBJ)/pc/pc_dgt.o
+BRIDGE_PLAIN_OBJS += $(OBJ)/ndsrec/pc_pt_image.o
+endif
+
+OBJS := $(if $(BW),$(filter-out $(HOST_OBJ)/dp/pc_dp_snd.o,$(OBJS)),$(OBJS)) $(MY_OBJS)
+
+# The TWL-SDK memory map (Black/White). TWL-SDK links the DTCM and the
+# system shared page 8 MB above NitroSDK's (DTCM 0x02FE0000, shared page
+# 0x02FFF000, both main-RAM mirror addresses on a DS), so when crt0's DTCM
+# is above 0x02800000 armrec's shared region moves there (ARMREC_TWL,
+# tools/armrec/armrec_rt.h) and the host compiles against a copy of the 4.2
+# SDK's nitro/hw/common/mmap_shared.h with every shared-page address 8 MB up.
+# HOST_GEN/include is searched before the SDK's include directory.
+# crt0 is read in stage 1 (lcf.xmap), so this decides in the link stage.
+TWL_DTCM := $(call host_xmap_value,SDK_AUTOLOAD_DTCM_START)
+TWL := $(if $(TWL_DTCM),$(shell [ $$(($(TWL_DTCM))) -ge $$((0x02800000)) ] && echo 1))
+ifeq ($(TWL),1)
+TWL_SHARED_H := $(HOST_GEN)/include/nitro/hw/common/mmap_shared.h
+$(TWL_SHARED_H): $(HOST_NSDK)/include/nitro/hw/common/mmap_shared.h $(SELF)
+	@mkdir -p $(dir $@)
+	sed -e 's/HW_MAIN_MEM + 0x007ff/HW_MAIN_MEM + 0x00fff/' \
+	    -e 's/0x027ff\([0-9a-fA-F]\{3\}\)$$/0x02fff\1/' $< > $@.tmp && mv $@.tmp $@
+HOST_CFLAGS += -DARMREC_TWL
+$(HOST_OBJS) $(MY_OBJS) $(OBJ)/ndsrec/pc_ndsrec_noagb.o: $(TWL_SHARED_H)
+endif
+
+# The GBA slot. Diamond's host models it with a flash chip and D's flash
+# timer (pc_agb_slot.c, pc_dp_agb.c), which call CTRDG functions and read
+# CTRDG statics by name. A ROM whose primitive map places no CTRDG library
+# (Black/White) gets the empty slot instead (pc/src/pc_ndsrec_noagb.c). The
+# map is stage 1's output, so this decides in the link stage.
+NO_AGB := $(if $(wildcard $(PRIM_SYMS)),$(if $(shell grep -l ' CTRDG_IdentifyAgbBackup ' $(PRIM_SYMS)),,1))
+ifeq ($(NO_AGB),1)
+OBJS := $(filter-out $(HOST_OBJ)/pc/pc_agb_slot.o $(HOST_OBJ)/dp/pc_dp_agb.o,$(OBJS)) \
+        $(OBJ)/ndsrec/pc_ndsrec_noagb.o
+endif
+
+# The overlay-statics table: none here (pc/src/pc_ndsrec_ovstatics.c says
+# why it is not host.mk's generated one).
+MY_OVSTATICS_O := $(OBJ)/ndsrec/pc_ndsrec_ovstatics.o
+$(MY_OVSTATICS_O): $(MYPC)/src/pc_ndsrec_ovstatics.c
+	@mkdir -p $(dir $@)
+	$(CC) $(HOST_CFLAGS) -c -o $@ $<
+LINK_EXTRA_DEPS := $(filter-out $(HOST_OVSTATICS_O),$(LINK_EXTRA_DEPS)) $(MY_OVSTATICS_O)
+LINK_EXTRA_OBJS := $(filter-out $(HOST_OVSTATICS_O),$(LINK_EXTRA_OBJS)) $(MY_OVSTATICS_O)
+
+all:
+	$(MAKE) -f $(SELF) stage1
+	$(MAKE) -f $(SELF) link
+
+link: $(TARGET)
+
+# The contract check, as Diamond and Platinum run it. No patch_ov_addrs.py:
+# its table lists decompiled overlays' C statics, and there are none.
+POST_LINK ?= $(PYTHON) $(PLAT)/pc/wasm/check_module.py $(TARGET) \
+               $(NPROOT)/core/include/np_guest_abi.h $(PCDIR)/stubs.list --map $(WASM_MAP)
+$(TARGET): $(OBJS) $(LINK_EXTRA_DEPS)
+	@mkdir -p $(dir $@)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LINK_EXTRA_OBJS) $(LDLIBS)
+	@$(POST_LINK)
+
+clean:
+	rm -rf $(BUILD) $(TARGET)

@@ -1,0 +1,5 @@
+# Boost on 96's end save (run.py hgss_boost: np_save4 set-move on a member already in the party).
+# Party: 0 TYPHLOSION, 1 TOGEPI, 2 SCYTHER, 3 AMPHAROS, 4 PELIPPER (Surf, Fly, Ice Beam, Blizzard), 5 FERALIGATR.
+# 38's boost put Blizzard over PELIPPER's Whirlpool (28's), and the way into the Whirl Islands crosses a whirlpool
+# (src/field_move.c:604-608): Whirlpool goes back in that slot.
+party-move 4 3 MOVE_WHIRLPOOL

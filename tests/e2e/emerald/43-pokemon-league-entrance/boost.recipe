@@ -1,0 +1,23 @@
+# The Elite Four and Wallace back to back with no Pokemon Center between them and a bot that uses no items:
+# Sidney (dark, lv46-49), Phoebe (ghost, lv48-51), Glacia (ice, lv50-53), Drake (dragon, lv52-55), Wallace (water,
+# lv57-58: src/data/trainer_parties.h sParty_Sidney..sParty_Wallace). The Swampert takes TM13 Ice Beam
+# (AbandonedShip_Room_B1F item ball / Mauville Game Corner) and TM26 Earthquake (SeafloorCavern_Room9 item ball)
+# over Blizzard and Dive (the Lilycove Move Deleter forgets an HM), keeps Surf and Waterfall, and a level to carry
+# the five battles' 26 Pokemon on its PP.
+party-level 0 90
+# Leftovers (the Route 111 / S.S. Tidal item, src/data/items.h): the Swampert carries the HP of four battles in a row
+party-item 0 ITEM_LEFTOVERS
+# the HM carriers fight when it falls (Drake's Kingdra outlasted a lone lv80 Swampert)
+party-level 1 70
+party-level 2 70
+party-move 0 0 MOVE_ICE_BEAM
+party-move 0 3 MOVE_EARTHQUAKE
+# Wallace's Ludicolo (Giga Drain, 4x on a Swampert) and his Milotic outlast the Swampert's PP after four battles:
+# a Gardevoir (Ralts from Route 102's grass) as the second fighter, with TM24 Thunderbolt (Wattson,
+# MauvilleCity/scripts.inc:418, or the Mauville Game Corner), TM29 Psychic (MauvilleCity_GameCorner/scripts.inc:256),
+# TM30 Shadow Ball (MtPyre_6F item ball) and TM13 Ice Beam, so the two share the five battles' 26 Pokemon.
+party SPECIES_GARDEVOIR 85 ITEM_NONE
+party-move 3 0 MOVE_THUNDERBOLT
+party-move 3 1 MOVE_PSYCHIC
+party-move 3 2 MOVE_SHADOW_BALL
+party-move 3 3 MOVE_ICE_BEAM
