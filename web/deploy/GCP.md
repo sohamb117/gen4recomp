@@ -2,6 +2,9 @@
 
 Site: https://pokeweb.morisoba.moe/
 
+Current release: `nativeplat-00011-tss` (2026-10-15), 18 games and ten native
+WASM cores. See [artifact hashes and validation](releases/2026-10-15.md).
+
 ## Custom domain
 
 The Cloud Run mapping for `pokeweb.morisoba.moe` points to `nativeplat` in
@@ -32,7 +35,9 @@ an existing save. The domain mapping does not alter the game binaries or pacing.
 - Cloud Run serves nginx and the Node save API from Artifact Registry `nativeplat/web`.
 - Runtime identity: `nativeplat-web@nativeplat-20261004.iam.gserviceaccount.com`,
   with no project-level roles. The site has public invocation access.
-- One CPU, 512 MiB RAM, concurrency 80, zero minimum / three maximum instances.
+- One CPU, 1 GiB RAM, concurrency 80, zero minimum / three maximum instances.
+  Full-catalog concurrent downloads exceeded 512 MiB; the 2026-10-15 release uses
+  the bounded nginx/Node configuration and 1 GiB. `NP_GCP_MEMORY` overrides it.
 - Billing uses the same account as the previously selected `monereko-20260809` project.
 - Encrypted-package image digest:
   `sha256:41f6c976b76a2fa3cc23df9c1938ae752e252e3461dbea6fc4de942b7d06ce6d`.
@@ -181,7 +186,7 @@ cartridges and cores passed integrity checks and 600 runtime frames each.
 
 ## Merged main and Pearl live — 2026-10-04
 
-Revision `nativeplat-00006-xbj` serves 100% of traffic at
+Historical revision `nativeplat-00006-xbj` served 100% of traffic at
 https://pokeweb.morisoba.moe and the existing Google service URLs.
 Cloud Run's resolved platform image:
 `us-east1-docker.pkg.dev/nativeplat-20261004/nativeplat/web@sha256:1edd0a56cdbe1fbc9db56c42f83e5854ff7bd7bf7767cea4a1d2a29629130afe`.

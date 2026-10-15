@@ -161,7 +161,7 @@ try {
   assert.equal(row[0].revision, revision);
   assert.deepEqual(row[0].data, data);
   console.log(
-    "Production API passed: secure sessions, login/logout, account isolation, validation, conflict protection, one save per account, and exact Neon byte readback for all 12 games (generated validation fixtures).",
+    "Production API passed: secure sessions, login/logout, account isolation, validation, conflict protection, one save per account, and exact Neon byte readback for all 18 games, including both Emerald save formats (generated validation fixtures).",
   );
 } finally {
   // Match random fixture names too, in case a response was lost after registration.

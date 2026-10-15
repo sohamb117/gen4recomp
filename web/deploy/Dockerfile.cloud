@@ -8,7 +8,7 @@ COPY server/ ./
 COPY shared/ /shared/
 COPY deploy/nginx.conf /etc/nginx/http.d/default.conf
 COPY dist/ /usr/share/nginx/html/
-# Keep API garbage collection inside the shared 512 MiB nginx/Node budget.
+# Keep API garbage collection inside the shared nginx/Node memory budget.
 ENV SERVE_STATIC=true NODE_OPTIONS=--max-old-space-size=128
 EXPOSE 8080
 CMD ["node", "index.mjs"]

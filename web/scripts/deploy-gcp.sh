@@ -31,7 +31,7 @@ fi
 gcloud run deploy nativeplat --project="$np_project" --region="$np_region" \
   --image="$np_image" --service-account="nativeplat-web@${np_project}.iam.gserviceaccount.com" \
   --allow-unauthenticated --ingress=all --use-http2 --port=8080 \
-  --cpu=1 --memory=512Mi --concurrency=80 --min=0 --max=3 --timeout=300 --quiet "${np_run_options[@]}"
+  --cpu=1 --memory="${NP_GCP_MEMORY:-1Gi}" --concurrency=80 --min=0 --max=3 --timeout=300 --quiet "${np_run_options[@]}"
 np_url="$(gcloud run services describe nativeplat --project="$np_project" --region="$np_region" --format='value(status.url)')"
 cd "$np_root/web"
 node --liftoff-only --import tsx scripts/verify-deployment.ts "${np_url}/"
